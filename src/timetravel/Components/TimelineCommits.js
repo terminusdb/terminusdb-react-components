@@ -32,16 +32,17 @@ export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStart
                 foreground: '#00C08B',//'#7b9d6f',
                 outline: '#dfdfdf'
               }
-
-    const dataProvider= dataProviderValues.dataProvider;
-    const currentItem = dataProvider.length>0  ? dataProvider[dataProviderValues.selectedValue] : {label:'No Value',author:'',message:''}
-    const buttonActive = dataProvider.length>0 ? {onClick:setSelectedCommit} : {disabled:true}
-
     const setSelectedCommit=()=>{
        if(setHead){
           setHead(currentItem)
        }
     }
+    
+    const dataProvider= dataProviderValues.dataProvider;
+    const currentItem = dataProvider.length>0  ? dataProvider[dataProviderValues.selectedValue] : {label:'No Value',author:'',message:''}
+    const buttonActive = dataProvider.length>0 ? {onClick:setSelectedCommit} : {disabled:true}
+
+    
     return (
       <div className="history__nav__content">
         <div className="history__nav__row"> 

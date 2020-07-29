@@ -6,3 +6,5 @@ always-auth=true
 email=robin@datachemist.com" > $TRAVIS_BUILD_DIR/.npmrc
 curl -XDELETE -u"rrooij:$BINTRAY_CURL_TOKEN" "https://api.bintray.com/packages/terminusdb/npm-dev/terminusdb:terminusdb-react-components"
 npm publish
+
+
