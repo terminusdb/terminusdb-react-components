@@ -10,9 +10,8 @@ import { SizeMe } from 'react-sizeme'
 
 import {useCommitsControl} from '../hook/useCommitsControl';
 
-
-export const TimelineCommits = ({woqlClient,setHead}) =>{
-    const {dataProviderValues,gotoPosition,startTime,setStartTime,setSelectedValue,loadNextPage} = useCommitsControl(woqlClient);
+export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStartTime}) =>{
+    const {dataProviderValues,gotoPosition,startTime,setStartTime,setSelectedValue,loadNextPage} = useCommitsControl(woqlClient, setError, branch, currentStartTime);
     const currentDay=moment()//startTime? moment.unix(startTime).format("DD MMM YYYY hh:mm a") : moment();
     const [selectedDay, onDateChange] = useState( currentDay);
     const [focused,onFocusChange] = useState(false);
@@ -96,3 +95,11 @@ export const TimelineCommits = ({woqlClient,setHead}) =>{
     );
   //}
 }
+
+
+//https://terminusdb.com/api/private/user
+
+TimelineCommits.defaultProps = {
+  branch:'main',
+  currentStartTime:null
+};
