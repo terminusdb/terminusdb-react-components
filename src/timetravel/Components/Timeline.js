@@ -10,9 +10,9 @@ export const Timeline = (props) =>{
     if (!props.containerWidth) {
       return false;
     }
-
     const dates=props.values || []
 
+    if(dates.length===0) return <div>NO Value</div> 
     // Calculate the distances for all events
     const events = cummulativeSeparation(
       dates,

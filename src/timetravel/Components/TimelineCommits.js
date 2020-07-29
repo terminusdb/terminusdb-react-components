@@ -11,12 +11,12 @@ import { SizeMe } from 'react-sizeme'
 import {useCommitsControl} from '../hook/useCommitsControl';
 
 
-export const TimelineCommits = (props) =>{
-    const {dataProviderValues,gotoPosition,startTime,setStartTime,setSelectedValue,loadNextPage} = useCommitsControl(props.woqlClient);
+export const TimelineCommits = ({woqlClient,setHead}) =>{
+    const {dataProviderValues,gotoPosition,startTime,setStartTime,setSelectedValue,loadNextPage} = useCommitsControl(woqlClient);
     const currentDay=moment()//startTime? moment.unix(startTime).format("DD MMM YYYY hh:mm a") : moment();
     const [selectedDay, onDateChange] = useState( currentDay);
     const [focused,onFocusChange] = useState(false);
-  
+    
     const startConf={ isTouchEnabled: true,
                       //isKeyboardEnabled: true,
                       isOpenEnding: true,
@@ -27,6 +27,7 @@ export const TimelineCommits = (props) =>{
                       labelWidth: 200,
                       fillingMotion:{ stiffness:150, damping: 25},
                       slidingMotion:{ stiffness:150, damping: 25}}
+    /*to be removed*/
     const styles={
                 background: 'white', //'#f8f8f8',
                 foreground: '#00C08B',//'#7b9d6f',
@@ -35,10 +36,10 @@ export const TimelineCommits = (props) =>{
 
     const dataProvider= dataProviderValues.dataProvider;
     const currentItem = dataProvider.length>0  ? dataProvider[dataProviderValues.selectedValue] : {label:'No Value',author:'',message:''}
-    //const buttonActive = dataProvider.length>0 ? 
+    const buttonActive = dataProvider.length>0 ? {onClick:setSelectedCommit} : {disabled:true}
 
     const setSelectedCommit=()=>{
-       if(props.setHead){
+       if(setHead){
           setHead(currentItem)
        }
     }
@@ -66,33 +67,31 @@ export const TimelineCommits = (props) =>{
                   <span className="history__nav__display__test">{`${currentItem.message}` }</span>
               </div>
 
-            <button className="tdb__button__base tdb__button__base--bgreen" onClick={setSelectedCommit}>
+            <button className="tdb__button__base tdb__button__base--bgreen" {...buttonActive}>
                Set the Selected Commit as Head
             </button>    
-        </div>
-        {dataProvider.length===0 && <div>NO Value</div> }
-        {dataProvider.length>0 && 
-          <>
+        </div>       
           <div className="history__nav__slider__content" >
             <SizeMe>{({ size }) => 
-              <Timeline
-                containerWidth={size.width}
-                containerHeight={size.height || 100}
-                index={dataProviderValues.selectedValue}
-                indexClick={(index) => {
-                   setSelectedValue(index)
-                }}
-                loadNextPage={loadNextPage}
-                {...startConf}
-                styles={styles}
-                values={dataProvider}
-                gotoPosition={gotoPosition}
-              />
+              //{dataProvider.length===0 && <div>NO Value</div> }
+              //{dataProvider.length>0 &&
+                  <Timeline
+                    containerWidth={size.width}
+                    containerHeight={size.height || 100}
+                    index={dataProviderValues.selectedValue}
+                    indexClick={(index) => {
+                       setSelectedValue(index)
+                    }}
+                    loadNextPage={loadNextPage}
+                    {...startConf}
+                    styles={styles}
+                    values={dataProvider}
+                    gotoPosition={gotoPosition}
+                  />
+                //}
               }
               </SizeMe>
-          </div>
-          </>
-        }    
+          </div>   
       </div>
     );
   //}
