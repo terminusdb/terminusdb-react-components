@@ -12,23 +12,27 @@
 
   &__container{
     padding: 20px;
-    margin-top: 50px;
+    /*margin-top: 50px;*/
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-right: auto;
-    margin-left: auto;
+    
 
-    @media (min-width: 576px){
-      max-width: inherit;
-    }
+    &--width{
+      margin-right: auto;
+      margin-left: auto;
 
-    @media (min-width: 992px){
-       max-width: 960px;
-    }   
+      @media (min-width: 576px){
+        max-width: inherit;
+      }
 
-    @media (min-width: 1200px){
-      max-width: 1440px;
+      @media (min-width: 992px){
+         max-width: 960px;
+      }   
+
+      @media (min-width: 1200px){
+        max-width: 1440px;
+      }
     }
     
   }
