@@ -3,10 +3,11 @@ import TerminusClient from '@terminusdb/terminusdb-client';
 import { format } from "date-fns";
 const DATETIME_FULL = "hh:mm:ss, dd/MM/yy"
 
-export const useCommitsControl = (woqlClient, setError, branch='main', currentStartTime=null, page=0, limit=10) => {
+export const useCommitsControl = (woqlClient, setError, branch='main', currentStartTime=null, currentCommit=null, page=0, limit=10) => {
 
     const WOQL = TerminusClient.WOQL
     const [currentPage, setCurrentPage] = useState(page); 
+    const [commit, setCurrentCommit] = useState(currentCommit); 
     const [dataProvider, setDataProvider] = useState([]);
     const [startTime, setUpdateStartTime] = useState(currentStartTime);  
     //const [selectedValue,setSelectedValue] = useState(0);
@@ -28,7 +29,8 @@ export const useCommitsControl = (woqlClient, setError, branch='main', currentSt
 
     const setStartTime=(time)=>{
         setCurrentPage(0);        
-        setGotoPosition(null)     
+        setGotoPosition(null)
+        setCurrentCommit(null)     
         setUpdateStartTime(time)
     }
 
@@ -39,15 +41,25 @@ export const useCommitsControl = (woqlClient, setError, branch='main', currentSt
     //load commit Count
     useEffect(() => {//WOQL.eq("v:Branch","master"),
         //start from
-        const vals = startTime ? WOQL.not().greater('v:Time', startTime) : false
-        const q = WOQL.lib().commits().and(WOQL.eq("v:Branch",branch))
-        if (vals) q.and(vals)
+        const q = WOQL.query()
+        if(commit){
+            q.lib().commit_timeline(commit, branch, limit)
+        }
+        else {
+            q.and(
+                WOQL.lib().active_commit_id(branch, startTime, "Active Commit ID"),
+                WOQL.lib().commit_timeline("v:Active Commit ID", branch, limit)
+            )
+        }
+        //const vals = startTime ? WOQL.not().greater('v:Time', startTime) : false
+        //const q = WOQL.lib().commits().and(WOQL.eq("v:Branch",branch))
+        //if (vals) q.and(vals)
 
-        const latest_woql = WOQL.limit(limit).start(getPage())
-           .select('v:Time', 'v:Author', 'v:Message','v:Commit ID','v:Parent ID')
-           .order_by('v:Time desc', q)
+        // const latest_woql = WOQL.limit(limit).start(getPage())
+        //   .select('v:Time', 'v:Author', 'v:Message','v:Commit ID','v:Parent ID')
+        //   .order_by('v:Time desc', q)
 
-        woqlClient.query(latest_woql).then((result) => {
+        woqlClient.query(q).then((result) => {
             if (result.bindings) {
                 const lastIndex=Math.max(result.bindings.length-1,0)
                 const dataP=formatResult(result.bindings);
@@ -70,7 +82,7 @@ export const useCommitsControl = (woqlClient, setError, branch='main', currentSt
             if(setError)setError(err);
             console.log(err);
         })
-    }, [currentPage,startTime])
+    }, [currentPage,startTime, commit, branch, currentCommit])
 
     /*
     * the result comes order by time so the first is the last commits.

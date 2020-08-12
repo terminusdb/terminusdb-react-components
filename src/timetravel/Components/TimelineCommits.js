@@ -10,11 +10,12 @@ import { SizeMe } from 'react-sizeme'
 
 import {useCommitsControl} from '../hook/useCommitsControl';
 
-export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStartTime}) =>{
-    const {dataProviderValues,gotoPosition,startTime,setStartTime,setSelectedValue,loadNextPage} = useCommitsControl(woqlClient, setError, branch, currentStartTime);
+export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStartTime,currentCommit,headMessage}) =>{
+    const {dataProviderValues,gotoPosition,startTime,setStartTime,setSelectedValue,loadNextPage} = useCommitsControl(woqlClient, setError, branch, currentStartTime, currentCommit);
     const currentDay=moment()//startTime? moment.unix(startTime).format("DD MMM YYYY hh:mm a") : moment();
     const [selectedDay, onDateChange] = useState( currentDay);
     const [focused,onFocusChange] = useState(false);
+    
     
     const startConf={ isTouchEnabled: true,
                       //isKeyboardEnabled: true,
@@ -42,7 +43,7 @@ export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStart
     const currentItem = dataProvider.length>0  ? dataProvider[dataProviderValues.selectedValue] : {label:'No Value',author:'',message:''}
     const buttonActive = dataProvider.length>0 ? {onClick:setSelectedCommit} : {disabled:true}
 
-    
+    if(!currentItem) return null
     return (
       <div className="history__nav__content">
         <div className="history__nav__row"> 
@@ -68,7 +69,7 @@ export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStart
               </div>
 
             <button className="tdb__button__base tdb__button__base--bgreen" {...buttonActive}>
-               Set the Selected Commit as Head
+               {headMessage}
             </button>    
         </div>       
           <div className="history__nav__slider__content" >
