@@ -3,7 +3,7 @@ import TerminusClient from '@terminusdb/terminusdb-client';
 import { format } from "date-fns";
 const DATETIME_FULL = "hh:mm:ss, dd/MM/yy"
 
-export const useCommitsControl = (woqlClient, setError, branch='main', currentStartTime=null, currentCommit=null, page=0, limit=10) => {
+export const useCommitsControl = (woqlClient, setError, branch='main', currentStartTime=null, currentCommit=null, firstCommit=null, page=0, limit=10) => {
 
     const WOQL = TerminusClient.WOQL
     const [currentPage, setCurrentPage] = useState(page); 
