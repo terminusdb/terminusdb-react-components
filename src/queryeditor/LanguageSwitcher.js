@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 
 export const LanguageSwitcher = ({currentLanguage, showEditButton, languages, onChange, onEdit}) => {
     
+    
      LanguageSwitcher.propTypes = {
         currentLanguage:PropTypes.string,
         showEditButton:PropTypes.bool,

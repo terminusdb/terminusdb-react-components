@@ -40,9 +40,7 @@ export const CodeEditor = ({text, language, onChange, onBlur}) => {
             }}
         />
     )
-
 }
-
 
 function getCMLanguage(language){
     if(language == "python") return language

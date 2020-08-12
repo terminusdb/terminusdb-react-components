@@ -6,9 +6,10 @@ export const makeWOQLFromString =(str, lang)=>{
              const myj = JSON.parse(str)
              return new TerminusClient.WOQL.json(myj)
         case "js":
-             const WOQL = TerminusClient.WOQL
-             var nw = eval(str)
-             return nw;
+            const WOQL = TerminusClient.WOQL
+            let prelude = WOQL.emerge()
+            var nw = eval(prelude + "\n" + str)
+            return nw;
         case "python":
             throw "Python is not supported for editing queries through the console"; 
     }
