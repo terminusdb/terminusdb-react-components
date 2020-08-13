@@ -1,6 +1,5 @@
 import React, {useState,useEffect} from 'react';
 import PropTypes from 'prop-types';
-
 import {Timeline} from './Timeline';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
@@ -10,9 +9,16 @@ import { SizeMe } from 'react-sizeme'
 
 import {useCommitsControl} from '../hook/useCommitsControl';
 
-export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStartTime,currentCommit,headMessage, firstCommit}) =>{
-    const {dataProviderValues,gotoPosition,startTime,setStartTime,setSelectedValue,loadNextPage} = useCommitsControl(woqlClient, setError, branch, currentStartTime, currentCommit, firstCommit);
-    const currentDay=moment()//startTime? moment.unix(startTime).format("DD MMM YYYY hh:mm a") : moment();
+export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStartTime,currentCommit,buttonSetHeadLabel, firstCommit}) =>{
+    
+    const currentDay=currentCommit && currentCommit.time ? moment.unix(currentCommit.time) : moment();
+    const currentCommitId=currentCommit && currentCommit.id ? currentCommit.id : null;
+
+    const {dataProviderValues,gotoPosition,startTime,setStartTime,setSelectedValue,loadNextPage} = useCommitsControl(woqlClient, setError, branch, currentDay.unix(), currentCommitId, firstCommit);
+    /*
+    * set the day in the calendar 
+    */
+    
     const [selectedDay, onDateChange] = useState( currentDay);
     const [focused,onFocusChange] = useState(false);
     
@@ -58,8 +64,8 @@ export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStart
                      onFocusChange(focused)
                  }}
                  numberOfMonths={1}
-                 displayFormat='YYYY-MM-DD'
-                 placeholder="yyyy-mm-dd"
+                 displayFormat='DD-MM-YYYY'//'YYYY-MM-DD'
+                 placeholder='dd-mm-yyyy'//"yyyy-mm-dd"
                  isOutsideRange={day => !isInclusivelyBeforeDay(day, moment())}
                  />
               <div className="history__nav__display__commit">
@@ -69,7 +75,7 @@ export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStart
               </div>
 
             <button className="tdb__button__base tdb__button__base--bgreen" {...buttonActive}>
-               {headMessage}
+               {buttonSetHeadLabel}
             </button>    
         </div>       
           <div className="history__nav__slider__content" >
@@ -98,6 +104,23 @@ export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStart
   //}
 }
 
+TimelineCommits.propTypes = {
+  // woqlClient object
+  woqlClient: PropTypes.object.isRequired,
+  setHead: PropTypes.func,
+  branch:PropTypes.string,
+  setError:PropTypes.func,
+ // currentStartTime:PropTypes.number,
+  currentCommit:PropTypes.object,
+  buttonSetHeadLabel:PropTypes.string,
+  firstCommitTime:PropTypes.number
+
+  // Array containing the sorted date strings
+  /*values: PropTypes.arrayOf(PropTypes.shape({
+    label: PropTypes.string.isRequired,
+    datetime: PropTypes.number.isRequired,
+  })).isRequired,*/
+};
 
 //https://terminusdb.com/api/private/user
 

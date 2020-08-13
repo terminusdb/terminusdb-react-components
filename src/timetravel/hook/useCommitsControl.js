@@ -1,16 +1,16 @@
 import React, {useState,useEffect} from "react";
 import TerminusClient from '@terminusdb/terminusdb-client';
-import { format } from "date-fns";
-const DATETIME_FULL = "hh:mm:ss, dd/MM/yy"
+//import { format } from "date-fns";
+import moment from 'moment'; 
+const DATETIME_FULL = "hh:mm:ss, DD-MM-YYYY"
 
-export const useCommitsControl = (woqlClient, setError, branch='main', currentStartTime=null, currentCommit=null, firstCommit=null, page=0, limit=10) => {
+export const useCommitsControl = (woqlClient, setError, branch='main', currentStartTime=null, currentCommit=null, firstCommit=null, limit=10,page=0) => {
 
     const WOQL = TerminusClient.WOQL
     const [currentPage, setCurrentPage] = useState(page); 
-    const [commit, setCurrentCommit] = useState(currentCommit); 
-    const [dataProvider, setDataProvider] = useState([]);
+   // const [commit, setCurrentCommit] = useState(currentCommit); 
+    //const [dataProvider, setDataProvider] = useState([]);
     const [startTime, setUpdateStartTime] = useState(currentStartTime);  
-    //const [selectedValue,setSelectedValue] = useState(0);
     const [gotoPosition,setGotoPosition] = useState(null);
 
     const [dataProviderValues,setDataProviderValues] = useState({dataProvider:[],selectedValue:0})
@@ -30,59 +30,56 @@ export const useCommitsControl = (woqlClient, setError, branch='main', currentSt
     const setStartTime=(time)=>{
         setCurrentPage(0);        
         setGotoPosition(null)
-        setCurrentCommit(null)     
+        //setCurrentCommit(null)     
         setUpdateStartTime(time)
     }
 
     /*
     *the result the first is the last commit the last last is the older     
     */
+    //next_commits
+    //previous_commits
     
     //load commit Count
+    /*
+    * first render
+    * commit ref or is the last commit
+    */
     useEffect(() => {//WOQL.eq("v:Branch","master"),
         //start from
-        const q = WOQL.query()
-        if(commit){
-            q.lib().commit_timeline(commit, branch, limit)
-        }
-        else {
-            q.and(
+        let queryObj = WOQL.query()
+        if(currentCommit){
+            queryObj = WOQL.lib().commit_timeline(currentCommit, branch, limit)
+        }else {
+            queryObj.and(
                 WOQL.lib().active_commit_id(branch, startTime, "Active Commit ID"),
                 WOQL.lib().commit_timeline("v:Active Commit ID", branch, limit)
             )
         }
-        //const vals = startTime ? WOQL.not().greater('v:Time', startTime) : false
-        //const q = WOQL.lib().commits().and(WOQL.eq("v:Branch",branch))
-        //if (vals) q.and(vals)
-
-        // const latest_woql = WOQL.limit(limit).start(getPage())
-        //   .select('v:Time', 'v:Author', 'v:Message','v:Commit ID','v:Parent ID')
-        //   .order_by('v:Time desc', q)
-
-        woqlClient.query(q).then((result) => {
-            if (result.bindings) {
-                const lastIndex=Math.max(result.bindings.length-1,0)
-                const dataP=formatResult(result.bindings);
+  
+        woqlClient.query(queryObj).then((result) => {
+            if (result.bindings) {                
+                const dataFormatted=formatResult(result.bindings);
                 let newPoss=null
-                let selVal=lastIndex
+                let selVal=dataFormatted.toBeSelect;
                 /*
                 * if I have the time set and I'm in the first page
                 * I'm not in append mode
                 */
-                if(startTime && currentPage===0){
-                    newPoss=lastIndex;
-                }
+                //if(startTime && currentPage===0){
+                newPoss=selVal;
+                //}
                 if(currentPage>0){
-                    selVal=dataProviderValues.selectedValue + lastIndex + 1
+                    selVal=dataProviderValues.selectedValue + dataFormatted.toBeSelect + 1
                 }
-                setDataProviderValues({dataProvider:dataP,selectedValue:selVal})            
+                setDataProviderValues({dataProvider:dataFormatted.dataP,selectedValue:selVal})            
                 setGotoPosition(newPoss)               
             }
         }).catch((err)=>{
             if(setError)setError(err);
             console.log(err);
         })
-    }, [currentPage,startTime, commit, branch, currentCommit])
+    }, [currentPage,startTime, branch, currentCommit])
 
     /*
     * the result comes order by time so the first is the last commits.
@@ -93,17 +90,24 @@ export const useCommitsControl = (woqlClient, setError, branch='main', currentSt
     
     const formatResult=(result)=>{
         let dataP=[];
+        let toBeSelect= Math.max(result.length-1,0)
+               
         if(currentPage>0){
             dataP=dataProviderValues.dataProvider;
         }else{
             result.reverse();
         }
         result.forEach((entry,index)=>{
-               const datetime=entry.Time['@value'] * 1000;
-               const item={datetime:datetime,
-                            label:format(new Date(datetime),DATETIME_FULL),
+               const time=entry.Time['@value'] //* 1000;
+               const commitValue=entry['Commit ID']['@value'];
+
+               if(currentCommit && currentCommit===commitValue)toBeSelect=index;
+
+               const item={ datetime:time * 1000,
+                            time: time,
+                            label:moment.unix(time).format(DATETIME_FULL),
                             message:entry['Message']['@value'],
-                            commit:entry['Commit ID']['@value'],
+                            commit:commitValue,
                             author:entry['Author']['@value'],
                             parent:entry['Parent ID']['@value']
                         }
@@ -116,7 +120,7 @@ export const useCommitsControl = (woqlClient, setError, branch='main', currentSt
                     dataP.push(item)
                 }
         })
-        return dataP;
+        return {dataP:dataP,toBeSelect:toBeSelect};
     }
 
     const loadNextPage=(obj)=>{
