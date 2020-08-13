@@ -6,22 +6,25 @@ import 'react-dates/lib/css/_datepicker.css';
 import {DateRangePicker,isInclusivelyBeforeDay,SingleDatePicker} from "react-dates";
 import moment from 'moment';
 import { SizeMe } from 'react-sizeme' 
-
+import useDimensions from "react-use-dimensions";
 import {useCommitsControl} from '../hook/useCommitsControl';
 
-export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStartTime,currentCommit,buttonSetHeadLabel, firstCommit}) =>{
+export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStartTime,currentCommit,headMessage,firstCommit,onChange}) =>{
     
-    const currentDay=currentCommit && currentCommit.time ? moment.unix(currentCommit.time) : moment();
-    const currentCommitId=currentCommit && currentCommit.id ? currentCommit.id : null;
-
-    const {dataProviderValues,gotoPosition,startTime,setStartTime,setSelectedValue,loadNextPage} = useCommitsControl(woqlClient, setError, branch, currentDay.unix(), currentCommitId, firstCommit);
+    const [ref, { x, y, width }] = useDimensions();
+    
+    const currentDay=currentStartTime ? moment.unix(currentStartTime) : moment();
+    
+    const {dataProviderValues,gotoPosition,startTime,setStartTime,setSelectedValue,loadNextPage} = useCommitsControl(woqlClient, setError, branch, currentDay.unix(), currentCommit, firstCommit);
     /*
     * set the day in the calendar 
-    */
-    
+    */    
     const [selectedDay, onDateChange] = useState( currentDay);
     const [focused,onFocusChange] = useState(false);
     
+    useEffect(() => {
+        if(onChange) onChange(currentItem)
+    }, currentItem)
     
     const startConf={ isTouchEnabled: true,
                       //isKeyboardEnabled: true,
@@ -48,6 +51,7 @@ export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStart
     const dataProvider= dataProviderValues.dataProvider;
     const currentItem = dataProvider.length>0  ? dataProvider[dataProviderValues.selectedValue] : {label:'No Value',author:'',message:''}
     const buttonActive = dataProvider.length>0 ? {onClick:setSelectedCommit} : {disabled:true}
+    const buttonVisible = setHead ? {} : {style:{visibility:'hidden'}};
 
     if(!currentItem) return null
     return (
@@ -73,18 +77,14 @@ export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStart
                   {`${currentItem.label} - ${currentItem.author}` }</span> 
                   <span className="history__nav__display__test">{`${currentItem.message}` }</span>
               </div>
-
-            <button className="tdb__button__base tdb__button__base--bgreen" {...buttonActive}>
-               {buttonSetHeadLabel}
-            </button>    
+            <button className="tdb__button__base tdb__button__base--bgreen" {...buttonActive} {...buttonVisible}>
+                {headMessage}
+            </button> 
         </div>       
-          <div className="history__nav__slider__content" >
-            <SizeMe>{({ size }) => 
-              //{dataProvider.length===0 && <div>NO Value</div> }
-              //{dataProvider.length>0 &&
+          <div className="history__nav__slider__content" ref={ref}>         
                   <Timeline
-                    containerWidth={size.width}
-                    containerHeight={size.height || 100}
+                    containerWidth={width}
+                    containerHeight={100}
                     index={dataProviderValues.selectedValue}
                     indexClick={(index) => {
                        setSelectedValue(index)
@@ -95,32 +95,31 @@ export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStart
                     values={dataProvider}
                     gotoPosition={gotoPosition}
                   />
-                //}
-              }
-              </SizeMe>
+             
+             
           </div>   
       </div>
     );
   //}
 }
-
-TimelineCommits.propTypes = {
+//  {/*<SizeMe monitorWidth={true}>{({ size }) => */}
+/*TimelineCommits.propTypes = {
   // woqlClient object
   woqlClient: PropTypes.object.isRequired,
   setHead: PropTypes.func,
   branch:PropTypes.string,
   setError:PropTypes.func,
- // currentStartTime:PropTypes.number,
-  currentCommit:PropTypes.object,
-  buttonSetHeadLabel:PropTypes.string,
-  firstCommitTime:PropTypes.number
+  currentStartTime:PropTypes.number,
+  currentCommit:PropTypes.string,
+  headMessage:PropTypes.string,
+  firstCommit:PropTypes.number
 
   // Array containing the sorted date strings
   /*values: PropTypes.arrayOf(PropTypes.shape({
     label: PropTypes.string.isRequired,
     datetime: PropTypes.number.isRequired,
   })).isRequired,*/
-};
+//};
 
 //https://terminusdb.com/api/private/user
 

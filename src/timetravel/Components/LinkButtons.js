@@ -16,7 +16,7 @@ export const LinkButtons = (props) => {
 
 
   return (
-    <ul className="buttons">
+    <ul className="history__nav__link__wrapper">
       <li className={`history__nav__link history__nav__link--left ${linkLeftActive}`}
         key={Constants.LEFT}
         onClick={() => props.updateSlide(Constants.LEFT)}>

@@ -169,7 +169,7 @@ export const EventsBar = (props)=>{
             </div>
             }</Motion>
           </div>
-         <Faders/>
+        {/* <Faders/> */}
           <LinkButtons
             maxPosition={maxPosition}
             position={position}
