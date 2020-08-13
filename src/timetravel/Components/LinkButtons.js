@@ -7,7 +7,7 @@ import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 
 export const LinkButtons = (props) => {
   const buttonBackEnabled = Math.round(props.position) < 0 || props.firstElement.parent!=="";
-  const buttonForwardEnabled = Math.round(props.position) > Math.round(props.maxPosition);
+  const buttonForwardEnabled = Math.round(props.position) > Math.round(props.maxPosition) || props.lastElement.isLastCommit===false; 
 
   const iconLeftActive=buttonBackEnabled ? '' : 'history__nav__link__icon--inactive'
   const iconRightActive=buttonForwardEnabled ? '' : 'history__nav__link__icon--inactive'

@@ -46,6 +46,7 @@ export const Timeline = (props) =>{
         events={events}
         isTouchEnabled={props.isTouchEnabled}
         loadNextPage={props.loadNextPage}
+        loadPreviousPage={props.loadPreviousPage}
         totalWidth={totalWidth}
         visibleWidth={visibleWidth}
         

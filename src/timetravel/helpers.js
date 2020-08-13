@@ -94,7 +94,8 @@ export const cummulativeSeparation = (values, labelWidth, minEventPadding, maxEv
       distance,
       label: values[index].label,
       datetime: values[index].datetime,
-      parent: values[index].parent
+      parent: values[index].parent,
+      isLastCommit:values[index].isLastCommit
   }));
 
   return events;

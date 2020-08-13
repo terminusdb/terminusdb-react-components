@@ -15,7 +15,13 @@ export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStart
     
     const currentDay=currentStartTime ? moment.unix(currentStartTime) : moment();
     
-    const {dataProviderValues,gotoPosition,startTime,setStartTime,setSelectedValue,loadNextPage} = useCommitsControl(woqlClient, setError, branch, currentDay.unix(), currentCommit, firstCommit);
+    const {dataProviderValues,
+          loadPreviousPage,
+          gotoPosition,
+          startTime,
+          setStartTime,
+          setSelectedValue,
+          loadNextPage} = useCommitsControl(woqlClient, setError, branch, currentDay.unix(), currentCommit, firstCommit);
     /*
     * set the day in the calendar 
     */    
@@ -89,14 +95,13 @@ export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStart
                     indexClick={(index) => {
                        setSelectedValue(index)
                     }}
+                    loadPreviousPage={loadPreviousPage}
                     loadNextPage={loadNextPage}
                     {...startConf}
                     styles={styles}
                     values={dataProvider}
                     gotoPosition={gotoPosition}
-                  />
-             
-             
+                  />            
           </div>   
       </div>
     );

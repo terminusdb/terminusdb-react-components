@@ -33,13 +33,23 @@ export const EventsBar = (props)=>{
 
       setPosition(positionValue);
       setMaxPosition(currentMaxPosition);
+
       /*
-      * I have to reload the preview page 
+      * I have to reload the next page 
+      */
+      if(positionValue === currentMaxPosition && isClick){
+         const firstEvent = props.events.slice(-1)[0];
+         if(firstEvent.isLastCommit===false){
+            props.loadNextPage({lastPosition:positionValue,maxPosition:currentMaxPosition});
+         }
+      }
+      /*
+      * I have to reload the previous page 
       */
       if(positionValue===0 && isClick){
          const lastEvent = props.events[0];
          if(lastEvent.parent!==""){
-            props.loadNextPage({lastPosition:positionValue,maxPosition:currentMaxPosition});
+            props.loadPreviousPage({lastPosition:positionValue,maxPosition:currentMaxPosition});
          }
       }
   }
@@ -108,7 +118,7 @@ export const EventsBar = (props)=>{
    */
   const updateSlide = (direction) => {
     if (direction === Constants.RIGHT) {
-      slideToPosition((position - props.visibleWidth) + props.labelWidth);
+      slideToPosition((position - props.visibleWidth) + props.labelWidth ,true);
     } else if (direction === Constants.LEFT) {
       slideToPosition((position + props.visibleWidth) - props.labelWidth, true);
     }
@@ -175,6 +185,7 @@ export const EventsBar = (props)=>{
             position={position}
             updateSlide={updateSlide}
             firstElement={props.events[0]}
+            lastElement={props.events.slice(-1)[0]}
           />
       </div>
     );
