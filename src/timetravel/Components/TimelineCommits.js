@@ -10,12 +10,15 @@ import { SizeMe } from 'react-sizeme'
 
 import {useCommitsControl} from '../hook/useCommitsControl';
 
-export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStartTime,currentCommit,headMessage, firstCommit}) =>{
+export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStartTime,currentCommit,headMessage,firstCommit,onChange}) =>{
     const {dataProviderValues,gotoPosition,startTime,setStartTime,setSelectedValue,loadNextPage} = useCommitsControl(woqlClient, setError, branch, currentStartTime, currentCommit, firstCommit);
     const currentDay=moment()//startTime? moment.unix(startTime).format("DD MMM YYYY hh:mm a") : moment();
     const [selectedDay, onDateChange] = useState( currentDay);
     const [focused,onFocusChange] = useState(false);
     
+    useEffect(() => {
+        if(onChange) onChange(currentItem)
+    }, currentItem)
     
     const startConf={ isTouchEnabled: true,
                       //isKeyboardEnabled: true,
@@ -41,7 +44,7 @@ export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStart
     
     const dataProvider= dataProviderValues.dataProvider;
     const currentItem = dataProvider.length>0  ? dataProvider[dataProviderValues.selectedValue] : {label:'No Value',author:'',message:''}
-    const buttonActive = dataProvider.length>0 ? {onClick:setSelectedCommit} : {disabled:true}
+    const buttonActive = (setHead && dataProvider.length>0) ? {onClick:setSelectedCommit} : {disabled:true}
 
     if(!currentItem) return null
     return (
@@ -67,9 +70,8 @@ export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStart
                   {`${currentItem.label} - ${currentItem.author}` }</span> 
                   <span className="history__nav__display__test">{`${currentItem.message}` }</span>
               </div>
-
             <button className="tdb__button__base tdb__button__base--bgreen" {...buttonActive}>
-               {headMessage}
+                {headMessage}
             </button>    
         </div>       
           <div className="history__nav__slider__content" >
