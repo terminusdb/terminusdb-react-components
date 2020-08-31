@@ -8,6 +8,8 @@ stages:
     if: branch = dev
   - name: deploy_canary
     if: branch = canary
+  - name: deploy_rc
+    if: branch = rc
 
 jobs:
   include:
@@ -24,6 +26,11 @@ jobs:
       script:
         - npm run build
         - bash .ci/publish_canary.sh
+
+    - stage: deploy_rc
+      script:
+        - npm run build
+        - bash .ci/publish_rc.sh
 
 deploy:
   - provider: npm
