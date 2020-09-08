@@ -13,6 +13,9 @@
     "src",
     "es6"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
     "react",
     "reactjs",
@@ -39,7 +42,7 @@
     "react-dom": "^16.0.0"
   },
   "dependencies": {
-    "@terminusdb/terminusdb-client": "^2.0.5",
+    "@terminusdb/terminusdb-client": "^3.0.0",
     "build": "^0.1.4",
     "classnames": "^2.2.5",
     "codemirror": "^5.56.0",
