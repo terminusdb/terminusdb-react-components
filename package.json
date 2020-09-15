@@ -42,11 +42,7 @@
     "react-dom": "^16.0.0"
   },
   "dependencies": {
-<<<<<<< HEAD
-    "@terminusdb/terminusdb-client": "^3.0.1",
-=======
     "@terminusdb/terminusdb-client": "^3.0.2",
->>>>>>> 98939b9... use client v3.0.2
     "build": "^0.1.4",
     "classnames": "^2.2.5",
     "codemirror": "^5.56.0",
