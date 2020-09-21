@@ -1,6 +1,6 @@
 {
   "name": "@terminusdb/terminusdb-react-components",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "components tools for terminusdb",
   "main": "src/index",
   "module": "es6/index",
