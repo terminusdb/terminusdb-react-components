@@ -1,4 +1,5 @@
  require("./css/less/terminusdb__style.less"); 
+ export {ReactTest} from './test/ReactTest'
  export {Dropdown} from './form/Dropdown'
  
  /*Timetravel*/
@@ -19,4 +20,6 @@
 
 /*WOQL Graph*/
  export {WOQLGraph} from './graph/GraphComponent';
+ export {FormatData} from './treeGraphComponent/FormatDataForTree';
+ export {ModelTreeComponent} from './treeGraphComponent/ModelTreeComponent';
 
