@@ -3,15 +3,17 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
     mode: 'production',
-    entry: [
-      path.join(__dirname, 'src/index.js'),
-    ],
+    entry: {
+       'terminusdb-react-components': path.join(__dirname, 'src/index.js'),
+       'terminusdb-d3-graph': path.join(__dirname, 'src/indexGraph.js')
+    },
     devtool: false,    
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'terminusdb-react-components.min.js',
-        sourceMapFilename: 'terminusdb-react-components.min.js.map',
+        filename: '[name].min.js',
+        sourceMapFilename: '[name].min.js.map',
         library: 'TerminusDBComponents',
+        libraryTarget: 'umd',
         publicPath:'/'
     },
     plugins: [
@@ -41,7 +43,6 @@ module.exports = {
         ]
     },
     externals: {
-    
     react: {
       root: 'React',
       commonjs2: 'react',
