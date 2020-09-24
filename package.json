@@ -1,6 +1,6 @@
 {
   "name": "@terminusdb/terminusdb-react-components",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "components tools for terminusdb",
   "main": "src/index",
   "module": "es6/index",
@@ -11,7 +11,8 @@
   "files": [
     "*.md",
     "src",
-    "es6"
+    "es6",
+    "dist"
   ],
   "publishConfig": {
     "access": "public"
