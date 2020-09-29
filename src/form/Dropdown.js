@@ -3,25 +3,12 @@ import OutsideClickHandler from 'react-outside-click-handler';
 import PropTypes from "prop-types";
 
 export const Dropdown = ({className, children, title, isOpen, toggle }) => {
-    
-    Dropdown.propTypes = {
-        className:PropTypes.string,
-        title:PropTypes.string,
-        isOpen:PropTypes.bool.isRequired,
-        toggle:PropTypes.func.isRequired
-    }
-
-    Dropdown.defaultProps = {
-        className: '',
-        title:"Select"
-    };
 
     const onOutsideClick = ()=>{
         if(isOpen===true){
             toggle(false)
         }
     }
-
    
     const dropdownContent = isOpen===true ? "tdb__dropdown__content  tdb__dropdown__content--show" : "tdb__dropdown__content tdb__dropdown__content--hide"
 
@@ -38,3 +25,15 @@ export const Dropdown = ({className, children, title, isOpen, toggle }) => {
     )
 
 }
+
+Dropdown.propTypes = {
+        className:PropTypes.string,
+        title:PropTypes.string,
+        isOpen:PropTypes.bool.isRequired,
+        toggle:PropTypes.func.isRequired
+    }
+
+Dropdown.defaultProps = {
+    className: '',
+    title:"Select"
+};

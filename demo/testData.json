@@ -86,6 +86,7 @@
       },
       "Parents": [ ["terminusdb:///schema#Organization" ] ]
     },
+
     {
       "Abstract": {
 	"@type":"http://www.w3.org/2001/XMLSchema#string",
@@ -100,6 +101,9 @@
       },
       "Parents": [ ["terminusdb:///schema#PoliticalAuthority" ] ]
     },
+
+
+    
     {
       "Abstract": {
 	"@type":"http://www.w3.org/2001/XMLSchema#string",

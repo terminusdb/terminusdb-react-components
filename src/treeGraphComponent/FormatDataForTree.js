@@ -1,5 +1,23 @@
 import { tree, hierarchy } from 'd3-hierarchy';
 
+
+export const FormatProps=(dataProvider)=>{
+
+	const propertyByDomain={}
+
+
+	dataProvider.bindings.forEach((item)=>{
+
+		if(!propertyByDomain[item['Property Domain']]){
+			propertyByDomain[item['Property Domain']]=[]
+		}
+		propertyByDomain[item['Property Domain']].push(item)
+	})
+
+	console.log(propertyByDomain);
+
+}
+
 export const FormatData =(dataProvider)=>{
 
 	let _rootIndexObj={ROOT:{"name": "ROOT", type:'ROOT', "label":"Main Graph", "children":[],"comment":'ROOT'},
@@ -26,7 +44,7 @@ export const FormatData =(dataProvider)=>{
           * When you set a nodeSize, the tree has to be dynamic so it resets the size of the tree.
           */
 
-    treeModel.nodeSize([150,400]);
+    treeModel.nodeSize([200,400]);
          
     const data=hierarchy(_rootIndexObj.ROOT);
     const d3Data = treeModel(data);
@@ -57,6 +75,9 @@ export const FormatData =(dataProvider)=>{
 
 */
 
+const SCOPED_VALUE_ID="terminusdb:///schema#ScopedValue";
+const BOX_ID="terminusdb:///schema#Box";
+
 const getLabel=(item) =>{
 	if(item['Class Name']['@value']){
 		return item['Class Name']['@value']
@@ -70,70 +91,72 @@ const addElements=( OrdinaryClassesObj, DocumentClassesObj, dataProvider=[])=>{
 
 	dataProvider.bindings.forEach((item)=>{
 		const classId=item['Class ID'];
-		const label=getLabel()
+		const label=getLabel(item)
 		const description=item['Description']['@value'];
 		const abstract=item['Abstract']['@value'];
 		/*
 		"Parents": {"@type":"http://www.w3.org/2001/XMLSchema#string", "@value":""}
 		*/
-		if(!elementsObject[classId]){
-			elementsObject[classId]={}		
-			elementsObject[classId]['children']=[];
-			elementsObject[classId]['name']=classId;	
-		}
+		if(classId!==SCOPED_VALUE_ID && classId!==BOX_ID){
+			if(!elementsObject[classId]){
+				elementsObject[classId]={}		
+				elementsObject[classId]['children']=[];
+				elementsObject[classId]['name']=classId;	
+			}
 
-		elementsObject[classId]['abstract']=abstract;		
-		elementsObject[classId]['label']=label;
-		elementsObject[classId]['comment']='test';
+			elementsObject[classId]['abstract']=abstract;		
+			elementsObject[classId]['label']=label;
+			elementsObject[classId]['comment']='test';
 
-		//add for children
-		if(Array.isArray(item['Parents'])){
-			const parentNum=item['Parents'].length;
+			//add for children
+			if(Array.isArray(item['Parents'])){
+				const parentNum=item['Parents'].length;
 
-			item['Parents'].forEach((parent)=>{
+				item['Parents'].forEach((parent)=>{
 
-				const parentId=parent[0]
-				//if parent is document type is 'DocumentClass'
+					const parentId=parent[0]
+					//if parent is document type is 'DocumentClass'
 
-				if(parentId==='http://terminusdb.com/schema/system#Document'){
-					elementsObject[classId]['type']='DocumentClass'
-					if(parentNum===1){
-						DocumentClassesObj.children.push(elementsObject[classId])
+					if(parentId==='http://terminusdb.com/schema/system#Document'){
+						elementsObject[classId]['type']='DocumentClass'
+						if(parentNum===1){
+							DocumentClassesObj.children.push(elementsObject[classId])
+						}
+					//if get type from the parent
+					}else if(elementsObject[parentId] && elementsObject[parentId]['type']){
+						//if(!elementsObject[classId]['type']){
+						//const parentType=elementsObject[parentId].type;
+						elementsObject[classId]['type']=elementsObject[parentId].type;
+						//}
 					}
-				//if get type from the parent
-				}else if(elementsObject[parentId] && elementsObject[parentId]['type']){
-					//if(!elementsObject[classId]['type']){
-					//const parentType=elementsObject[parentId].type;
-					elementsObject[classId]['type']=elementsObject[parentId].type;
-					//}
-				}
-			})
-		}else{
-			elementsObject[classId]['type']='ObjectClass';
-			OrdinaryClassesObj.children.push(elementsObject[classId]);
-		}
+				})
+			}else{
+				elementsObject[classId]['type']='ObjectClass';
+				OrdinaryClassesObj.children.push(elementsObject[classId]);
+			}
 
-		//add for children
-		if(Array.isArray(item['Children']) ){//&& classId==="terminusdb:///schema#Organization"){
-			item['Children'].forEach((child)=>{
-				const childId=child[0];
-				if(!elementsObject[childId]){
-					elementsObject[childId]={}
-					elementsObject[childId]['name']=childId
-					elementsObject[childId]['children']=[]
-				}
+			//add for children
+			if(Array.isArray(item['Children']) ){//&& classId==="terminusdb:///schema#Organization"){
+				item['Children'].forEach((child)=>{
+					const childId=child[0];
+					if(!elementsObject[childId]){
+						elementsObject[childId]={}
+						elementsObject[childId]['name']=childId
+						elementsObject[childId]['children']=[]
+					}
 
-				if(elementsObject[classId].type){
-					elementsObject[childId]['type']=elementsObject[classId].type;
-				}
-				
+					if(elementsObject[classId].type){
+						elementsObject[childId]['type']=elementsObject[classId].type;
+					}
+					
 
-				//add child to the current node
-				elementsObject[classId]['children'].push(elementsObject[childId])
+					//add child to the current node
+					elementsObject[classId]['children'].push(elementsObject[childId])
 
 
-			})
+				})
 
+			}
 		}
 	})
 }

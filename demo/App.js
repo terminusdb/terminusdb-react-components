@@ -1,9 +1,10 @@
 import React,{useEffect,useState} from 'react';
 import ReactDOM from 'react-dom';
-import {FormatData,ModelTreeComponent} from '@terminusdb/terminusdb-react-components';
+import {FormatData,SchemaBuilder,FormatProps} from '@terminusdb/terminusdb-react-components';
 import bike from './bike.json';
 import seshat from './testData.json';
 import seshat_sub from './seshat_sub.json';
+import seshat_props from './seshat_props.json';
 import { SizeMe } from 'react-sizeme' 
 
 import {TimelineCommits} from '@terminusdb/terminusdb-react-components';
@@ -32,22 +33,25 @@ export const App = (props) =>{
 
     useEffect(() => {
         const treeMainGraphObj=FormatData(testData);
+        const propByDomain=FormatProps(seshat_props);
         setGraphObj(treeMainGraphObj);
     },[])
 
     return (
         <div className="console__page">
-          <SizeMe monitorHeight={true}>{({ size }) =>
-            <div style={{ minHeight:"400px", height: "calc(100vh - 10px)"}}>
-              {treeMainGraphObj && <ModelTreeComponent width={size.width} height={size.height} treeMainGraphObj={treeMainGraphObj}/>}
-              </div>
-              }
-           </SizeMe>
+         <SchemaBuilder treeMainGraphObj={treeMainGraphObj}/>
         </div>    
     )
 }
 
 /*
+
+ <SizeMe monitorHeight={true}>{({ size }) =>
+            <div style={{ minHeight:"400px", height: "calc(100vh - 10px)"}}>
+              {treeMainGraphObj && <SchemaBuilder width={size.width} height={size.height} treeMainGraphObj={treeMainGraphObj}/>}
+              </div>
+              }
+           </SizeMe>
  <div classNameName="history__nav">
               <TimelineCommits  woqlClient={woqlClient}/>
             </div>*/

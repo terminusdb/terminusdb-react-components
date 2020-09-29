@@ -24,7 +24,10 @@ export const ModelTreeComponent = (props)=>{
 
     const [transform, setTransform]=useState();
 
-    const zoomElement=d3Zoom().scaleExtent([0.1, 8]).on('zoom', _zoomed);
+    const [selectedNode, setSelectedNode]=useState(null);
+
+    //d3Zoom().on("zoom", function(){_zoomed()})
+    const zoomElement=d3Zoom().scaleExtent([0.1, 8]).on('zoom', function(){_zoomed()});
 
    // const [zoomElement, setZoomElement]=useState(startZoom);
 
@@ -33,7 +36,12 @@ export const ModelTreeComponent = (props)=>{
     //state.startPosition=true;
         //_onDragMove = _onDragMove.bind(this);
 
-  
+    const changeSelectedNode = (nodeId)=>{
+        if(selectedNode===nodeId)setSelectedNode(null);
+        else setSelectedNode(nodeId);
+
+        if(props.changeCurrentNode)props.changeCurrentNode(selectedNode);
+    }
 
     const linkWithD3=true;
     //focusOnNode=focusOnNode.bind(this);
@@ -93,7 +101,7 @@ export const ModelTreeComponent = (props)=>{
 
         d3Select('#treeGraph')
             .selectAll('.node')
-            .call(customNodeDrag);//.on("click", _moveToFront);
+            .call(customNodeDrag)//.on("click", _moveNodeToFront);
 
 
         //linkWithD3=false;
@@ -102,7 +110,7 @@ export const ModelTreeComponent = (props)=>{
     useEffect(() => {
          startDataProsition();
          _linkObjectToD3Action();
-         if(treeGraphWrapper)_zoomConfig(treeGraphWrapper.current)
+         if(treeGraphWrapper.current)_zoomConfig(treeGraphWrapper.current)
     }, [treeGraphWrapper.current])
 
 
@@ -163,14 +171,8 @@ export const ModelTreeComponent = (props)=>{
       };
 
       const _zoomConfig = (domElement) => {
-          //d3Select('#treeGraphWrapper').call(zoomElement.transform, d3ZoomIdentity.translate(props.width/2,50).scale(0.8))
-          //d3Select('#treeGraphWrapper').call(zoomElement);
-        //d3Select(domElement).call(zoomElement.transform, d3ZoomIdentity.translate(props.width/2,50).scale(0.8))
-        
-        d3Select(domElement).call(d3Zoom().on("zoom", function(){_zoomed()}));  
-        //d3Select(domElement).call(zoomElement);
-      
-
+        if(props.width)d3Select(domElement).call(zoomElement.transform, d3ZoomIdentity.translate(props.width/2,50).scale(0.8))
+        d3Select(domElement).call(zoomElement);  
     }
 
 
@@ -202,13 +204,14 @@ export const ModelTreeComponent = (props)=>{
         return true;
       }*/
 
-      const _moveNodeToFront = (nodeId)=>{
-        const nodeElement=graphData.get(nodeId);
+      const _moveNodeToFront = (ev, index, nodeList)=>{
+        const nodeElement=graphData[index];
         if(nodeElement){
             graphData.delete(nodeId);
             graphData.set(nodeId,nodeElement);
+            props.setSelectedNode(nodeId);
+            _tick();
         }
-        linkWithD3=true;
       }
 
       const onDrop = (e, complete) =>{
@@ -279,6 +282,8 @@ export const ModelTreeComponent = (props)=>{
                   <Tree id={'treeGraph'}
                     needRefresh={needRefresh}
                     nodes={[...Object.values(graphData)]}
+                    nodeClick={changeSelectedNode}
+                    selectedNode={props.selectedNode}
                     //windowMode={state.windowMode}
                   />
                 </g>

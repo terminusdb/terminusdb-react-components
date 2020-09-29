@@ -21,5 +21,6 @@
 /*WOQL Graph*/
  export {WOQLGraph} from './graph/GraphComponent';
  export {FormatData} from './treeGraphComponent/FormatDataForTree';
- export {ModelTreeComponent} from './treeGraphComponent/ModelTreeComponent';
+ export {FormatProps} from './treeGraphComponent/FormatDataForTree';
+ export {SchemaBuilder} from './treeGraphComponent/SchemaBuilder';
 

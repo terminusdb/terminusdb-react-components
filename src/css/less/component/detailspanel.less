@@ -1,0 +1,51 @@
+.tdb__panel{
+   outline: 0;
+    overflow-y: auto !important;
+    overflow-x: hidden;
+    /*padding: 0 1% 0 0;*/
+    margin: 0;
+    word-wrap: break-word;
+    flex: 1;
+    margin-bottom: 100px;
+    height: calc(100vh - 230px);
+
+  &__box{
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+  }
+  
+  &__row{
+
+  }
+
+  &__input{
+    
+  }
+
+  &__icon__trash{
+    padding: 5px; 
+    font-size: 2em;
+    border: 1px solid #ffff;
+    /* border-radius: 10px; */
+    color: red;
+    background: white;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: pointer;
+    &:hover{
+      background-color: #ddd;
+      color:red;
+      border: 1px solid #ddd;
+      box-sizing: border-box;
+    }
+
+    &:disabled{
+      background-color: #ffff;
+      color:#ddd;
+      border: 1px solid #fff;
+      box-sizing: border-box;
+      cursor:default;
+    }
+  }
+}

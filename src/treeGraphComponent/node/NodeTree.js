@@ -27,6 +27,12 @@ export const NodeTree=(props)=> {
 				  {id:NODE_ACTION_NAME.ADD_CHILD, label: "Add Child"}]*/
 
 
+	const onClick=(evt)=>{
+		if(props.nodeClick){
+			props.nodeClick(evt.currentTarget.id);
+		}
+	}
+
 	const width=100;
 
 	const formatLabel=(label)=>{
@@ -129,7 +135,7 @@ export const NodeTree=(props)=> {
 
   			
 		  return (
-		    <g indexpos={props.indexPos} className={'node'} transform={`translate(${nodex},${nodey})`} name={node.data.name} id={node.data.name} >
+		    <g indexpos={props.indexPos} onClick={onClick} className={'node'} transform={`translate(${nodex},${nodey})`} name={node.data.name} id={node.data.name} >
 		      {getNode()}
 		      
 		      <text    
