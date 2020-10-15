@@ -43,7 +43,7 @@
     "react-dom": "^16.0.0"
   },
   "dependencies": {
-    "@terminusdb/terminusdb-client": "^3.0.3",
+    "@terminusdb/terminusdb-client": "^4.0.0",
     "classnames": "^2.2.5",
     "codemirror": "^5.56.0",
     "core-js": "^3.4.2",
