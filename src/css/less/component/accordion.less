@@ -22,7 +22,6 @@
    			padding-left: 0px !important;
   			padding-right: 0px !important;
    		}
-
    	}
 
    	&__arrow{
@@ -32,12 +31,20 @@
 	    float: right;
 	    font-size: 1.2em;
 	    color: #c4c0c3;
+	    margin-left: auto;
    	}
 
    	&__title{
+   		display: flex;
+	    padding: 5px;
+	    font-size: 16px;
+	    align-items: center;
+   	}
+
+   	&__head{
    		color: #265fa2;
 	    font-size: 1.4em;
-	    background-color: #f5f5f5;
+	    background-color: #eee;
 	    cursor: pointer;
 	    width: 100%;
 	   /* border-left: 3px solid #d3d2d2;*/
@@ -57,6 +64,13 @@
    	}
 
    	&__icon{
+	   	background-repeat: no-repeat;
+	    display: inline-block;
+	    margin-right: 10px;
+	    font-size: 1.4em;
+   	}
+
+   	&__menu{
 	  background-image: url("https://assets.terminusdb.com/terminusdb-console/images/accordion_menu.png");
 	  background-repeat: no-repeat;
 	  display: inline-block;

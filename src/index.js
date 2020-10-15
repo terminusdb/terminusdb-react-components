@@ -20,7 +20,9 @@
 
 /*WOQL Graph*/
  export {WOQLGraph} from './graph/GraphComponent';
- export {FormatData} from './treeGraphComponent/FormatDataForTree';
- export {FormatProps} from './treeGraphComponent/FormatDataForTree';
- export {SchemaBuilder} from './treeGraphComponent/SchemaBuilder';
+
+export {modelCallServerHook} from './treeGraphComponent/hook/modelCallServerHook'
+ //export {FormatData} from './treeGraphComponent/FormatDataForTree';
+ //export {FormatProps} from './treeGraphComponent/FormatDataForTree';
+export {SchemaBuilder} from './treeGraphComponent/SchemaBuilder';
 

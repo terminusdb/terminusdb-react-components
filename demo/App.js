@@ -1,18 +1,40 @@
 import React,{useEffect,useState} from 'react';
 import ReactDOM from 'react-dom';
-import {FormatData,SchemaBuilder,FormatProps} from '@terminusdb/terminusdb-react-components';
+import {SchemaBuilder,modelCallServerHook} from '@terminusdb/terminusdb-react-components';
 import bike from './bike.json';
+import bikeprops from './bike-property.json';
 import seshat from './testData.json';
 import seshat_sub from './seshat_sub.json';
 import seshat_props from './seshat_props.json';
 import { SizeMe } from 'react-sizeme' 
 
-import {TimelineCommits} from '@terminusdb/terminusdb-react-components';
+//import {TimelineCommits} from '@terminusdb/terminusdb-react-components';
 //import DataProvider from './resources/content';
 //import DataProvider from './resources/CommitBinding'
 import TerminusClient from '@terminusdb/terminusdb-client'
 
+
+
 export const App = (props) =>{
+    const dbName='bikes'
+   
+   /*if(window.location.search.endsWith('bike')){
+
+        testData=bike;
+        testDataProp=bikeprops;
+    }else if(window.location.search.endsWith('seshat_sub')){
+        testData=seshat_sub;
+    }*/
+
+   const woqlClient=new TerminusClient.WOQLClient(process.env.API_URL,{user:'admin',
+                                     organization:'admin',
+                                     key:process.env.API_KEY,db:dbName})
+  
+
+    const {mainGraphDataProvider,
+          saveGraphChanges,
+          callServerError,
+          callServerLoading} = modelCallServerHook(woqlClient)
 
     const [treeMainGraphObj,setGraphObj] =useState(null)
 
@@ -20,28 +42,23 @@ export const App = (props) =>{
     /*
     * if I set user and not organization I get false in the url
     */
-    const woqlClient=new TerminusClient.WOQLClient(process.env.API_URL,{user:'admin',
-                                     organization:'admin',
-                                     key:process.env.API_KEY,db:process.env.DB_NAME})
     let testData=seshat
+    let testDataProp=seshat_props
+  
 
-    if(window.location.search.endsWith('bike')){
-      testData=bike;
-    }else if(window.location.search.endsWith('seshat_sub')){
-       testData=seshat_sub;
+    const saveData=(query)=>{
+      saveGraphChanges(query)
     }
 
-    useEffect(() => {
-        const treeMainGraphObj=FormatData(testData);
-        const propByDomain=FormatProps(seshat_props);
-        setGraphObj(treeMainGraphObj);
-    },[])
 
     return (
-        <div className="console__page">
-         <SchemaBuilder treeMainGraphObj={treeMainGraphObj}/>
+        <div className="console__page tdb__loading__parent">
+            {callServerLoading && <div className="tdb__loading">loading !!!!</div>}
+            {callServerError && <div > ERROR {callServerError}</div>}
+            <SchemaBuilder saveGraph={saveData} mainGraphDataProvider={mainGraphDataProvider}/>
+
         </div>    
-    )
+      )
 }
 
 /*

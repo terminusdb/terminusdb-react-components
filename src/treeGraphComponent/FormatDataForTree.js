@@ -1,79 +1,149 @@
 import { tree, hierarchy } from 'd3-hierarchy';
+import {PROPERTY_TYPE_NAME,
+		PROPERTY_STRING_BY_RANGE,
+		PROPERTY_NUMBER_BY_RANGE,
+		PROPERTY_GEO_BY_RANGE,
+		PROPERTY_TEMPORAL_BY_RANGE} from '../constants/details-labels'
 
+const addTypeRange=(item,newProperty) =>{
+	const range=item["Property Range"]
 
-export const FormatProps=(dataProvider)=>{
+	if(range.startsWith("terminusdb:///schema#")){
+		newProperty['range']=range;
+		newProperty['type']=PROPERTY_TYPE_NAME.OBJECT_PROPERTY; 
+		return;
+	}
+	//"http://terminusdb.com/schema/xdd#url"
+	const rangeArr=range.split('#');
+	const rangeStr=rangeArr[1];
+	
+	if(PROPERTY_STRING_BY_RANGE[rangeStr]){
+		newProperty['range']=PROPERTY_STRING_BY_RANGE[rangeStr];
+		newProperty['type']=PROPERTY_TYPE_NAME.STRING_PROPERTY;
+		return
+	}
+
+	if(PROPERTY_NUMBER_BY_RANGE[rangeStr]){
+		newProperty['range']=PROPERTY_NUMBER_BY_RANGE[rangeStr];
+		newProperty['type']=PROPERTY_TYPE_NAME.NUMERIC_PROPERTY;
+		return
+	}
+
+	if(PROPERTY_GEO_BY_RANGE[rangeStr]){
+		newProperty['range']=PROPERTY_GEO_BY_RANGE[rangeStr];
+		newProperty['type']=PROPERTY_TYPE_NAME.GEO_PROPERTY;
+		return
+	}
+
+	if(PROPERTY_TEMPORAL_BY_RANGE[rangeStr]){
+		newProperty['range']=PROPERTY_TEMPORAL_BY_RANGE[rangeStr];
+		newProperty['type']=PROPERTY_TYPE_NAME.TEMPORAL_PROPERTY;
+		return
+	}	
+}
+
+export const formatProperties=(dataProvider,classesList)=>{
 
 	const propertyByDomain={}
+	const objectPropertyRange={}
 
+	const bindings = dataProvider.bindings || [];
 
-	dataProvider.bindings.forEach((item)=>{
+	bindings.forEach((item)=>{
+		const classDomain=item['Property Domain'];
 
-		if(!propertyByDomain[item['Property Domain']]){
-			propertyByDomain[item['Property Domain']]=[]
+		if(!propertyByDomain[classDomain]){
+			propertyByDomain[classDomain]=[]
 		}
-		propertyByDomain[item['Property Domain']].push(item)
+
+		const newProperty={name:item['Property ID'],
+						  id: item['Property ID'],
+				          label:item['Property Name']['@value'],
+				          description:item['Property Description']['@value'],
+				          newElement:false,
+				          domain:classDomain
+						}
+
+		addTypeRange(item,newProperty);
+
+		if(newProperty.type===PROPERTY_TYPE_NAME.OBJECT_PROPERTY){
+			if(!objectPropertyRange[newProperty.range]){
+				objectPropertyRange[newProperty.range]=[]
+			}
+			
+			//the item range is the Class-range of the ObjectProperty
+			
+			objectPropertyRange[newProperty.range].push({label:newProperty.label, name:newProperty.name})
+		}
+
+		propertyByDomain[classDomain].push(newProperty)
 	})
 
-	console.log(propertyByDomain);
+	return [propertyByDomain,objectPropertyRange];
+
 
 }
 
-export const FormatData =(dataProvider)=>{
+export const formatData =(dataProvider)=>{
 
 	let _rootIndexObj={ROOT:{"name": "ROOT", type:'ROOT', "label":"Main Graph", "children":[],"comment":'ROOT'},
 
-					   		OrdinaryClasses:{name:"OrdinaryClasses",type:"Group",
+					   		OrdinaryClasses:{name:"OrdinaryClasses",type:"Group", parents:[],
 										    label:"Ordinary Classes ","children":[],comment:'Ordinary Classes'},
-		               		DocumentClasses:{name:'DocumentClasses',
+		               		DocumentClasses:{name:'DocumentClasses', parents:[],
 		                              type:"Group",label:"Document Classes","children":[],comment:'Document Classes'}}
 
 
 
-	_rootIndexObj.descendantsNode={};	                             
+		                             //_rootIndexObj.OrdinaryClasses,_rootIndexObj.DocumentClasses
 	_rootIndexObj.ROOT.children.push(_rootIndexObj.OrdinaryClasses);
 	_rootIndexObj.ROOT.children.push(_rootIndexObj.DocumentClasses);
 	                             
-	addElements(_rootIndexObj.OrdinaryClasses,_rootIndexObj.DocumentClasses,dataProvider)
+	addElements(_rootIndexObj,dataProvider)
 
-	///formatDataForTreeChart(_rootIndexObj);
+	return _rootIndexObj;
+}
 
+
+export const formatDataForTreeChart =(rootElement)=>{
 	const treeModel = tree();
-		 /*
-          * When you set a size for the tree,Vtree$$1.size(size); 
-          * you are setting a fixed size so that the tree has to conform to that width and height.  
-          * When you set a nodeSize, the tree has to be dynamic so it resets the size of the tree.
-          */
+	/*
+	* When you set a size for the tree,Vtree$$1.size(size); 
+	* you are setting a fixed size so that the tree has to conform to that width and height.  
+	* When you set a nodeSize, the tree has to be dynamic so it resets the size of the tree.
+	*/
 
     treeModel.nodeSize([200,400]);
          
-    const data=hierarchy(_rootIndexObj.ROOT);
+    const data=hierarchy(rootElement);
     const d3Data = treeModel(data);
      
-     _rootIndexObj.treeNode=d3Data.descendants();
+    const treeNode=d3Data.descendants();
+
+    const descendantsNode = new Map();
+    const classesList=new Map();
+	const entitiesList=new Map();
+	const objectPropertyList=[];
 
 	//this._descendantsNode=new Map();
-    for(let node of  _rootIndexObj.treeNode){
+    for(let node of treeNode){
        /*if(node.data.type==='Group' && node.x && Math.abs(node.x)<200){
        		node.x=node.x*2;
        		//node.y=node.y/1.5;
        }*/
-       _rootIndexObj.descendantsNode[node.data.name]= node;  
+       if(node.data.type==='Document'){
+       		entitiesList.set(node.data.name,{value:node.data.name,name:node.data.name,label:node.data.label});
+       		objectPropertyList.push({type:node.data.type,value:node.data.name,name:node.data.name,label:node.data.label})
+       }else if (node.data.type==='Class'){
+       		classesList.set(node.data.name,{value:node.data.name,name:node.data.name,label:node.data.label});
+       		objectPropertyList.push({type:node.data.type,value:node.data.name,name:node.data.name,label:node.data.label})
+       }
+       
+       descendantsNode.set(node.data.name,node);  
     }
-	return _rootIndexObj;
+
+    return [descendantsNode,classesList,entitiesList,objectPropertyList];
 }
-
-/*
-* "Abstract": {
-	"@type":"http://www.w3.org/2001/XMLSchema#string",
-	"@value":"No"
-      },
-      "Children": {"@type":"http://www.w3.org/2001/XMLSchema#string", "@value":""},
-      "Class ID":"terminusdb:///schema#CitedWork",
-      "Class Name": {"@language":"en", "@value":"Cited Work"},
-      "Description": {"@type":"http://www.w3.org/2001/XMLSchema#string", "@value":""},
-      "Parents": [ ["http://terminusdb.com/schema/system#Document" ] ]
-
-*/
 
 const SCOPED_VALUE_ID="terminusdb:///schema#ScopedValue";
 const BOX_ID="terminusdb:///schema#Box";
@@ -82,14 +152,20 @@ const getLabel=(item) =>{
 	if(item['Class Name']['@value']){
 		return item['Class Name']['@value']
 	}
-	const classId=item['Class ID'];
+	//const classId=item['Class ID'];
 }
+//terminusdb:///schema#Box
+const getId=(classId) =>{
+	
+	return classId.replace("terminusdb:///schema#","");
+}
+//_rootIndexObj.OrdinaryClasses,_rootIndexObj.DocumentClasses
+const addElements=( _rootIndexObj, dataProvider=[])=>{
 
-const addElements=( OrdinaryClassesObj, DocumentClassesObj, dataProvider=[])=>{
-
-	const elementsObject={}
-
-	dataProvider.bindings.forEach((item)=>{
+	//const _rootIndexObj={}
+	const bindings = dataProvider.bindings || [];
+	
+	bindings.forEach((item)=>{
 		const classId=item['Class ID'];
 		const label=getLabel(item)
 		const description=item['Description']['@value'];
@@ -98,67 +174,136 @@ const addElements=( OrdinaryClassesObj, DocumentClassesObj, dataProvider=[])=>{
 		"Parents": {"@type":"http://www.w3.org/2001/XMLSchema#string", "@value":""}
 		*/
 		if(classId!==SCOPED_VALUE_ID && classId!==BOX_ID){
-			if(!elementsObject[classId]){
-				elementsObject[classId]={}		
-				elementsObject[classId]['children']=[];
-				elementsObject[classId]['name']=classId;	
+			if(!_rootIndexObj[classId]){
+				_rootIndexObj[classId]={}		
+				_rootIndexObj[classId]['children']=[];
+				_rootIndexObj[classId]['parents']=[];
+				_rootIndexObj[classId]['name']=classId;
+				_rootIndexObj[classId]['hasConstraints']=false;
+				_rootIndexObj[classId]['id']=getId(classId);	
 			}
 
-			elementsObject[classId]['abstract']=abstract;		
-			elementsObject[classId]['label']=label;
-			elementsObject[classId]['comment']='test';
+			_rootIndexObj[classId]['abstract']=abstract;		
+			_rootIndexObj[classId]['label']=label;
+			_rootIndexObj[classId]['description']=description;
 
 			//add for children
 			if(Array.isArray(item['Parents'])){
 				const parentNum=item['Parents'].length;
 
-				item['Parents'].forEach((parent)=>{
+				item['Parents'].forEach((parentId)=>{
 
-					const parentId=parent[0]
+					//const parentId=parent[0]
 					//if parent is document type is 'DocumentClass'
 
 					if(parentId==='http://terminusdb.com/schema/system#Document'){
-						elementsObject[classId]['type']='DocumentClass'
+						_rootIndexObj[classId]['type']='Document'
 						if(parentNum===1){
-							DocumentClassesObj.children.push(elementsObject[classId])
+							_rootIndexObj.DocumentClasses.children.push(_rootIndexObj[classId])
+							//_rootIndexObj[classId].parents=['DocumentClass']
 						}
 					//if get type from the parent
-					}else if(elementsObject[parentId] && elementsObject[parentId]['type']){
-						//if(!elementsObject[classId]['type']){
-						//const parentType=elementsObject[parentId].type;
-						elementsObject[classId]['type']=elementsObject[parentId].type;
-						//}
+					}else if(_rootIndexObj[parentId] && _rootIndexObj[parentId]['type']){
+						
+						_rootIndexObj[classId]['type']=_rootIndexObj[parentId].type;
 					}
 				})
 			}else{
-				elementsObject[classId]['type']='ObjectClass';
-				OrdinaryClassesObj.children.push(elementsObject[classId]);
+				_rootIndexObj[classId]['type']='Class';
+				_rootIndexObj.OrdinaryClasses.children.push(_rootIndexObj[classId]);
+				//_rootIndexObj[classId].parents=['OrdinaryClasses']
 			}
 
 			//add for children
 			if(Array.isArray(item['Children']) ){//&& classId==="terminusdb:///schema#Organization"){
-				item['Children'].forEach((child)=>{
-					const childId=child[0];
-					if(!elementsObject[childId]){
-						elementsObject[childId]={}
-						elementsObject[childId]['name']=childId
-						elementsObject[childId]['children']=[]
+				/*
+				* I can't remove this node before move or remove all the children
+				*/
+				_rootIndexObj[classId].hasConstraints=true;
+
+				item['Children'].forEach((childId)=>{
+					if(!_rootIndexObj[childId]){
+						_rootIndexObj[childId]={}
+						_rootIndexObj[childId]['name']=childId
+						_rootIndexObj[childId]['id']=getId(childId)
+						_rootIndexObj[childId]['children']=[]
+						_rootIndexObj[childId]['hasConstraints']=false
+						_rootIndexObj[childId]['parents']=[]
 					}
 
-					if(elementsObject[classId].type){
-						elementsObject[childId]['type']=elementsObject[classId].type;
+					if(_rootIndexObj[classId].type){
+						_rootIndexObj[childId]['type']=_rootIndexObj[classId].type;
 					}
 					
-
+					_rootIndexObj[childId]['parents'].push({label:label,name:classId,type:_rootIndexObj[classId].type});
 					//add child to the current node
-					elementsObject[classId]['children'].push(elementsObject[childId])
-
+					_rootIndexObj[classId]['children'].push(_rootIndexObj[childId])
 
 				})
-
 			}
 		}
 	})
 }
 
+/*
+*the list of available parents depends on the type of node
+*the list can not have the node currents parents or the currents children
+*Ordinary Class can inherit only from Ordinary Classes 
+*Entity Class can inherit from Ordinary Classes and Entity Classes
+*Relationship Class can inherit from Ordinary Classes and Relationship
+*/
 
+export const availableParentsList = (classObj,classesMap,documentMap,_rootIndexObj)=>{
+	const resultListObject={};
+	resultListObject['documentClassArr']=[]	
+	resultListObject['objectClassArr']=removeRelatedElements(classObj,classesMap,_rootIndexObj);
+	if(classObj.type==="Document")
+		resultListObject['documentClassArr']=removeRelatedElements(classObj,documentMap,_rootIndexObj);
+	return resultListObject;
+}
+
+const removeRelatedElements=(classObj,classesMap,_rootIndexObj)=>{
+	if(classesMap.size===0)return [];
+
+	const objectClassMap=new Map(classesMap)
+	
+	if(objectClassMap.has(classObj.name)){
+		objectClassMap.delete(classObj.name);
+	}
+	removeRelatedChildren(classObj.children,objectClassMap);
+	removeRelatedParent(classObj.parents,objectClassMap,_rootIndexObj)
+	
+	return [...objectClassMap.values()]
+}
+
+/*
+* recursive remove related parents
+*/
+
+const removeRelatedParent=(parentsList,classesMap,_rootIndexObj)=>{
+	parentsList.forEach((childObj,key)=>{
+		if(classesMap.has(childObj.name)){
+			classesMap.delete(childObj.name)
+		}
+		
+		const parentObj=_rootIndexObj[childObj.name];
+		removeRelatedParent(parentObj.parents,classesMap,_rootIndexObj);
+	})
+}
+
+/*
+* recursive remove related children
+*/
+const removeRelatedChildren=(childrenList,classList)=>{
+	childrenList.forEach((childObj,key)=>{
+		if(classList.has(childObj.name)){
+			classList.delete(childObj.name)
+		}
+		removeRelatedChildren(childObj.children,classList);
+	})
+}
+
+
+export const rootObjectName={ROOT:true,
+	                  OrdinaryClassesGroup:true,
+	                  DocumentClasses:true}

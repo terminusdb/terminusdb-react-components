@@ -15,7 +15,7 @@ export const Accordion = (props) => {
   
     const openIconClass=showBody ? `${arrowClassName} ${props.arrowOpenClassName}` :  `${arrowClassName} ${props.arrowCloseClassName}`
   		
-    const titleClassName=`tdb__accordion__title ${props.titleClassName}`;
+    const titleClassName=`tdb__accordion__head ${props.titleClassName}`;
     const tooltip = props.tooltip ? {title:props.tooltip} :{}
 
     let onClick=props.isDisabled===true ? {style:{color:'#e0e0e0'}}: {onClick:openBody}      
@@ -24,9 +24,9 @@ export const Accordion = (props) => {
 		return (
 	     <div className={itemClassName}>
             <div className={titleClassName} {...onClick} {...tooltip}>
-               <div className="titleContent">
+               <div className="tdb__accordion__title">
                     {props.leftIconClassName && 
-                      <i className={`window-icon ${props.leftIconClassName}`}></i>}
+                      <i className={`tdb__accordion__icon ${props.leftIconClassName}`}></i>}
                     <div>{props.title}</div> 
                 </div>
                 <span className={openIconClass} role="presentation"></span>                   

@@ -14,34 +14,30 @@ export const ModelTreeComponent = (props)=>{
      * {@link https://github.com/d3/d3-zoom#zoom}
      * @returns {undefined}
      */
-
+    const selectedNode=props.selectedNodeObject && props.selectedNodeObject.name ? props.selectedNodeObject.name : null;
     const treeGraphWrapper = useRef(null);
       
-    const [startPosition,setStartPosition]=useState(true)
-    const [graphData,setGraphData]=useState([]) 
-
     const [upadateGraph,setTick]=useState(null)
 
     const [transform, setTransform]=useState();
 
-    const [selectedNode, setSelectedNode]=useState(null);
-
-    //d3Zoom().on("zoom", function(){_zoomed()})
     const zoomElement=d3Zoom().scaleExtent([0.1, 8]).on('zoom', function(){_zoomed()});
 
-   // const [zoomElement, setZoomElement]=useState(startZoom);
-
-    //state={startPosition:false};
-
-    //state.startPosition=true;
-        //_onDragMove = _onDragMove.bind(this);
-
     const changeSelectedNode = (nodeId)=>{
-        if(selectedNode===nodeId)setSelectedNode(null);
-        else setSelectedNode(nodeId);
+        if(selectedNode===nodeId)return
+          _moveNodeToFront(nodeId);
 
-        if(props.changeCurrentNode)props.changeCurrentNode(selectedNode);
+        if(props.changeCurrentNode)props.changeCurrentNode(nodeId);
     }
+
+    const _moveNodeToFront = (nodeId)=>{
+        const nodeElement=props.graphDataProvider.get(nodeId);
+        if(nodeElement){
+            props.graphDataProvider.delete(nodeId);
+            props.graphDataProvider.set(nodeId,nodeElement);
+            //_tick();
+        }
+     }
 
     const linkWithD3=true;
     //focusOnNode=focusOnNode.bind(this);
@@ -79,20 +75,6 @@ export const ModelTreeComponent = (props)=>{
         }      
     }
 
-    
-    const startDataProsition =()=>{
-      if(props.treeMainGraphObj){
-
-         const mainGraphObj=props.treeMainGraphObj;
-          /*
-          *return a Map object
-          */
-          setGraphData(mainGraphObj.descendantsNode);
-          setStartPosition(false);
-      }  
-    }
-
-
     const _linkObjectToD3Action = () =>{
         const customNodeDrag = d3Drag()
             .on('start', _onDragStart)
@@ -101,24 +83,21 @@ export const ModelTreeComponent = (props)=>{
 
         d3Select('#treeGraph')
             .selectAll('.node')
-            .call(customNodeDrag)//.on("click", _moveNodeToFront);
-
-
-        //linkWithD3=false;
+            .call(customNodeDrag)
     }
 
     useEffect(() => {
-         startDataProsition();
-         _linkObjectToD3Action();
-         if(treeGraphWrapper.current)_zoomConfig(treeGraphWrapper.current)
+         //startDataProsition();      
+         if(treeGraphWrapper.current){
+          _zoomConfig(treeGraphWrapper.current)       
+        }
     }, [treeGraphWrapper.current])
 
-
-    
-
-    /*componentDidUpdate(){
-        if(linkWithD3)_linkObjectToD3Action();
-    }*/
+    useEffect(() => {
+      //if(selectedNode && props.addedNewNode===true){
+         _linkObjectToD3Action();
+      //}
+    },[selectedNode,props.graphDataProvider])
 
     /**
      * Handles d3 'drag' event.
@@ -133,7 +112,7 @@ export const ModelTreeComponent = (props)=>{
         const id = nodeList[index].id;
         // this is where d3 and react bind
         // graphData is a Map() 
-        let draggedNode = graphData[id];
+        let draggedNode = props.graphDataProvider.get(id);
 
         draggedNode.x += d3Event.dx;
         draggedNode.y += d3Event.dy;
@@ -180,68 +159,7 @@ export const ModelTreeComponent = (props)=>{
         var test;
     }
 
-
-     /* componentDidMount() {
-        _zoomConfig()
-      }*/
-
-    /*const shouldComponentUpdate(nextProps, nextState){
-        if(nextProps.currentNodeClickedId && nextProps.isSelected){
-            _moveNodeToFront(nextProps.currentNodeClickedId);
-        }
-
-        if(nextProps.nodeFocusId && nextProps.nodeFocusLastUpdate!==nodeFocusLastUpdate){
-           nodeFocusLastUpdate=nextProps.nodeFocusLastUpdate;
-           focusOnNode(nextProps.nodeFocusId);
-        }
-        if(nextProps.resertTreeModelUpdate && nextProps.resertTreeModelUpdate!==props.resertTreeModelUpdate){
-          
-          // Reset the start position
-       
-          startDataProsition()
-        }
-        
-        return true;
-      }*/
-
-      const _moveNodeToFront = (ev, index, nodeList)=>{
-        const nodeElement=graphData[index];
-        if(nodeElement){
-            graphData.delete(nodeId);
-            graphData.set(nodeId,nodeElement);
-            props.setSelectedNode(nodeId);
-            _tick();
-        }
-      }
-
       const onDrop = (e, complete) =>{
-
-        /*let test=e;
-
-        let nodeData=JSON.parse(e.dataTransfer.getData('nodeData'));
-
-        let relativePosx=e.dataTransfer.getData('relativePosx')
-        let relativePosy=e.dataTransfer.getData('relativePosy')
-
-        let newObj= Object.assign({},nodeData);
-
-        let currentRelativeMousePosX=e.clientX-370;
-        let currentRelativeMousePosY=e.clientY-90;
-
-        relativePosx=relativePosx-50;
-
-        let currentRelativeMousePosX2=currentRelativeMousePosX-parseInt(relativePosx);
-        let currentRelativeMousePosY2=currentRelativeMousePosY-relativePosy;
-
-        newObj.x=currentRelativeMousePosX2;
-        newObj.y=currentRelativeMousePosY2;
-        
-        let currentNodes=state.nodes;
-        let stateObj={graphData:{}};
-        stateObj.graphData[nodeData.data.name]=newObj;
-        stateObj['nodes']=currentNodes.push(newObj);
-
-        _tick(stateObj); */
 
       }
 
@@ -251,20 +169,12 @@ export const ModelTreeComponent = (props)=>{
         e.preventDefault();
       }
     
-     
-
-      if(startPosition){
-        startDataProsition();
-      }
-
       const needRefresh=Date.now();
       const width =props.width;
       const height=props.height;
       const events=false;
-     // const margin={ top: 60, left: 0, right: 0, bottom: 110}
       
-      return (
-            
+      return (          
             <div width={width} height={height} id={'treeGraphWrapper'} 
                 onDragOver={(e)=>onDragOver(e)}
                 onDrop={(e)=>onDrop(e, "complete")}
@@ -281,47 +191,15 @@ export const ModelTreeComponent = (props)=>{
                   />
                   <Tree id={'treeGraph'}
                     needRefresh={needRefresh}
-                    nodes={[...Object.values(graphData)]}
+                    nodes={[...props.graphDataProvider.values()]}
                     nodeClick={changeSelectedNode}
-                    selectedNode={props.selectedNode}
-                    //windowMode={state.windowMode}
+                    selectedNode={selectedNode}
+                    setNodeAction={props.setNodeAction}
                   />
                 </g>
               </svg>
             </div>
         )
-    //}
 }
-
-/*const mapStateToProps = (state, ownProps) => {
-  const mainGraphIsChanged = state.mainGraphIsChanged || {}
-  const actionsObj = mainGraphIsChanged.actionsObj || {}
-
-  let resertTreeModelUpdate;
-  if(actionsObj['resetTreeModel']){
-      resertTreeModelUpdate=actionsObj['resetTreeModel'].lastUpdated;
-  }
-
-  let isSelected=false;
-  let nodeFocusLastUpdate;
-  const {lastTreeNodeClicked,nodeToFocus}=state || {lastTreeNodeClicked:{},nodeToFocus:{}};
-
-  let currentNodeClickedId=null;
-  if(lastTreeNodeClicked.nodeId){
-      isSelected=lastTreeNodeClicked.toBeSelected;
-      currentNodeClickedId=lastTreeNodeClicked.nodeId
-  }
-  if(nodeToFocus.nodeFocusId){
-    nodeFocusLastUpdate=nodeToFocus.lastUpdated;
-  }
-
-  return {resertTreeModelUpdate,isSelected,currentNodeClickedId,nodeFocusLastUpdate,nodeFocusId:nodeToFocus.nodeFocusId}
-}
-
-export default connect(
-  mapStateToProps
-)(ModelTreeComponent)*/
-
-
 
 

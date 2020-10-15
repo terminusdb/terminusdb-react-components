@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {FormatData,ModelTreeComponent} from '@terminusdb/terminusdb-react-components';
 import testData from './testData.json';
 
 

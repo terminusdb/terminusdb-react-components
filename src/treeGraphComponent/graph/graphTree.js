@@ -47,7 +47,7 @@ export const Tree = (props) =>{
         //if(this.checkAddNode(node) && !nodeIndex[node.data.name]){
           if(!nodeIndex[node.data.name]){
              nodeIndex[node.data.name]=node;
-             return <NodeTree nodeClick={props.nodeClick} isSelected={isSelected} id={node.data.name} node={node} nodex={node.x}  nodey={node.y} key={'node_'+i} windowMode={windowMode}/>
+             return <NodeTree setNodeAction={props.setNodeAction} nodeClick={props.nodeClick} isSelected={isSelected} id={node.data.name} node={node} nodex={node.x}  nodey={node.y} key={'node_'+i} windowMode={windowMode}/>
           }
           return '';
         

@@ -2,18 +2,21 @@ import React from 'react';
 
 export const RemoveElementComponent = (props) =>{
 
-	const hasConstraints=props.hasConstraints;
+	const tooltip=props.hasConstraints ? "This node cannot be removed" : `Remove the current ${props.nodeType}`;
 
-	const tooltip=hasConstraints ? "This node cannot be removed" : `Remove the current ${props.nodeType}`;
+  const removeElement=()=>{
+      if(props.removeElement){
+          props.removeElement(props.nodeId)
+      }
+  }
 
-  const onClick= hasConstraints===true ? {disabled:true} : {onClick:props.onClick}
+
+  const onClick= props.hasConstraints===true ? {disabled:true} : {onClick:removeElement}
   
 		
   return(
-         <div className="trashRow">                                
-            <div className="icon-trash" {...disabled} title={tooltip}>
-              <button {...onClick} className={props.className} title={props.tooltip}>{props.children}</button>                     
-            </div>
+         <div className="tdb__panel__row">                                           
+            <button {...onClick} className='tdb__button__base tdb__panel__button tdb__panel__button--red fas fa-trash-alt' title={props.tooltip}>{props.children}</button>                     
          </div>
 	)    
 } 
