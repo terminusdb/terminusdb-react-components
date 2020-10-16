@@ -31,7 +31,7 @@ export const PropertiesComponent = (props)=> {
 				            parentClassId:props.id,
 				            id:propertyItem.id,
 				            currentNodeJson:propertyItem,
-				            removeProperty:props.removeProperty,
+				            removeElement:props.removeElement,
 				        	updateValue:props.updateValue
 				        	}
 
@@ -121,21 +121,4 @@ export const PropertiesComponent = (props)=> {
 		    {propertiesPanels}
 		    </Fragment>
 		)
-	//}
 }
-
-/*const mapStateToProps = (state, ownProps) => {
-   const mainGraphIsChanged = state.mainGraphIsChanged || {}
-   const actionsObj=mainGraphIsChanged.actionsObj || {};
-   let propertyUpdate;    
-	if(actionsObj[PROPERTY_LIST_UPDATE]  && 
-	   actionsObj[PROPERTY_LIST_UPDATE][ownProps.id]){
-	  	propertyUpdate= actionsObj[PROPERTY_LIST_UPDATE][ownProps.id].lastUpdated;
-	}
-
-    return {propertyUpdate};
-}
-
-export default connect(
-  mapStateToProps
-)(PropertiesComponent)*/

@@ -36,7 +36,7 @@ export const DetailsModelComponent = (props)=>{
 							{title:'Properties',
 	             			getContent: () =>
 	             				<div className="tdb__panel">
-	             					<PropertiesComponent removeProperty={props.removeProperty} 
+	             					<PropertiesComponent removeElement={props.removeElement} 
 		             					classPropertyList={props.classPropertyList}
 		             					updateValue={props.updateValue}
 		             					addNewProperty={props.addNewProperty}

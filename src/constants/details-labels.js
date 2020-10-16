@@ -67,7 +67,7 @@ export const GEO_PROPERTY_VALUE_ID='value_type';
 
 /*  
 */
-export const STRING_TYPE_DATAPROVIDER={label: 'Temporal Type',
+export const STRING_TYPE_DATAPROVIDER={label: 'String Type',
 	                                   id:'range',
 	                                   options:[{label:'Non Specified', value:'xsd:string'},
 									  {label:'Json', value:'xdd:json',description:'A JSON Encoded String'},
@@ -103,7 +103,8 @@ export const UNITS_ELEMENT_ID='units';
 export const PRECISION_ELEMENT_ID='value_type';	
 export const NUMERIC_TYPE_ELEMENT_ID='interpretation'; 
 
-export const NUMBER_PROPERTY_PRECISION_DATAPROVIDER={label:'Precision',id:'range',options:[{label:'Non Specified', value:'xsd:decimal'},
+export const NUMBER_PROPERTY_PRECISION_DATAPROVIDER={label:'Precision',
+													id:'range',options:[{label:'Non Specified', value:'xsd:decimal'},
 										            {label:'Integer', value:'xsd:integer',description:'A simple number. An xsd:integer value.'},
 										            {label:'Decimal', value:'xsd:decimal', description:'A decimal value (e.g. 23.34)'},
 										            {label:'Decimal Range', value:'xdd:decimalRange',description:'Uncertain range of decimal values (e.g.[23.4, 4.143]. Enables uncertainty to be encoded directly in the data'},
@@ -191,7 +192,7 @@ export const  ELEMENT_BASE_LIST=[{value:'', label:'Class'},
 export const CARDINALITY_MIN_TITLE='Minimum';
 export const CARDINALITY_MAX_TITLE='Maximun';
 
-export default {
+/*export default {
 
 	OPEN_DETAILS_PANEL:'Open Details Panel',
 	CANDIDATES_LIST:'Candidates List',
@@ -228,37 +229,4 @@ export default {
 
 	GEOGRAPHY_PROPS_ID :'geographyProps',
 	
-
-
-
-	SCHEMA_ELEMENT_CARDINALITY_MIN_ID:'minCard',
-	SCHEMA_ELEMENT_CARDINALITY_MAX_ID:'maxCard',
-
-
-
-	
-	MIN_LENGTH_ELEMENT_ID:'string_min',
-	MAX_LENGTH_ELEMENT_ID:'string_max',
-
-	
-	GEOGRAPHY_PROPS : 'Geography Type',	
-	TEMPORAL_SCOPING_TYPE:'Type',
-	TEMPORAL_GRANULARITY:'Granularity',
-	
-
-	MINIMUN:'Minimum',
-	MAXIMUM:'Maximum',
-
-	UNITS_LABEL:'Units',
-	PRECISION_LABEL:'Precision',
-	NUMBER_TYPE_LABEL:'Type',
-
-	
-	MIN_LENGTH_LABEL :'Min Length',
-	MAX_LENGTH_LABEL :'Max Length',
-
-
-  
-			   
-
-    };
+};*/

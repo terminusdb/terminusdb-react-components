@@ -1,3 +1,15 @@
+/*
+let choices = [
+        ["scm:inferred", "Inferred", "The value has been logically inferred from other evidence"],
+        ["scm:disputed", "Disputed", "The evidence is disputed - some believe this data to be incorrect"],
+        ["scm:dubious", "Dubious", "The evidence is dubious - most believe this data to be incorrect"],
+        ["scm:uncertain", "Uncertain", "The evidence has a high degree of uncertainty"]
+    ]
+
+ WOQL.generateChoiceList("scm:Confidence", "Confidence Tags", "Tags that can be added to values to indicate confidence in the value of some piece data", choices)
+[5:55 PM]
+add_property('my_property', "scm:Confidence")....*/
+
 import {ADD_PARENT, REMOVE_PARENT} from './actionType';  
 import TerminusClient from '@terminusdb/terminusdb-client';
 import {PROPERTY_TYPE_NAME} from '../../constants/details-labels'

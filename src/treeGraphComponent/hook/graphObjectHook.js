@@ -75,11 +75,6 @@ export const graphObjectHook = (mainGraphDataProvider) => {
 		const propertiesList=mainGraphObj.addNewPropertyToClass(selectedNodeObject.name,propertyType,propertyRange);
 		setClassPropertiesList(propertiesList)
 	}
-
-	/*const removeProperty=(propertyId)=>{
-		const propertiesList=mainGraphObj.removePropertyToClass(selectedNodeObject.name,propertyId);
-		setClassPropertiesList(propertiesList);
-	}*/
 	
 	const removeElement=(elementId,elementType)=>{
 		switch(elementType){
@@ -89,7 +84,7 @@ export const graphObjectHook = (mainGraphDataProvider) => {
 				resetSelection()
 				break;
 			default:
-				const propertiesList=mainGraphObj.removePropertyToClass(selectedNodeObject.name,propertyId);
+				const propertiesList=mainGraphObj.removePropertyToClass(selectedNodeObject.name,elementId);
 				setClassPropertiesList(propertiesList);
 		}
 		
