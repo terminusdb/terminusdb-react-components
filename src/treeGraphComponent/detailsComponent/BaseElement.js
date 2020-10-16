@@ -12,25 +12,11 @@ export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassI
 
     const elementName=nodeJsonData && nodeJsonData.name ? nodeJsonData.name : null ;
 
-    /*const View = memo((elementName) =>{
-           const startValue=nodeJsonData ? JSON.parse(JSON.stringify(nodeJsonData)) : {};
-           changeStateValues(startValue)
-       })*/
-
     useEffect(() => {
         const startValue=nodeJsonData ? JSON.parse(JSON.stringify(nodeJsonData)) : {};
         changeStateValues(startValue)
 
     },[nodeJsonData])
-	//terminusdb:///schema#Station
-	
-	//console.log(values)
-
-	/*const (e)
-        if(e && e.target){
-            setDeleteConfirm(e.target.value == meta.id)
-        }
-    }*/
 
     const changeValue=(evt)=>{
     	const name=evt.currentTarget.name;
@@ -50,10 +36,6 @@ export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassI
     	}
     }
 
-  	//const title=props.title  || '';
-
-	//const required = props.required === true ? "required" : "";
-
     const disabled = values && values.newElement ? {} : {disabled:true}
 
     return(
@@ -61,7 +43,8 @@ export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassI
             {values.name}
             <RemoveElementComponent 
                 hasConstraints={hasConstraints} 
-                nodeId={values.name} 
+                elementId={values.name}
+                elementType={values.type}
                 removeElement={removeElement}/>
        	    	{isNodeObject && 
        				<div className="tdb__form__group">
@@ -97,12 +80,12 @@ export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassI
             />
             </div>
             <textarea 
-                name="description"
+                name="comment"
                 placeholder= {ELEMENT_BASE_CONST.DESCRIPTION_TEXT}
                 className = "tdb__form__element"
                 onChange={changeValue}
                 onBlur={saveValue}
-                value={values.description || ''}
+                value={values.comment || ''}
             />
     	</div>
     )

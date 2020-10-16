@@ -45,15 +45,16 @@ export const modelCallServerHook = (woqlClient) => {
     		//const propsResult = await woqlClient.query(propsQuery);
 
     		const restictions = TerminusClient.WOQL.quad("v:Restriction", "type", "owl:Restriction", "schema/main").
-									quad("v:Restriction", "owl:onProperty", "v:Property", "schema/main").
-									opt().quad("v:Restriction", "owl:maxCardinality", "v:min", "schema/main").
-									opt().quad("v:Restriction", "owl:minCardinality", "v:max", "schema/main").
-									opt().quad("v:Restriction", "owl:cardinality", "v:cardinality", "schema/main")
-
+											quad("v:Restriction", "owl:onProperty", "v:Property", "schema/main").
+											and(
+												TerminusClient.WOQL.opt().quad("v:Restriction", "owl:cardinality", "v:cardinality", "schema/main"),
+												TerminusClient.WOQL.opt().quad("v:Restriction", "owl:maxCardinality", "v:max", "schema/main"),
+												TerminusClient.WOQL.opt().quad("v:Restriction", "owl:minCardinality", "v:min", "schema/main")
+											)
 			//const restResult = await woqlClient.query(restictions);
 
 			Promise.all([woqlClient.query(classQuery), woqlClient.query(propsQuery), woqlClient.query(restictions)]).then((results)=>{
-				setResultMainGraph({classesResult:results[0],propsResult:results[1],restResult:[2]})
+				setResultMainGraph({classesResult:results[0],propsResult:results[1],restResult:results[2]})
 			}).catch(err=>{setError(err.message)})
 			.finally(()=>{setLoading(false)})
 			

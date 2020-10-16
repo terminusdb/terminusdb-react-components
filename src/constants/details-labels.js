@@ -1,9 +1,4 @@
-/*
-export const DETAILS_LABEL='Label';
-export const DETAILS_DESCRIPTION='Description';
-export const DETAILS_ID='Unique ID';
-export const DETAILS_ABSTRACT = 'Abstract'
-export const PROPERTY_STRING= 'String Property';*/
+
 export const TERMINUS_IMAGE_BASE = "https://assets.terminusdb.com/terminusdb-console/images/"
 export const TERMINUS_FONT_BASE = "https://assets.terminusdb.com/terminusdb-console/fonts/"
 
@@ -23,6 +18,7 @@ export const PROPERTY_STRING_BY_RANGE={'string':'xsd:string',
 										'url':'xdd:url'};
 
 export const PROPERTY_NUMBER_BY_RANGE={ 'decimal':'xsd:decimal',
+										'long':'xsd:long',
 										'bite':'xsd:bite',
 										'short':'xsd:short',
 										'unsignedByte':'xsd:unsignedByte',

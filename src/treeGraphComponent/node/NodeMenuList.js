@@ -16,7 +16,7 @@ export const NodeMenuList = (props)=> {
 	   let startstep=40;
 
 	   return menuList.map((menuItem,index)=>{
-	   		return  <g transform={`translate(0,${startstep * index})`} id={menuItem.id} onClick={onClick}>
+	   		return  <g key={`item__${index}`} transform={`translate(0,${startstep * index})`} id={menuItem.id} onClick={onClick}>
 	   					<rect fill={'#ffffff'} x={1} y={0} width="165" height="39" />
 	   					<text dx={10} dy={22} fontSize={fontSize}  fill={fontColor} > {menuItem.label} </text> 
 	   				</g>

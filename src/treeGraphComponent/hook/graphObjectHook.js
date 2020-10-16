@@ -1,5 +1,5 @@
 import React, {useState,useEffect} from "react";
-import MainGraphObject from "../MainGraphObject"
+import {MainGraphObject} from "../MainGraphObject"
 
 /*and(
      opt().triple("doc:test", "label", "v:label").delete_triple("doc:test", "label", "v:label"),
@@ -39,19 +39,23 @@ export const graphObjectHook = (mainGraphDataProvider) => {
 			const mainGraphObject= new MainGraphObject(mainGraphDataProvider);
 
 			setMainGraphObj(mainGraphObject)
-			setGraphDataProvider(mainGraphObject.descendantsNode)
-			setObjectPropertyList(mainGraphObject.getObjectPropertyMap())
-			//setEntitiesListArr(mainGraphObject.classesListArr())
-			//setClassesListArr(mainGraphObject.entitiesListArr())
+			setGraphDataProvider(mainGraphObject.getDescendantsNode())
+			setObjectPropertyList(mainGraphObject.getObjectProperties())
+			resetSelection()
 		}
 
 	}, [mainGraphDataProvider])
 
-	
+	const resetSelection=()=>{
+		setSelectedNodeObject({})
+		setClassPropertiesList([])
+		setObjPropsRelatedToClass([])
+		setAvailableParentsList({})
+	}
 
 	const changeCurrentNode=(nodeId)=>{
 		if(nodeId===null){
-			setSelectedNodeObject(null)
+			setSelectedNodeObject({})
 			setClassPropertiesList([])
 			setObjPropsRelatedToClass([])
 		}else if(mainGraphObj && mainGraphObj.getElement(nodeId)){
@@ -61,7 +65,6 @@ export const graphObjectHook = (mainGraphDataProvider) => {
 			setAvailableParentsList(mainGraphObj.getAvailableParentsList(nodeId))
 		}
 	}
-
 
 	const setNodeAction=(actionName)=>{
 		const nodeObject=mainGraphObj.nodeApplyAction(selectedNodeObject.name,actionName);
@@ -73,9 +76,23 @@ export const graphObjectHook = (mainGraphDataProvider) => {
 		setClassPropertiesList(propertiesList)
 	}
 
-	const removeProperty=(propertyId)=>{
+	/*const removeProperty=(propertyId)=>{
 		const propertiesList=mainGraphObj.removePropertyToClass(selectedNodeObject.name,propertyId);
 		setClassPropertiesList(propertiesList);
+	}*/
+	
+	const removeElement=(elementId,elementType)=>{
+		switch(elementType){
+			case 'Document':
+			case 'Class':
+				mainGraphObj.removeElementInMainGraph(selectedNodeObject.name);
+				resetSelection()
+				break;
+			default:
+				const propertiesList=mainGraphObj.removePropertyToClass(selectedNodeObject.name,propertyId);
+				setClassPropertiesList(propertiesList);
+		}
+		
 	}
 
 	const updateValue = (propName,propValue,elementDataObject)=>{
@@ -104,7 +121,7 @@ export const graphObjectHook = (mainGraphDataProvider) => {
         setNodeAction,
         updateValue,
         addNewProperty ,
-        removeProperty,
+        removeElement,
         objectPropertyList,
         objPropsRelatedToClass,
         savedObjectToWOQL,

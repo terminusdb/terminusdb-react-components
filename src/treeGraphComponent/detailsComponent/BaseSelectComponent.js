@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 //import {schemaElementSelectOption} from '../../actions/graphActions';
 //import {changeDataValueToMainGraph} from '../../actions/treeModelActions';
 import PropTypes from 'prop-types'; 
@@ -6,7 +6,7 @@ import {HelpComponent} from './HelpComponent'
 
 export const BaseSelectComponent = (props) => {
 
-	const defaultValue=props.defaultValue || '';
+	const [value,setValue]=useState(props.defaultValue)
 
 	const getDisabledOptions=(allowedValue,value)=>{
 		if(!allowedValue || allowedValue==="ALL" || value==="")return {}
@@ -30,27 +30,16 @@ export const BaseSelectComponent = (props) => {
 
 	const onChange=(evt)=>{
 		const value=evt.currentTarget.value;
+		setValue(value)
 		props.optionChange(props.id,value);
 	}
 
-
-
-	//render(){
 	const dataProvider=props.dataProvider || [];
 	const comboId=props.id;
-	//const className=props.className || "form-control";
-	//const groupClassName=props.groupClassName || "formItemGroup";
-	//const labelClassName=props.labelClassName || "form-label"
-	//const parentComboId=props.parentId;
 	const options=getOptions(dataProvider,comboId,props.defaultValue,props.allowedValue);
 	
 	const title=props.title || ''
-	//const showLabel=props.showLabel
-
 	const isDisabled=props.isDisabled ? {disabled:true} : {}
-	//const addHelpComponent=props.addHelpComponent===true ? true : false;
-
-	//const selErrorReporting=props.selErrorReporting || '';
 
 	return(
 		<div className={props.groupClassName}>
@@ -61,12 +50,11 @@ export const BaseSelectComponent = (props) => {
 	        <div className="hideEmpty">
 	        {props.selErrorReporting}
 	        </div>
-	        <select value={defaultValue} {...isDisabled} name={comboId} className={props.selectClassName} onChange={onChange.bind(this)}>
+	        <select value={value} {...isDisabled} name={comboId} className={props.selectClassName} onChange={onChange}>
 			  {options}
 			</select>
         </div>
 	)
-	//}
 }
 
 

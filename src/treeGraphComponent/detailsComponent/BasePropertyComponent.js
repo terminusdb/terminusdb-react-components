@@ -32,10 +32,9 @@ export const BasePropertyComponent = (props)=> {
 					   tooltip={currentNodeJson.type || ''}>
 			
 				{viewBaseSchema &&  <BaseElement updateValue={changePropertyValue}
-										   removeElement={props.removeProperty} 
+										   removeElement={props.removeElement} 
 										   nodeJsonData={currentNodeJson}
-										   showAllButton={showAllButton} 
-										   parentClassId={props.parentClassId}
+										   showAllButton={showAllButton}
 										   isNodeObject={false}
 								   />}
 				<div className="tdb__panel__box">

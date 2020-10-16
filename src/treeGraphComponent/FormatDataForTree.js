@@ -42,10 +42,32 @@ const addTypeRange=(item,newProperty) =>{
 	}	
 }
 
-export const formatProperties=(dataProvider,classesList)=>{
+/*
+* add restrictions to properties
+*/
+export const addRestictionToProps=(propertiesList,restrDataProvider)=>{
+	const bindings = restrDataProvider.bindings || [];
+	bindings.forEach((item)=>{
+		const property=propertiesList.get(item['Property']);
+		if(property){
+			if(item.cardinality!=="system:unknown"){
+				property['cardinality']=item.cardinality['@value'];
+			}
+			if(item.min!=="system:unknown"){
+				property['min']=item.min['@value'];
+			}
+			if(item.max!=="system:unknown"){
+				property['max']=item.max['@value'];
+			}
+		}
+	})
+}
+
+export const formatProperties=(dataProvider,restrDataProvider,classesList)=>{
 
 	const propertyByDomain={}
 	const objectPropertyRange={}
+	const propertiesList=new Map()
 
 	const bindings = dataProvider.bindings || [];
 
@@ -59,7 +81,7 @@ export const formatProperties=(dataProvider,classesList)=>{
 		const newProperty={name:item['Property ID'],
 						  id: item['Property ID'],
 				          label:item['Property Name']['@value'],
-				          description:item['Property Description']['@value'],
+				          comment:item['Property Description']['@value'],
 				          newElement:false,
 				          domain:classDomain
 						}
@@ -75,11 +97,16 @@ export const formatProperties=(dataProvider,classesList)=>{
 			
 			objectPropertyRange[newProperty.range].push({label:newProperty.label, name:newProperty.name})
 		}
+		propertiesList.set(newProperty.name,newProperty);
 
 		propertyByDomain[classDomain].push(newProperty)
 	})
+	/*
+	* add cardinality restrictions
+	*/
+	addRestictionToProps(propertiesList,restrDataProvider);
 
-	return [propertyByDomain,objectPropertyRange];
+	return [propertyByDomain,objectPropertyRange,propertiesList];
 
 
 }
@@ -185,7 +212,7 @@ const addElements=( _rootIndexObj, dataProvider=[])=>{
 
 			_rootIndexObj[classId]['abstract']=abstract;		
 			_rootIndexObj[classId]['label']=label;
-			_rootIndexObj[classId]['description']=description;
+			_rootIndexObj[classId]['comment']=description;
 
 			//add for children
 			if(Array.isArray(item['Parents'])){

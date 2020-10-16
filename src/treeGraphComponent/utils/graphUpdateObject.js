@@ -1,10 +1,3 @@
- /*and(
-         opt().triple("doc:test", "label", "v:label").delete_triple("doc:test", "label", "v:label"),
-          add_triple("doc:test", "label", "New label")
-
-      16: add_quad("MyClass", "subClassOf", "Parent", "schema/main")
-   17: delete_quad("MyClass", "subClassOf", "Parent", "schema/main")
-   */
 import {ADD_PARENT, REMOVE_PARENT} from './actionType';  
 import TerminusClient from '@terminusdb/terminusdb-client';
 import {PROPERTY_TYPE_NAME} from '../../constants/details-labels'
@@ -42,6 +35,9 @@ export const graphUpdateObject=()=>{
 
 	}
 
+	/*
+	* name is internal unique reference 
+	*/
 	const updateTripleElement=(propName,propValue,currentElement)=>{
 		/*
 		* I don't need to add a triple change because this is a new node
@@ -54,6 +50,12 @@ export const graphUpdateObject=()=>{
 		}else{
 			values[propName]=propValue;
 			updateTriple.set(currentElement.name,values);
+		}
+		/*
+		* if the element is a property
+		*/
+		if(currentElement.domain){
+			values['domain']=currentElement.domain;
 		}		
 	}
   
@@ -65,7 +67,7 @@ export const graphUpdateObject=()=>{
 						 name:newName,
 						 id: "NEW NODE",
 			             label:"NEW NODE",
-			             description:"",
+			             comment:"",
 			             hasConstraints:false,
 			             newElement:true,
 			             children:[],
@@ -96,8 +98,12 @@ export const graphUpdateObject=()=>{
 						 parentNode:parentName,action:action})
 	}
 
-	const removeNode=(currentNode) =>{
-		deleteNodesList.set(currentNode.name,currentNode);
+	const removeNode=(nodeObj) =>{
+		if(nodeObj.newElement===true){
+			newNodesList.delete(nodeObj.name);
+		}else{
+			deleteNodesList.set(nodeObj.name,nodeObj);
+		}
 	}
 
 	/*
@@ -110,7 +116,7 @@ export const graphUpdateObject=()=>{
 							name:newName,
 							id: "NEW PROPERTY ID",
 				            label:"NEW PROPERTY",
-				            description:"",
+				            comment:"",
 				            type:propertyType,
 				            newElement:true,
 				            range:propertyRange,
@@ -153,7 +159,9 @@ export const graphUpdateObject=()=>{
 		if(newNodesList.has(elementName)){
 			return `scm:${newNodesList.get(elementName).id}`
 		}
-		return elementName		
+		return elementName;
+		//const arr = elementName.split("#")
+		//return `scm:${arr[1]}`	
 	}
 
 	const savedObjectToWOQL = ()=>{
@@ -162,11 +170,12 @@ export const graphUpdateObject=()=>{
 		newNodesList.forEach((node,key) =>{
 			const newNode={id:node.id,
 						   label:node.label,
-						   description:node.description,
+						   description:node.comment,
 						   parent:node.parent,
 						   abstract:node.abstract} 
 			andValues.push(WOQL.insert_class_data(newNode))
 		})
+
 		newPropertiesList.forEach((property,key) =>{
 			const propertyObj = getPropertyObjForSave(property);
 			andValues.push(WOQL.insert_property_data(propertyObj))
@@ -188,22 +197,51 @@ export const graphUpdateObject=()=>{
 			})		
 		})
 
-		//updateTriple.forEach((propertyObject,key)) =>{
-		//	andValues.push(updateTriple))
-		//}
+		updateTriple.forEach((valuesObject,subject) =>{
+			const subjectId=getRealId(subject)
+			for (const vname in valuesObject) {
+				if(vname==="domain")continue;								
+				if(['min','max','cardinality'].indexOf(vname)>-1){
+					andValues.push(updateCardinality(WOQL,subjectId,vname,valuesObject[vname],valuesObject['domain']))
+				}else{
+ 					andValues.push(WOQL.update_quad(subjectId,vname,valuesObject[vname],'schema/main')) 					
+ 				}
+			}			
+		})
+
+		deleteNodesList.forEach((nodeObj)=>{
+			andValues.push(WOQL.delete_class(nodeObj.name));
+		})
+
+		deletePropertiesList.forEach((proObj)=>{
+			andValues.push(WOQL.delete_property(proObj.name));
+		})
 
 
 		const query = WOQL.and(...andValues);
 		return query
 	}
 
-	
-	const woqlUpdateTriple=(subject,predicate,objectValue)=>{
-		let WOQL = TerminusClient.WOQL
+	/*
+	*to be review if I have both and I like to update only one 
+	*maybe I don't have to remove all the retriction
+	*/
+	const updateCardinality=(WOQL,subjectId,vname,value,domain)=>{
+		const cardType={max:'owl:maxCardinality',min:'owl:minCardinality'}
+
+		const cardName= subjectId + '_' + vname + '_' + value;
+		const cardTypeName=cardType[vname]
+		const domainId=getRealId(domain);
 		return WOQL.and(
-     		WOQL.opt().triple(subject, predicate, "v:Obj").delete_triple(subject, predicate, "v:Obj"),
-     		WOQL.add_triple(subject, predicate, objectValue)
-		)	
+      			WOQL.opt(
+          				WOQL.quad("v:Restriction", "owl:onProperty", subjectId, "schema/main")
+          				.delete_quad("v:Restriction", "owl:onProperty", subjectId, "schema/main")
+      				),
+		      WOQL.add_quad(cardName, "type", "owl:Restriction", "schema/main")
+		    	  .add_quad(cardName, "owl:onProperty", subjectId, "schema/main")
+		          .add_quad(cardName, cardTypeName, WOQL.literal(value, "xsd:nonNegativeInteger"), "schema/main")
+		          .add_quad(domainId, "subClassOf", cardName, "schema/main")
+		)
 	}
 
 	return {addNodeToTree,changeNodeParent,addPropertyToClass,removePropertyToClass,savedObjectToWOQL,removeNode,updateTripleElement}
@@ -211,7 +249,9 @@ export const graphUpdateObject=()=>{
 
 //new node 
 //new property
+/*
 
+*/
 
 //update triple (value to a prop)
 //cardinality (change chardinality value)

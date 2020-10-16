@@ -27,7 +27,7 @@ export const DetailsModelComponent = (props)=>{
 	const getTabs=()=>{
 		const tabsArr=[{title:'Class',
 	             getContent: () =><div className="tdb__panel">
-	             			<BaseElement showCardinality={false} hasConstraints={hasConstraints} nodeJsonData={nodeData} updateValue={props.updateValue}/>
+	             			<BaseElement elementId={nodeData.name} elementType={nodeData.type} removeElement={props.removeElement} showCardinality={false} hasConstraints={hasConstraints} nodeJsonData={nodeData} updateValue={props.updateValue}/>
 						 	 </div>,				    
 						    	key: 1,
 						    	tabClassName: 'tab',

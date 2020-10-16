@@ -18,7 +18,7 @@ export const SchemaBuilder = (props)=>{
 		  updateValue,
 		  classPropertiesList,
 		  addNewProperty,
-		  removeProperty,
+		  removeElement,
 		  objectPropertyList,
 		  objPropsRelatedToClass,
 		  savedObjectToWOQL,
@@ -64,7 +64,7 @@ export const SchemaBuilder = (props)=>{
 	        	updateParentsList={updateParentsList}
 	        	objPropsRelatedToClass={objPropsRelatedToClass} 
 	        	objectPropertyList={objectPropertyList} 
-	        	removeProperty={removeProperty} 
+	        	removeElement={removeElement} 
 	        	addNewProperty={addNewProperty} 
 	        	classPropertyList={classPropertiesList} 
 	        	currentNodeJson={selectedNodeObject} 
