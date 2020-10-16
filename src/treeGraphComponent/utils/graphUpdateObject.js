@@ -146,7 +146,7 @@ export const graphUpdateObject=()=>{
 	*/
 	const getPropertyObjForSave=(propertyObj)=>{
 		let copyNode = JSON.parse(JSON.stringify(propertyObj));
-
+		copyNode.description=copyNode.comment;
 		copyNode['domain']=getRealId(copyNode.domain);
 	
 		if(propertyObj.type===PROPERTY_TYPE_NAME.OBJECT_PROPERTY){

@@ -132,7 +132,7 @@ export const NUMBER_PROPERTY_TYPE_DATAPROVIDER=[{label:'Non Specified', value:''
 	                                  id:'scoping', options:[{label:'Non Specified', value:''},
 	                                  {label:'Point',value:'timepoint'},
 									  {label:'Range',value:'timerange'}]}*/
-export const TEMPORAL_GRANULARITY_DATAPROVIDER={label: 'Temporal Type',
+export const TEMPORAL_PROPERTY_DATAPROVIDER={label: 'Temporal Type',
 	                                   id:'range',
 	                                   options:
 	                                   [{label:'Not specified',value:'xsd:dateTime',description:''},
@@ -159,7 +159,7 @@ export const TEMPORAL_GRANULARITY_DATAPROVIDER={label: 'Temporal Type',
 
 
 export const GEOMETRY_PROPS_DATAPROVIDER={label:'Geometry Type',
-    							id:'geotype',
+    							id:'range',
     							options:[{label:'Non Specified', value:'xdd:coordinate'},
 
     							{label:'Coordinate', value:'xdd:coordinate',description:'A particular location on the surface of the earth, defined by latitude and longitude . An xdd:coordinate value.'},

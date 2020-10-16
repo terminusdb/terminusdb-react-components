@@ -4,14 +4,15 @@ import {BasePropertyComponent} from './BasePropertyComponent'
 //import {NumericProperty} from './NumericProperty'
 //import {StringProperty} from './StringProperty'
 //import { connect } from 'react-redux'
-import {GeographicProperty} from './GeographicProperty'
-import {TemporalProperty} from './TemporalProperty'
+//import {GeographicProperty} from './GeographicProperty'
+//import {TemporalProperty} from './TemporalProperty'
 import {ObjectProperty} from './ObjectProperty'
 //import ComplexPropertyRestriction from './ComplexPropertyRestriction'
 //import CONST from './const.js';
 
 import {PropertyMenuList} from './PropertyMenuList'
-import {STRING_TYPE_DATAPROVIDER,NUMBER_PROPERTY_PRECISION_DATAPROVIDER} from '../../constants/details-labels';
+import {STRING_TYPE_DATAPROVIDER,NUMBER_PROPERTY_PRECISION_DATAPROVIDER,
+		GEOMETRY_PROPS_DATAPROVIDER,TEMPORAL_PROPERTY_DATAPROVIDER} from '../../constants/details-labels';
 
 //import {PROPERTY_LIST_UPDATE} from '../../constants/MainGraphChangeActionTypes'
 
@@ -46,9 +47,12 @@ export const PropertiesComponent = (props)=> {
 		   			return <BasePropertyComponent {...baseObj} />
 
 		   		case 'GeoProperty':
-		   			return <GeographicProperty {...baseObj}/>
+		   			baseObj['selectDataProvider']=GEOMETRY_PROPS_DATAPROVIDER;	
+		   			return <BasePropertyComponent {...baseObj} />
 		   		case 'TemporalProperty':
-		   			return <TemporalProperty {...baseObj}/>
+
+		   			baseObj['selectDataProvider']=TEMPORAL_PROPERTY_DATAPROVIDER;
+		   			return <BasePropertyComponent {...baseObj} />
 		   		case 'ObjectProperty':
 		   			//if(propertyItem.isRestrictionOf===null){
 		   				//const availableComplexList=props.currentNodeJson.getAvailableComplexPList() || {};
