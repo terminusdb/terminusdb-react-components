@@ -10,8 +10,8 @@ export const WOQLTable = ({bindings, view, query, serverside})=>{
         view = view || {}
         let wt = TerminusClient.View.table()
         if(view.rules)  wt.loadJSON(view.table, view.rules)
-        let wr = new TerminusClient.WOQLResult({bindings: bindings},query)    
-        let woqt = new TerminusClient.WOQLTable(false, wt)       
+        let wr = new TerminusClient.WOQLResult({bindings: bindings},query)
+        let woqt = new TerminusClient.WOQLTable(false, wt)
         woqt.setResult(wr, query)
         const columns = formatTableColumns(woqt)
         return [bindings, columns];
@@ -34,7 +34,7 @@ export const WOQLTable = ({bindings, view, query, serverside})=>{
         })
         let colstruct = {columns:listOfColumns}
         if(woqt.config.header()) colstruct.Header = woqt.config.header()
-        else colstruct.Header = " " 
+        else colstruct.Header = " "
         return [colstruct]
     }
 
@@ -48,20 +48,20 @@ export const WOQLTable = ({bindings, view, query, serverside})=>{
 */
 function checkTime(props){
     let strval=false
-    if(props.cell.column 
-        && props.cell.column.id==="Time" 
+    if(props.cell.column
+        && props.cell.column.id==="Time"
         && typeof props.cell.value==='object'
         && props.cell.value['@type']==='http://www.w3.org/2001/XMLSchema#decimal'){
 
         const ts=props.cell.value['@value']
         if(!isNaN(parseFloat(ts))){
             strval=format(new Date(parseFloat(ts*1000)), "hh:mm:ss, dd/MM/yy")
-         }      
+         }
     }
     return strval
 }
 
-//cell values that come back from queries can have 
+//cell values that come back from queries can have
 function renderCellValue(props, woqt){
     let value = props.cell.value || ""
     let strval = checkTime(props);
@@ -80,7 +80,8 @@ function getStringFromBindingValue(item, first){
             return (<span title={t}>{item['@value']}</span>)
         }
         else {
-            return JSON.stringify(item, false, 2) 
+            return item
+            //return JSON.stringify(item, false, 2) 
         }
     }
     if(item == "terminus:unknown") return ""
