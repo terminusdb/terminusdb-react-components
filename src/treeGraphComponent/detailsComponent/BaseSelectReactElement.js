@@ -52,8 +52,6 @@ export const BaseSelectReactElement=(props)=>{
 	  groupClassName:PropTypes.string,
 	  inputClassName:PropTypes.string,
 	  id:PropTypes.string.isRequired,
-	  parentClassId:PropTypes.string.isRequired,
-	  parentClassType:PropTypes.string.isRequired,
 	  onChange:PropTypes.func.isRequired,
 	  dataProvider:PropTypes.array,
 	  placeholder:PropTypes.string

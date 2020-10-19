@@ -140,7 +140,7 @@ export const formatDataForTreeChart =(rootElement)=>{
 	* When you set a nodeSize, the tree has to be dynamic so it resets the size of the tree.
 	*/
 
-    treeModel.nodeSize([200,400]);
+    treeModel.nodeSize([200,200]);
          
     const data=hierarchy(rootElement);
     const d3Data = treeModel(data);
@@ -186,6 +186,13 @@ const getId=(classId) =>{
 	
 	return classId.replace("terminusdb:///schema#","");
 }
+
+/*
+* abstract value 'Yes/No'
+*/
+const getAbstractValue=(item)=>{
+	return item['Abstract']['@value']==='Yes' ? true : false;
+}
 //_rootIndexObj.OrdinaryClasses,_rootIndexObj.DocumentClasses
 const addElements=( _rootIndexObj, dataProvider=[])=>{
 
@@ -196,7 +203,7 @@ const addElements=( _rootIndexObj, dataProvider=[])=>{
 		const classId=item['Class ID'];
 		const label=getLabel(item)
 		const description=item['Description']['@value'];
-		const abstract=item['Abstract']['@value'];
+		const abstract=getAbstractValue(item);
 		/*
 		"Parents": {"@type":"http://www.w3.org/2001/XMLSchema#string", "@value":""}
 		*/

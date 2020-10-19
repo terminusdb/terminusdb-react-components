@@ -10,7 +10,6 @@ export const RemoveElementComponent = (props) =>{
       }
   }
 
-
   const onClick= props.hasConstraints===true ? {disabled:true} : {onClick:removeElement} 
 		
   return(

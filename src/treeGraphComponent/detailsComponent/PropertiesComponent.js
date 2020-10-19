@@ -1,15 +1,7 @@
 import React, { useState,Fragment } from 'react'
 //import ChoiceProperty from './ChoiceProperty'
 import {BasePropertyComponent} from './BasePropertyComponent'
-//import {NumericProperty} from './NumericProperty'
-//import {StringProperty} from './StringProperty'
-//import { connect } from 'react-redux'
-//import {GeographicProperty} from './GeographicProperty'
-//import {TemporalProperty} from './TemporalProperty'
 import {ObjectProperty} from './ObjectProperty'
-//import ComplexPropertyRestriction from './ComplexPropertyRestriction'
-//import CONST from './const.js';
-
 import {PropertyMenuList} from './PropertyMenuList'
 import {STRING_TYPE_DATAPROVIDER,NUMBER_PROPERTY_PRECISION_DATAPROVIDER,
 		GEOMETRY_PROPS_DATAPROVIDER,TEMPORAL_PROPERTY_DATAPROVIDER} from '../../constants/details-labels';

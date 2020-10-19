@@ -1,7 +1,8 @@
 import React, {useState,useEffect} from 'react';
 import PropTypes from 'prop-types'; 
 import {HelpComponent} from './HelpComponent';
-export const BaseInputElement = (props) => {
+
+export const BaseTextareaElement = (props) => {
 
 	const [value,setInputValue] = useState(props.defaultValue)
 
@@ -27,13 +28,13 @@ export const BaseInputElement = (props) => {
 	                 <label className={props.labelClassName} for={props.name}>{props.title}</label>
 	                 <HelpComponent/>
                 </div>
-                <input onBlur={onBlur} {...disabled} onChange={onChange} value={value} name={props.name} className={props.inputClassName}></input>       
+                <textarea onBlur={onBlur} {...disabled} onChange={onChange} value={value} name={props.name} className={props.inputClassName}></textarea>       
             </div>
 
 	)
 }
 //pattern="[0-9]{4}" required
-BaseInputElement.propTypes = {
+BaseTextareaElement.propTypes = {
 	  title:PropTypes.string,
 	  defaultValue :PropTypes.string,
 	  groupClassName:PropTypes.string,
@@ -44,7 +45,7 @@ BaseInputElement.propTypes = {
 	  disabled:PropTypes.bool
 }
 
-BaseInputElement.defaultProps = {
+BaseTextareaElement.defaultProps = {
 	  title:'',
 	  defaultValue: '',
 	  groupClassName:'tdb__form__group',

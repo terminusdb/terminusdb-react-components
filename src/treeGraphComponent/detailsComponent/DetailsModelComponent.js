@@ -27,22 +27,23 @@ export const DetailsModelComponent = (props)=>{
 	const getTabs=()=>{
 		const tabsArr=[{title:'Class',
 	             getContent: () =><div className="tdb__panel">
-	             			<BaseElement elementId={nodeData.name} elementType={nodeData.type} removeElement={props.removeElement} showCardinality={false} hasConstraints={hasConstraints} nodeJsonData={nodeData} updateValue={props.updateValue}/>
-						 	 </div>,				    
+	             				   
+	             					<BaseElement elementId={nodeData.name} elementType={nodeData.type} removeElement={props.removeElement} showCardinality={false} hasConstraints={hasConstraints} nodeJsonData={nodeData} updateValue={props.updateValue}/>
+						 	 	</div>,				    
 						    	key: 1,
 						    	tabClassName: 'tab',
-						    	panelClassName: 'tdb__panel'
+						    	panelClassName: 'tdb__panel--nopad'
 							},
 							{title:'Properties',
 	             			getContent: () =>
-	             				<div className="tdb__panel">
+	             				
 	             					<PropertiesComponent removeElement={props.removeElement} 
 		             					classPropertyList={props.classPropertyList}
 		             					updateValue={props.updateValue}
 		             					addNewProperty={props.addNewProperty}
 		             					objectPropertyList={props.objectPropertyList}
 	             					 />
-	             				</div>,
+	             				,
 		
 						    	key: 2,
 						    	tabClassName: 'tab',
@@ -57,7 +58,7 @@ export const DetailsModelComponent = (props)=>{
 		
 						    	key: 3,
 						    	tabClassName: 'tab',
-						    	panelClassName: 'tdb__panel'
+						    	panelClassName: 'tdb__panel--nopad'
 						    }]
 		return tabsArr;
 		} 

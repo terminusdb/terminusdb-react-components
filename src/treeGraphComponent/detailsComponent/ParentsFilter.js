@@ -76,14 +76,16 @@ export const ParentsFilter = (props) => {
 								id='elementsType'/>
 					 	</div>
 					 }
-					 <BaseSelectReactElement
-					 	id="addParent"
-					 	resetSelection={true} 
-						isClearable={false} 
-						onChange={addParent} 
-						placeholder='Add a new Parent' 
-						dataProvider={dataProvider} 
-						optionChange={addParent}/>	  		
+					 <div className="tdb__panel__box">
+						 <BaseSelectReactElement
+						 	id="addParent"
+						 	resetSelection={true} 
+							isClearable={false} 
+							onChange={addParent} 
+							placeholder='Add a new Parent' 
+							dataProvider={dataProvider} 
+							optionChange={addParent}/>
+					</div>	  		
 				</div>
 			</div>
 	)

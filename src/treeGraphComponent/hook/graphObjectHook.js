@@ -28,6 +28,7 @@ export const graphObjectHook = (mainGraphDataProvider) => {
 	const [classesListArr, setClassesListArr] = useState(null);
 	const [entitiesListArr, setEntitiesListArr] = useState(null);
 	const [availableParentsList, setAvailableParentsList] = useState({})
+	const [elementsNumber, setElementNumbers] = useState({})
 	//let mainGraphObj;
 
 	/*
@@ -42,6 +43,10 @@ export const graphObjectHook = (mainGraphDataProvider) => {
 			setGraphDataProvider(mainGraphObject.getDescendantsNode())
 			setObjectPropertyList(mainGraphObject.getObjectProperties())
 			resetSelection()
+			/*
+			to be review
+			*/
+			setElementNumbers(mainGraphObject.getElementsNumber())
 		}
 
 	}, [mainGraphDataProvider])
@@ -121,7 +126,8 @@ export const graphObjectHook = (mainGraphDataProvider) => {
         objPropsRelatedToClass,
         savedObjectToWOQL,
         updateParentsList,
-        availableParentsList
+        availableParentsList,
+        elementsNumber
         //entitiesListArr,
         //classesListArr
     }
