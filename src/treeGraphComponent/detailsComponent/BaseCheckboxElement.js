@@ -1,7 +1,7 @@
 import React, {useState,useEffect} from 'react';
 import PropTypes from 'prop-types'; 
 import {HelpComponent} from './HelpComponent';
-export const BaseInputElement = (props) => {
+export const BaseCheckboxElement = (props) => {
 
 	const [value,setInputValue] = useState(props.defaultValue)
 
@@ -16,7 +16,7 @@ export const BaseInputElement = (props) => {
 	}
 
 	const onChange = (evt) =>{
-		setInputValue(evt.currentTarget.value)
+		setInputValue(evt.currentTarget.checked)
 	}
 
 	const disabled= props.disabled === true ? {disabled:true} : {}
@@ -24,18 +24,21 @@ export const BaseInputElement = (props) => {
 	return(
 			<div className={props.groupClassName}>
 			 	<div className="tdb__form__help">
-	                 <label className={props.labelClassName} for={props.name}>{props.title}</label>
+			 		 <span>
+			 		 	<input  type="checkbox" onChange={onChange} checked={value || false}  onBlur={onBlur} {...disabled} onChange={onChange} name={props.name} className={props.inputClassName}></input>            
+	                 	<label className={props.labelClassName} for={props.name}>{props.title}</label>
+	                 </span>
 	                 <HelpComponent/>
                 </div>
-                <input onBlur={onBlur} {...disabled} onChange={onChange} value={value} name={props.name} className={props.inputClassName}></input>       
             </div>
 
 	)
 }
+
 //pattern="[0-9]{4}" required
-BaseInputElement.propTypes = {
+BaseCheckboxElement.propTypes = {
 	  title:PropTypes.string,
-	  defaultValue :PropTypes.string,
+	  defaultValue :PropTypes.bool,
 	  groupClassName:PropTypes.string,
 	  inputClassName:PropTypes.string,
 	  labelClassName:PropTypes.string,
@@ -44,11 +47,11 @@ BaseInputElement.propTypes = {
 	  disabled:PropTypes.bool
 }
 
-BaseInputElement.defaultProps = {
+BaseCheckboxElement.defaultProps = {
 	  title:'',
-	  defaultValue: '',
+	  defaultValue: false,
 	  groupClassName:'tdb__form__group',
-	  inputClassName:'tdb__form__element',
+	  inputClassName:'tdb__form__check',
 	  labelClassName:'tdb__form__label',
 	  disabled:false
 }

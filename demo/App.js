@@ -52,7 +52,7 @@ export const App = (props) =>{
 
 
     return (
-        <div className="console__page tdb__loading__parent">
+        <div className="console__page tdb__loading__parent" style={{overflow:'hidden'}}>
             {callServerLoading && <div className="tdb__loading">loading !!!!</div>}
             {callServerError && <div > ERROR {callServerError}</div>}
             <SchemaBuilder saveGraph={saveData} mainGraphDataProvider={mainGraphDataProvider}/>

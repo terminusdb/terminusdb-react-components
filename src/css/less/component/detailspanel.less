@@ -10,8 +10,15 @@
     margin-bottom: 100px;
     height: calc(100vh - 230px);
 
+  &--nopad{
+    padding:0px;
+  }
+
   &__title{
-    
+    background: #f4f4f4;
+    min-height:35px;
+    padding:20px;
+    font-size:20px;
   }
 
   &__bar{
@@ -40,9 +47,10 @@
 
   &__button{
     font-size: 22px;
-    background: white;
-    border-color: white;
+    background: transparent;
+    border-color: transparent;
     margin-left: auto;
+    color: #565656;
 
     &:disabled{
        color:#ddd;
@@ -52,6 +60,16 @@
 
     &--red{
        color: red;
+    }
+
+    &--selected{
+      /*border: 1px solid #ff8000 ! important;*/
+      cursor: pointer;
+      background-color: #ddd !important;
+      border-radius: 50%;
+      padding:10px;
+      color: #ff8000 ! important;
+      border:transparent;
     }
   }
   
@@ -116,7 +134,7 @@
       padding: 10px;
     }
 }
-/*
+
 .baseP{
   display: flex;
 }
@@ -155,4 +173,3 @@
   border-radius: 5px;
   margin: 10px;
 }
-*/

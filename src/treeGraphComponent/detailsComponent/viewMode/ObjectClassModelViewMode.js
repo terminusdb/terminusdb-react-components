@@ -1,8 +1,8 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import CONST from './const.js';
+//import { connect } from 'react-redux';
+//import CONST from './const.js';
 import BaseSchemaElementViewMode from './BaseSchemaElementViewMode'
-import {getNodeDataProvider, getCurrentNode} from '../../utils/formatTreeModel'
+//import {getNodeDataProvider, getCurrentNode} from '../../utils/formatTreeModel'
 import AccordionItemComponent from '../layoutComponent/AccordionItemComponent'
 import PropertiesComponentViewMode from './PropertiesComponentViewMode'
 import ParentsElementViewMode from './ParentsElementViewMode'
@@ -13,13 +13,13 @@ import BaseLabelsElementViewMode from './BaseLabelsElementViewMode'
 
 //import RelationshipViewMode from './RelationshipViewMode'
 
-import Tabs from 'react-responsive-tabs';
-import 'react-responsive-tabs/styles.css';
+//import Tabs from 'react-responsive-tabs';
+//import 'react-responsive-tabs/styles.css';
 
 export const ObjectClassModelViewMode = (props) => {
 
 
-	getRelationshipElement(){
+	/*getRelationshipElement(){
 		const members=this.props.members || {};
 		const relationship=[];
 		for (let id in members){
@@ -28,31 +28,31 @@ export const ObjectClassModelViewMode = (props) => {
 		   				
 		}
 		return relationship;
-	}
+	}*/
 
-	render(){
-		let currentNodeJson = this.props.elementClassObj || {};
-		let id =currentNodeJson.id;
-		let nodeLabel =currentNodeJson.label;
-		const propertiesDataProvider=[];//this.getPropertiesDataProvider(id) || [];
+	//render(){
+	let currentNodeJson = this.props.elementClassObj || {};
+	let id =currentNodeJson.id;
+	let nodeLabel =currentNodeJson.label;
+	const propertiesDataProvider=[];//this.getPropertiesDataProvider(id) || [];
 
-		const members=currentNodeJson.members || {};	
-		const addRelationship = currentNodeJson.type==="Relationship" ? true : false;
+	const members=currentNodeJson.members || {};	
+	const addRelationship = currentNodeJson.type==="Relationship" ? true : false;
 
-		return(<BaseObjectClassLayout key={id} label={currentNodeJson.label} type={currentNodeJson.type} panelName={MODEL_RIGHT_WINDOW_OBJ}>
-				 	<div className="flex_scroller_container">
-					  	 <BaseSchemaElementViewMode  {...currentNodeJson.elementObj}  />
-					  	 <PropertiesComponentViewMode dataProvider={currentNodeJson.propertyArray} id="test"/>
-					  	 {currentNodeJson.parents.length>0 && <ParentsElementViewMode parentsElementArr={currentNodeJson.parentsObjAsArray()} 
-					  	                       		id={this.props.id} title={'Parents'} />}
-				  		 
-				  		{addRelationship && 
-			               <RelationshipViewMode source={currentNodeJson.source} target={currentNodeJson.target} id={this.props.id}/>
-			            }
-			        </div>
-			  </BaseObjectClassLayout>
+	return(<BaseObjectClassLayout key={id} label={currentNodeJson.label} type={currentNodeJson.type} panelName={MODEL_RIGHT_WINDOW_OBJ}>
+			 	<div className="flex_scroller_container">
+				  	 <BaseSchemaElementViewMode  {...currentNodeJson.elementObj}  />
+				  	 <PropertiesComponentViewMode dataProvider={currentNodeJson.propertyArray} id="test"/>
+				  	 {currentNodeJson.parents.length>0 && <ParentsElementViewMode parentsElementArr={currentNodeJson.parentsObjAsArray()} 
+				  	                       		id={this.props.id} title={'Parents'} />}
+			  		 
+			  		{addRelationship && 
+		               <RelationshipViewMode source={currentNodeJson.source} target={currentNodeJson.target} id={this.props.id}/>
+		            }
+		        </div>
+		  </BaseObjectClassLayout>
 		)
-	}
+	//}
 }
 
 /*

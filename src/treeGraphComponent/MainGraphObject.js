@@ -45,7 +45,7 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 	const getElementsNumber=()=>{
 		return {properties:_propertiesList.size,
 		        entities:_entitiesList.size,
-		        ordinaryClasses:_classesList.size}
+		        classes:_classesList.size}
 	}
 
 	const getObjectProperties=()=>{
@@ -510,7 +510,7 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 		}
 	}
 
-	return {getElement,getPropertyListByDomain,getObjPropsRelatedToClass,getAvailableParentsList,
+	return {getElementsNumber,getElement,getPropertyListByDomain,getObjPropsRelatedToClass,getAvailableParentsList,
       nodeApplyAction,addNewPropertyToClass,removePropertyToClass,changeElementDataValue,
       updateNodeParents,savedObjectToWOQL,getObjectProperties,getDescendantsNode,removeElementInMainGraph}
 }

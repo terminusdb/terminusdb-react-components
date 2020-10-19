@@ -6,6 +6,8 @@ import {DetailsModelComponent} from './detailsComponent/DetailsModelComponent';
 import {ADD_NEW_ENTITY,ADD_NEW_CLASS,ADD_PARENT,ADD_CHILD} from './node/NodeConstants';
 import {graphObjectHook} from './hook/graphObjectHook';
 import {TERMINUS_FONT_BASE} from '../constants/details-labels';
+import {ModelMainHeaderComponent} from './detailsComponent/ModelMainHeaderComponent';
+import {InfoBoxComponent} from './detailsComponent/InfoBoxComponent'
 //import 'https://assets.terminusdb.com/terminusdb-console/fonts/icomoon-custom.css';
 
 export const SchemaBuilder = (props)=>{
@@ -22,11 +24,11 @@ export const SchemaBuilder = (props)=>{
 		  objectPropertyList,
 		  objPropsRelatedToClass,
 		  savedObjectToWOQL,
-		  updateParentsList,availableParentsList
+		  updateParentsList,availableParentsList,elementsNumber
 		  //entitiesListArr,classesListArr
 		  } = graphObjectHook(props.mainGraphDataProvider);
 
-
+	const [isEditMode,setIsEditMode]=useState(false)
 	const saveData=()=>{
 		const query = savedObjectToWOQL();
 		if(props.saveGraph)props.saveGraph(query)
@@ -37,9 +39,19 @@ export const SchemaBuilder = (props)=>{
 	const mainPanelSize=panelIsOpen ? "calc(100% - 450px)" : "100%";
 	const treeMainGraphObj=props.treeMainGraphObj;
 
+	let showInfoComp=false
+	if(!selectedNodeObject || !selectedNodeObject.name || selectedNodeObject.type==='Root' ||
+		 selectedNodeObject.type==='Group'){
+
+		showInfoComp=true;
+
+	}
+
 	return (
 		<>
-		<button onClick={saveData} >Save Data</button>
+		<div className="tdb__model__header">
+			<ModelMainHeaderComponent saveData={saveData} changeMode={setIsEditMode} isEditMode={isEditMode}/>
+		</div>
 		<SplitPane className="colWindow" split="vertical" minSize={400} size={mainPanelSize}>							   							
 			<div>
 				<SizeMe monitorHeight={true}>{({ size }) =>
@@ -57,9 +69,15 @@ export const SchemaBuilder = (props)=>{
 		              }
 		        </SizeMe>
 		    </div>
-	        <DetailsModelComponent
+		    {showInfoComp &&
+
+		    	<InfoBoxComponent elementsNumber={elementsNumber}/>
+		    }
+	        {!showInfoComp &&
+	        	<DetailsModelComponent
 	        	//classesListArr={classesListArr}
 	        	//entitiesListArr={entitiesListArr}
+	        	elementsNumber={elementsNumber}
 	        	availableParentsList={availableParentsList}
 	        	updateParentsList={updateParentsList}
 	        	objPropsRelatedToClass={objPropsRelatedToClass} 
@@ -68,7 +86,7 @@ export const SchemaBuilder = (props)=>{
 	        	addNewProperty={addNewProperty} 
 	        	classPropertyList={classPropertiesList} 
 	        	currentNodeJson={selectedNodeObject} 
-	        	updateValue={updateValue}/>	    
+	        	updateValue={updateValue}/>	}   
 	    </SplitPane>
 	    </>
 	)

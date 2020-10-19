@@ -50,8 +50,8 @@ export const BasePropertyComponent = (props)=> {
 	               	{props.showCardinality &&
 	               		<div>
 	               			Cardinality
-	               			<BaseInputElement defaultValue={currentNodeJson.min || ''} id='min' title={CARDINALITY_MIN_TITLE} onBlur={changePropertyValue}/>
-                			<BaseInputElement defaultValue={currentNodeJson.max || ''} id='max' title={CARDINALITY_MAX_TITLE} onBlur={changePropertyValue}/>
+	               			<BaseInputElement defaultValue={currentNodeJson.min || ''} name='min' title={CARDINALITY_MIN_TITLE} onBlur={changePropertyValue}/>
+                			<BaseInputElement defaultValue={currentNodeJson.max || ''} name='max' title={CARDINALITY_MAX_TITLE} onBlur={changePropertyValue}/>
                 		</div>
 	               	}         
 					{props.children}

@@ -1,3 +1,11 @@
+export const TOOLBAR_LABELS={"ResetButtonTooltip":"Reset from start",
+	                            "UndoButtonTooltip":"Undo",
+	                            "RedoButtonTooltip":"Redo",
+	                            "SaveButtonTooltip" : "Save ",
+	                            "EditModeTooltip" : "Change to Edit Mode",
+	                            "ViewModeTooltip" : "Change to View Mode"
+                      		}
+
 
 export const TERMINUS_IMAGE_BASE = "https://assets.terminusdb.com/terminusdb-console/images/"
 export const TERMINUS_FONT_BASE = "https://assets.terminusdb.com/terminusdb-console/fonts/"
@@ -191,6 +199,15 @@ export const  ELEMENT_BASE_LIST=[{value:'', label:'Class'},
 
 export const CARDINALITY_MIN_TITLE='Minimum';
 export const CARDINALITY_MAX_TITLE='Maximun';
+
+
+export const mainGraphDescriptionText=`See New Patterns And Relationships
+		Using advanced mathematical techniques TerminusDB enables the identification and visualisation of
+		relationships between real-world entities, at depths unmatched by any other competing approach, and most importantly enforces compliance with whatever rules concerning those relationships we’ve already specified.
+
+		We deliver more insight, faster than any competing approach. We call it Business Intelligence 2.0`
+
+
 
 /*export default {
 
