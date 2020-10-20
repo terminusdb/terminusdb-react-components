@@ -24,12 +24,13 @@ export const ModelMainHeaderComponent =(props)=>{
 				   					  selectClassName="tdb__button__base tdb__panel__button"
 				   					  name="SAVE_BUTTON" onSelectionChange={props.saveData}/>
 				   </div>
+				   {/*
 				   <div className="icon-header" > 
 				   		<i className="fa fa-undo" title={TOOLBAR_LABELS.UndoButtonTooltip} onClick={props.undoAction}></i>
 				   </div>
 				   <div className="icon-header" >
 				   		<i className="fa fa-redo" title={TOOLBAR_LABELS.RedoButtonTooltip}  onClick={props.redoAction}></i>
-				   </div>
+				   </div>*/}
 			   </div>
 			   <div className="icon-header">
 			   	  <ToogleButton	 onSelectionChange={props.changeMode}

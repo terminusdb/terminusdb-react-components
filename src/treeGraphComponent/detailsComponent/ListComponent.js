@@ -8,15 +8,15 @@ export const ListComponent = (props) =>  {
 
 	const dataProvider= props.dataProvider || [];
 
-	return(<div className="tdb__panel__box">
+	return(<>
 		{dataProvider.map((elementItem,index)=>{
 		  	return(<div key={'__elementItem__'+index}>		  			
-		  			  <div className="tdb__panel__row">
+		  			  <div className="tdb__list__item">
 		  			  		<label className="tdb__panel__label">{elementItem.label}</label>
-		  			  		<button className="tdb__button__base tdb__panel__button tdb__panel__button--red fa fa-minus"  name={elementItem.name} onClick={removeItem}></button>
+		  			  		<button className="tdb__button__base tdb__panel__button tdb__panel__button--green fa fa-minus"  name={elementItem.name} onClick={removeItem}></button>
 		  			  </div>			  		
 		  		  </div>)
 		})}
-		</div>
+		</>
 	)	
 }

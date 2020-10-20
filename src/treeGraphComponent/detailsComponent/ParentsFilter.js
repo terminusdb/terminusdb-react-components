@@ -3,7 +3,7 @@ import {ADD_PARENT,REMOVE_PARENT} from '../utils/actionType'
 import {ListComponent} from './ListComponent'
 import {BaseSelectReactElement} from './BaseSelectReactElement'
 import {BaseSelectComponent} from './BaseSelectComponent'
-
+import {ParentsElementViewMode} from './viewMode/ParentsElementViewMode'
 export const ParentsFilter = (props) => {
 
 	const [classType,setClassType]=useState('Class')
@@ -62,32 +62,38 @@ export const ParentsFilter = (props) => {
     const listDataProvider=nodeJsonData.parents || [];
     const parentClassType=nodeJsonData.type 
 
-	return (<div>
-				<div className="itemBaseSchema">This is the list of the Parents .........</div>	
-				<div className="itemBaseSchema">
-				     <ListComponent removeItem={removeParent} elementId={elementId} elementType={elementType} dataProvider={listDataProvider}/>
-					 {parentClassType!== "Class" && 
-					 	<div className="tdb__panel__box">
+	return (	<>
+				<div className="tdb__panel__box">
+				    <div className="tdb__list">
+				     	<div className="tdb__list__title" > Parents </div>
+			     		<div className="tdb__list__items" >
+			     			{nodeJsonData.parents.length===0 && 'No Parents'}
+ 			     			<ListComponent removeItem={removeParent} elementId={elementId} elementType={elementType} dataProvider={listDataProvider}/>					 
+						 </div>						 
+						 {parentClassType!== "Class" && 					 	
 							<BaseSelectComponent
 								defaultValue={classType} 
 								dataProvider={elementClassList} 
 								optionChange={changeParentList} 
 								showLabel={false}  
-								id='elementsType'/>
-					 	</div>
-					 }
-					 <div className="tdb__panel__box">
-						 <BaseSelectReactElement
-						 	id="addParent"
-						 	resetSelection={true} 
-							isClearable={false} 
-							onChange={addParent} 
-							placeholder='Add a new Parent' 
-							dataProvider={dataProvider} 
-							optionChange={addParent}/>
-					</div>	  		
-				</div>
-			</div>
+								id='elementsType'/>					 	
+						 }
+						 	<BaseSelectReactElement
+								 	id="addParent"
+								 	resetSelection={true} 
+									isClearable={false} 
+									onChange={addParent} 
+									placeholder='Add a new Parent' 
+									dataProvider={dataProvider} 
+									optionChange={addParent}/>
+					
+					</div>
+				</div>	
+				{nodeJsonData.parents.length>0 &&
+					<ParentsElementViewMode />
+				}
+				</>
+				
 	)
 }
 

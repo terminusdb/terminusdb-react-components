@@ -207,7 +207,11 @@ export const mainGraphDescriptionText=`See New Patterns And Relationships
 
 		We deliver more insight, faster than any competing approach. We call it Business Intelligence 2.0`
 
-
+export const ELEMENT_ICONS ={
+	'Document':'custom-img-entities',
+	'Class':'custom-img-classes',
+	'Relationship':'custom-img-relationship'
+}
 
 /*export default {
 

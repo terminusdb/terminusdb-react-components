@@ -1,6 +1,6 @@
 import React,{useEffect,useState} from 'react';
 import ReactDOM from 'react-dom';
-import {SchemaBuilder,modelCallServerHook} from '@terminusdb/terminusdb-react-components';
+import {SchemaBuilder,modelCallServerHook,GraphObjectProvider} from '@terminusdb/terminusdb-react-components';
 import bike from './bike.json';
 import bikeprops from './bike-property.json';
 import seshat from './testData.json';
@@ -55,8 +55,9 @@ export const App = (props) =>{
         <div className="console__page tdb__loading__parent" style={{overflow:'hidden'}}>
             {callServerLoading && <div className="tdb__loading">loading !!!!</div>}
             {callServerError && <div > ERROR {callServerError}</div>}
-            <SchemaBuilder saveGraph={saveData} mainGraphDataProvider={mainGraphDataProvider}/>
-
+            <GraphObjectProvider mainGraphDataProvider={mainGraphDataProvider}>
+              <SchemaBuilder saveGraph={saveData} mainGraphDataProvider={mainGraphDataProvider}/>
+            </GraphObjectProvider>
         </div>    
       )
 }

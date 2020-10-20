@@ -1,5 +1,8 @@
-import React, {useState,useEffect} from "react";
+import React, {useState,useEffect,useContext} from "react";
 import {MainGraphObject} from "../MainGraphObject"
+
+export const GraphContext = React.createContext()
+export const GraphContextObj = () => useContext(GraphContext)
 
 /*and(
      opt().triple("doc:test", "label", "v:label").delete_triple("doc:test", "label", "v:label"),
@@ -12,7 +15,7 @@ import {MainGraphObject} from "../MainGraphObject"
    18  
 */
 
-export const graphObjectHook = (mainGraphDataProvider) => {
+export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 
 	const [graphDataProvider, setGraphDataProvider] = useState([]);
 	const [selectedNodeObject, setSelectedNodeObject] = useState({});
@@ -112,25 +115,31 @@ export const graphObjectHook = (mainGraphDataProvider) => {
 		return mainGraphObj.savedObjectToWOQL()
 	}
 
-	return {
-        graphDataProvider,
-        selectedNodeObject,
-        classPropertiesList,
-        graphUpdateLabel,
-        changeCurrentNode,
-        setNodeAction,
-        updateValue,
-        addNewProperty ,
-        removeElement,
-        objectPropertyList,
-        objPropsRelatedToClass,
-        savedObjectToWOQL,
-        updateParentsList,
-        availableParentsList,
-        elementsNumber
+	return (
+		<GraphContext.Provider
+            value={{
+	        graphDataProvider,
+	        selectedNodeObject,
+	        classPropertiesList,
+	        graphUpdateLabel,
+	        changeCurrentNode,
+	        setNodeAction,
+	        updateValue,
+	        addNewProperty ,
+	        removeElement,
+	        objectPropertyList,
+	        objPropsRelatedToClass,
+	        savedObjectToWOQL,
+	        updateParentsList,
+	        availableParentsList,
+	        elementsNumber,
+	        mainGraphObj
+	    	}}>
+	     {children}
+        </GraphContext.Provider>
+
         //entitiesListArr,
         //classesListArr
-    }
-
+    )
 }	
 

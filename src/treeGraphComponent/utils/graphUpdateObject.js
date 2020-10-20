@@ -9,7 +9,8 @@ let choices = [
  WOQL.generateChoiceList("scm:Confidence", "Confidence Tags", "Tags that can be added to values to indicate confidence in the value of some piece data", choices)
 [5:55 PM]
 add_property('my_property', "scm:Confidence")....*/
-
+//delete choose
+//select('v:c','v:b').from("schema/main").triple('v:var','owl:oneOf','v:b').path('v:b','(rdf:rest|rdf:first)+','v:c','v:path')
 import {ADD_PARENT, REMOVE_PARENT} from './actionType';  
 import TerminusClient from '@terminusdb/terminusdb-client';
 import {PROPERTY_TYPE_NAME} from '../../constants/details-labels'

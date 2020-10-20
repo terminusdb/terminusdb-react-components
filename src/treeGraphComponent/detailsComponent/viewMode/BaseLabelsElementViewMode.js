@@ -1,16 +1,12 @@
 import React from 'react';
 
-export default class BaseLabelsElementViewMode extends React.Component  {
+export const BaseLabelsElementViewMode =(props)=> {
 
-	render(){
-
-		return(
-			<div className="itemViewDetail">
-				{this.props.label && <label className="itemViewLabel">{this.props.label}:</label>}
-				<div className="itemViewValue">{this.props.value}</div>
-			</div>
-		)
-
-	}
+	return(
+		<div className="itemViewDetail">
+			{props.label && <label className="itemViewLabel">{props.label}:</label>}
+			<div className="itemViewValue">{props.value}</div>
+		</div>
+	)
 
 }

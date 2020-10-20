@@ -7,13 +7,7 @@ const constraintMessage={childrenNum:'This node has',
 						relComplexProperty:'This node is a range of the ComplexProperty'}
 
 export const ConstraintsComponent =(props)=>{
-
-	
     const [checked,setChecked] = useState({checked:false})
-    /*constructor(props){
-    	super(props);
-    	state={checked:false}
-    }*/
     const nodeData = props.nodeJsonData ? props.nodeJsonData : {}
     
     const change=(evt)=>{
@@ -35,21 +29,15 @@ export const ConstraintsComponent =(props)=>{
     					</div>)
     	}
 
-    	if(props.objPropsRelatedToClass){
-    		//const cName=listOfConstraints.childrenNum===1 ? 'child' : 'children';
-    		//const complexMessage=[]
-            const complexMessage= props.objPropsRelatedToClass.map((complexPropertyObj)=>{
-                        return <div className="tdb__list__item">This node is related to 
+    	if(props.objPropsRelatedToClass && props.objPropsRelatedToClass.length>0){
+    		const complexMessage= props.objPropsRelatedToClass.map((complexPropertyObj)=>{
+                        return <div className="tdb__list__items">This node is related to 
                                     <h5>Object Property {complexPropertyObj.label} </h5>
                                           in the <h5>{complexPropertyObj.classRangeType} {complexPropertyObj.classRangeLabel}</h5>
                                 </div>
             
 
             })
-            //for (let complexPropertyObj of listOfConstraints.relComplexProperty.values()){
-        	//	complexMessage.push(
-        	//									)
-            //}
 
             message.push(<div className="tdb__list">
                            <div className="tdb__list__title">Object Property</div>

@@ -20,7 +20,6 @@ export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassI
 
     return(
    	    <div key={nodeJsonData.name} className="tdb__panel__box">
-            {nodeJsonData.name}
             <RemoveElementComponent 
                 hasConstraints={hasConstraints} 
                 elementId={nodeJsonData.name}

@@ -1,17 +1,12 @@
 import React, { useState } from 'react'
 import {BasePropertyComponent} from './BasePropertyComponent'; 
-//import ParentsElementViewMode from './ParentsElementViewMode'
 import {BaseSelectComponent} from './BaseSelectComponent';
 import {BaseSelectReactElement} from './BaseSelectReactElement';
-//import ChangeRangeToComplexClassHandler from '../../containers/ChangeRangeToComplexClassHandler'
-//import { connect } from 'react-redux';
 import {ELEMENT_BASE_CLASS_LIST,ELEMENT_ENTITY_LIST_ITEM} from '../../constants/details-labels';
-//import {CHANGE_RANGE_TO_COMPLEX_CLASS,CHANGE_DATA_VALUE_TO_MAIN_GRAPH} from '../../constants/MainGraphChangeActionTypes'
 
 export const ObjectProperty =(props)=>{
 	
 	const [classType,setClassType]=useState('')
-
 	let currentNodeJson=props.currentNodeJson || {}
 	const parentClassId=props.parentClassId;
 	const id=props.id;

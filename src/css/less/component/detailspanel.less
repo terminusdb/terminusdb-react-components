@@ -16,9 +16,18 @@
 
   &__title{
     background: #f4f4f4;
-    min-height:35px;
-    padding:20px;
-    font-size:20px;
+    min-height: 35px;
+    padding: 10px 20px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+  }
+
+  &__title__icon{
+      background-repeat: no-repeat;
+      display: inline-block;
+      margin-right: 10px;
+      font-size: 1.4em;
   }
 
   &__bar{
@@ -62,6 +71,10 @@
        color: red;
     }
 
+    &--green{
+       color:#00C08B;
+    }
+
     &--selected{
       /*border: 1px solid #ff8000 ! important;*/
       cursor: pointer;
@@ -76,6 +89,8 @@
   &__row{
     display: flex;
   }
+
+
 
   &__input{
     
@@ -128,10 +143,18 @@
       padding: 10px;
     }
 
-    &__item{
+    &__items{
       margin-bottom:10px;
       border: 1px solid #868484;
       padding: 10px;
+      margin-bottom: 20px;
+    }
+
+    &__item{
+      display: flex;
+      align-items: baseline;    
+      border-bottom: 1px solid #dddd;
+      padding-left: 10px;
     }
 }
 
@@ -172,4 +195,25 @@
   border: 1px solid #d0e8f9;
   border-radius: 5px;
   margin: 10px;
+}
+
+.itemViewDetail{
+  display: inline-flex;
+  align-items: center;
+  /*width: 100%;*/
+}
+
+.itemViewLabel{
+  width: 150px;
+  display: block;
+  text-align: right;
+  margin: 10px;
+  min-width: 150px;
+  font-weight: 600;
+}
+
+.itemViewValue{
+  display: block;
+  margin: 10px;
+ 
 }

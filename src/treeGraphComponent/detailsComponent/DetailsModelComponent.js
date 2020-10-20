@@ -7,6 +7,7 @@ import 'react-responsive-tabs/styles.css';
 import {ConstraintsComponent} from './ConstraintsComponent';
 import {ParentsFilter} from './ParentsFilter';
 import {PropertiesComponent} from './PropertiesComponent';
+import {ELEMENT_ICONS} from '../../constants/details-labels'
 //ObjectClassModel
 //properties
 //node
@@ -23,11 +24,15 @@ export const DetailsModelComponent = (props)=>{
 	const objPropsRelatedToClass = props.objPropsRelatedToClass || []
 	const childrenArr = nodeData.children || []
 	const hasConstraints = (childrenArr.length>0 || objPropsRelatedToClass.length >0) ? true : false; 
+	const imageType=ELEMENT_ICONS[nodeData.type]
 
 	const getTabs=()=>{
 		const tabsArr=[{title:'Class',
 	             getContent: () =><div className="tdb__panel">
-	             				   
+	             				   	<div className="tdb__panel__title">
+							  	 		<i className={`tdb__panel__title__icon ${imageType}`}></i>
+							  	 		{nodeData.id}
+							  	 	</div>
 	             					<BaseElement elementId={nodeData.name} elementType={nodeData.type} removeElement={props.removeElement} showCardinality={false} hasConstraints={hasConstraints} nodeJsonData={nodeData} updateValue={props.updateValue}/>
 						 	 	</div>,				    
 						    	key: 1,

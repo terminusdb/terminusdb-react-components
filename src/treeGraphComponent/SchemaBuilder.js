@@ -4,10 +4,11 @@ import SplitPane from "react-split-pane";
 import {ModelTreeComponent} from './ModelTreeComponent';
 import {DetailsModelComponent} from './detailsComponent/DetailsModelComponent';
 import {ADD_NEW_ENTITY,ADD_NEW_CLASS,ADD_PARENT,ADD_CHILD} from './node/NodeConstants';
-import {graphObjectHook} from './hook/graphObjectHook';
+import {GraphObjectProvider,GraphContextObj} from './hook/graphObjectContext';
 import {TERMINUS_FONT_BASE} from '../constants/details-labels';
 import {ModelMainHeaderComponent} from './detailsComponent/ModelMainHeaderComponent';
 import {InfoBoxComponent} from './detailsComponent/InfoBoxComponent'
+import {ObjectClassModelViewMode} from './detailsComponent/viewMode/ObjectClassModelViewMode'
 //import 'https://assets.terminusdb.com/terminusdb-console/fonts/icomoon-custom.css';
 
 export const SchemaBuilder = (props)=>{
@@ -26,7 +27,7 @@ export const SchemaBuilder = (props)=>{
 		  savedObjectToWOQL,
 		  updateParentsList,availableParentsList,elementsNumber
 		  //entitiesListArr,classesListArr
-		  } = graphObjectHook(props.mainGraphDataProvider);
+		  } = GraphContextObj();
 
 	const [isEditMode,setIsEditMode]=useState(false)
 	const saveData=()=>{
@@ -47,7 +48,7 @@ export const SchemaBuilder = (props)=>{
 
 	}
 
-	return (
+	return (	
 		<>
 		<div className="tdb__model__header">
 			<ModelMainHeaderComponent saveData={saveData} changeMode={setIsEditMode} isEditMode={isEditMode}/>
@@ -73,20 +74,24 @@ export const SchemaBuilder = (props)=>{
 
 		    	<InfoBoxComponent elementsNumber={elementsNumber}/>
 		    }
+		    {!showInfoComp && isEditMode===false && 
+		    	<ObjectClassModelViewMode 
+		    		currentNodeJson={selectedNodeObject}
+		    		classPropertyList={classPropertiesList} />}
 	        {!showInfoComp &&
 	        	<DetailsModelComponent
 	        	//classesListArr={classesListArr}
 	        	//entitiesListArr={entitiesListArr}
-	        	elementsNumber={elementsNumber}
-	        	availableParentsList={availableParentsList}
-	        	updateParentsList={updateParentsList}
-	        	objPropsRelatedToClass={objPropsRelatedToClass} 
-	        	objectPropertyList={objectPropertyList} 
-	        	removeElement={removeElement} 
-	        	addNewProperty={addNewProperty} 
-	        	classPropertyList={classPropertiesList} 
-	        	currentNodeJson={selectedNodeObject} 
-	        	updateValue={updateValue}/>	}   
+		        	elementsNumber={elementsNumber}
+		        	availableParentsList={availableParentsList}
+		        	updateParentsList={updateParentsList}
+		        	objPropsRelatedToClass={objPropsRelatedToClass} 
+		        	objectPropertyList={objectPropertyList} 
+		        	removeElement={removeElement} 
+		        	addNewProperty={addNewProperty} 
+		        	classPropertyList={classPropertiesList} 
+		        	currentNodeJson={selectedNodeObject} 
+		        	updateValue={updateValue}/>	}   
 	    </SplitPane>
 	    </>
 	)
