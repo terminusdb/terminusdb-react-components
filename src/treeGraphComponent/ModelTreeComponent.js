@@ -89,10 +89,10 @@ export const ModelTreeComponent = (props)=>{
 
     useEffect(() => {
          //startDataProsition();      
-         if(treeGraphWrapper.current){
+         if(treeGraphWrapper.current && props.width){
           _zoomConfig(treeGraphWrapper.current)       
         }
-    }, [treeGraphWrapper.current])
+    }, [treeGraphWrapper.current,props.width])
 
     useEffect(() => {
       //if(selectedNode && props.addedNewNode===true){
