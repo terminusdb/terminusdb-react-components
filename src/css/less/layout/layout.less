@@ -1,5 +1,10 @@
 .console__page {
   min-height: 100vh;
+  overflow-y:auto;
+
+   &--hidden{
+      overflow-y:hidden;
+   }
 
    &__header {
   	 background-color:@header-bg;
@@ -26,12 +31,11 @@
   }
 
   &__container{
-    padding: 20px;
-    /*margin-top: 50px;*/
+    min-height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    
+    justify-content: end;
+    padding: 20px;
 
     &--width{
       margin-right: auto;

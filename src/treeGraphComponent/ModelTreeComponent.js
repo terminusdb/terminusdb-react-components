@@ -16,6 +16,7 @@ export const ModelTreeComponent = (props)=>{
      */
     const selectedNode=props.selectedNodeObject && props.selectedNodeObject.name ? props.selectedNodeObject.name : null;
     const treeGraphWrapper = useRef(null);
+    const treeGraphContainer = useRef(null);
       
     const [upadateGraph,setTick]=useState(null)
 
@@ -182,14 +183,14 @@ export const ModelTreeComponent = (props)=>{
                 >
 
               <svg width={width} height={height}>
-                <g id={'treeGraphContainer'} >               
+                <g id={'treeGraphContainer'} ref={treeGraphContainer}>               
                   <rect 
                     opacity={0}
                     width={width}
                     height={height}
                     fill="#ffffff"
                   />
-                  <Tree id={'treeGraph'}
+                  <Tree id={'treeGraph'} 
                     needRefresh={needRefresh}
                     nodes={[...props.graphDataProvider.values()]}
                     nodeClick={changeSelectedNode}

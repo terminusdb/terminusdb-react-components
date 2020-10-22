@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{Fragment} from 'react'
 import {BaseElement} from './BaseElement';
 import {Accordion} from '../../form/Accordion';
 import {GET_ICON_NAME,CARDINALITY_MIN_TITLE,CARDINALITY_MAX_TITLE} from '../../constants/details-labels';
@@ -48,11 +48,10 @@ export const BasePropertyComponent = (props)=> {
 		               		/>
 	               	}
 	               	{props.showCardinality &&
-	               		<div>
-	               			Cardinality
+	               		<Fragment>
 	               			<BaseInputElement defaultValue={currentNodeJson.min || ''} name='min' title={CARDINALITY_MIN_TITLE} onBlur={changePropertyValue}/>
                 			<BaseInputElement defaultValue={currentNodeJson.max || ''} name='max' title={CARDINALITY_MAX_TITLE} onBlur={changePropertyValue}/>
-                		</div>
+	               		</Fragment>
 	               	}         
 					{props.children}
 				</div>

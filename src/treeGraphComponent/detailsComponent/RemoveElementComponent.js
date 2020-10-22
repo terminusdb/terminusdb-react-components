@@ -13,7 +13,7 @@ export const RemoveElementComponent = (props) =>{
   const onClick= props.hasConstraints===true ? {disabled:true} : {onClick:removeElement} 
 		
   return(
-         <div className="tdb__panel__row">                                           
+         <div className="tdb__panel__row">                                      
             <button {...onClick} className='tdb__button__base tdb__panel__button tdb__panel__button--red fas fa-trash-alt' title={props.tooltip}>{props.children}</button>                     
          </div>
 	)    

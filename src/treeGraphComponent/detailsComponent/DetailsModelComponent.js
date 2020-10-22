@@ -7,16 +7,7 @@ import 'react-responsive-tabs/styles.css';
 import {ConstraintsComponent} from './ConstraintsComponent';
 import {ParentsFilter} from './ParentsFilter';
 import {PropertiesComponent} from './PropertiesComponent';
-import {ELEMENT_ICONS} from '../../constants/details-labels'
-//ObjectClassModel
-//properties
-//node
-//parents
-//appearance
-/*
-add_quad("MyClass", "subClassOf", "Parent", "schema/main")
-delete_quad("MyClass", "subClassOf", "Parent", "schema/main")
-*/
+import {ELEMENT_ICONS} from '../../constants/details-labels';
 
 export const DetailsModelComponent = (props)=>{
 
@@ -29,10 +20,6 @@ export const DetailsModelComponent = (props)=>{
 	const getTabs=()=>{
 		const tabsArr=[{title:'Class',
 	             getContent: () =><div className="tdb__panel">
-	             				   	<div className="tdb__panel__title">
-							  	 		<i className={`tdb__panel__title__icon ${imageType}`}></i>
-							  	 		{nodeData.id}
-							  	 	</div>
 	             					<BaseElement elementId={nodeData.name} elementType={nodeData.type} removeElement={props.removeElement} showCardinality={false} hasConstraints={hasConstraints} nodeJsonData={nodeData} updateValue={props.updateValue}/>
 						 	 	</div>,				    
 						    	key: 1,
@@ -70,6 +57,10 @@ export const DetailsModelComponent = (props)=>{
 
 	return(
 		<div className="tdb__sidebar" >
+			<div className="tdb__panel__title">
+	  	 		<i className={`tdb__panel__title__icon ${imageType}`}></i>
+	  	 		{nodeData.label || nodeData.id}
+	  	 	</div>
 			<Tabs items={getTabs()} transform={false}/>
 		</div>
 	)

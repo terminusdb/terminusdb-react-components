@@ -43,7 +43,7 @@ export const ObjectProperty =(props)=>{
 				isDisabled={isDisabled} 
 				placeholder="Select a Class" 
 				resetSelection={true} 
-				dataProvider={dataProvider} id="range" parentClassId={parentClassId} />
+				dataProvider={dataProvider} name="range" parentClassId={parentClassId} />
 		   </BasePropertyComponent>			
 	)
 }

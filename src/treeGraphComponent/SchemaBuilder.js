@@ -4,12 +4,11 @@ import SplitPane from "react-split-pane";
 import {ModelTreeComponent} from './ModelTreeComponent';
 import {DetailsModelComponent} from './detailsComponent/DetailsModelComponent';
 import {ADD_NEW_ENTITY,ADD_NEW_CLASS,ADD_PARENT,ADD_CHILD} from './node/NodeConstants';
-import {GraphObjectProvider,GraphContextObj} from './hook/graphObjectContext';
+import {GraphContextObj} from './hook/graphObjectContext';
 import {TERMINUS_FONT_BASE} from '../constants/details-labels';
 import {ModelMainHeaderComponent} from './detailsComponent/ModelMainHeaderComponent';
 import {InfoBoxComponent} from './detailsComponent/InfoBoxComponent'
 import {ObjectClassModelViewMode} from './detailsComponent/viewMode/ObjectClassModelViewMode'
-//import 'https://assets.terminusdb.com/terminusdb-console/fonts/icomoon-custom.css';
 
 export const SchemaBuilder = (props)=>{
 
@@ -93,6 +92,7 @@ export const SchemaBuilder = (props)=>{
 		        	currentNodeJson={selectedNodeObject} 
 		        	updateValue={updateValue}/>	}   
 	    </SplitPane>
+	    <div className="tdb__model__footer"/>
 	    </>
 	)
 }

@@ -25,10 +25,12 @@ export const PROPERTY_STRING_BY_RANGE={'string':'xsd:string',
 										'html':'xdd:html',
 										'url':'xdd:url'};
 
-export const PROPERTY_NUMBER_BY_RANGE={ 'decimal':'xsd:decimal',
+export const PROPERTY_NUMBER_BY_RANGE={ 'integer':'xsd:integer', 
+										'decimal':'xsd:decimal',
 										'long':'xsd:long',
 										'bite':'xsd:bite',
 										'short':'xsd:short',
+										'decimalRange':'xdd:decimalRange',
 										'unsignedByte':'xsd:unsignedByte',
 										'unsignedInt':'xsd:unsignedInt',
 										'unsignedLong':'xsd:unsignedLong',
@@ -112,7 +114,8 @@ export const PRECISION_ELEMENT_ID='value_type';
 export const NUMERIC_TYPE_ELEMENT_ID='interpretation'; 
 
 export const NUMBER_PROPERTY_PRECISION_DATAPROVIDER={label:'Precision',
-													id:'range',options:[{label:'Non Specified', value:'xsd:decimal'},
+													id:'range',
+													options:[{label:'Non Specified', value:'xsd:decimal'},
 										            {label:'Integer', value:'xsd:integer',description:'A simple number. An xsd:integer value.'},
 										            {label:'Decimal', value:'xsd:decimal', description:'A decimal value (e.g. 23.34)'},
 										            {label:'Decimal Range', value:'xdd:decimalRange',description:'Uncertain range of decimal values (e.g.[23.4, 4.143]. Enables uncertainty to be encoded directly in the data'},
@@ -197,8 +200,8 @@ export const  ELEMENT_BASE_LIST=[{value:'', label:'Class'},
 		    					{value:'Relationship',label:'Relationship'}];
 
 
-export const CARDINALITY_MIN_TITLE='Minimum';
-export const CARDINALITY_MAX_TITLE='Maximun';
+export const CARDINALITY_MIN_TITLE='Cardinality Min';
+export const CARDINALITY_MAX_TITLE='Cardinality Max';
 
 
 export const mainGraphDescriptionText=`See New Patterns And Relationships

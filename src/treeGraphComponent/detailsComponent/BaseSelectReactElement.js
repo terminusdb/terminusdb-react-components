@@ -7,7 +7,6 @@ export const BaseSelectReactElement=(props)=>{
 	const [selectedOption, setSelectedOption]=useState(props.defaultValue || {})
 
     const onChange=(selectedValue)=>{
-    	//const currentValue=value.value || value.id;
     	if(selectedValue && selectedOption.value!==selectedValue.value){
     		//props.onChangeValue(selectedValue);
     		if(props.resetSelection){
@@ -16,25 +15,17 @@ export const BaseSelectReactElement=(props)=>{
     			setSelectedOption(selectedValue);
     		}
     				
-    		props.optionChange(props.id,selectedValue.value);
+    		props.optionChange(props.name,selectedValue.value);
     	}
     }
 
-	
-	const dataProvider=props.dataProvider || [];
-	const groupClassName=props.groupClassName || "formItemGroup";
-	const inputClassName=props.inputClassName || "form-control";
-	const labelClassName=props.labelClassName || "formItemLabel"
-	const title=props.title  || '';
+	const dataProvider=props.dataProvider || [];	
 	const isClearable=props.isClearable===false ? false : true
 	const isDisabled=props.isDisabled ? true : false;
-	let defaultValue={}
-
-
 
 	return(
-		 <div className={groupClassName}>
-           	<label className={labelClassName} >{title}</label>
+		 <div className={props.groupClassName}>
+           	<label className={props.labelClassName} >{props.title}</label>
 		  	<Select value={selectedOption} 
 			  	isClearable={isClearable} 
 			  	onChange={onChange} 
@@ -48,11 +39,19 @@ export const BaseSelectReactElement=(props)=>{
 
 
  BaseSelectReactElement.propTypes = {
-	  defaultValue :PropTypes.object.isRequired,
+	  defaultValue :PropTypes.object,
 	  groupClassName:PropTypes.string,
 	  inputClassName:PropTypes.string,
-	  id:PropTypes.string.isRequired,
+	  name:PropTypes.string.isRequired,
 	  onChange:PropTypes.func.isRequired,
-	  dataProvider:PropTypes.array,
+	  dataProvider:PropTypes.array.isRequired,
 	  placeholder:PropTypes.string
   }
+
+ BaseSelectReactElement.defaultProps = {
+      defaultValue :{},
+      groupClassName:'tdb__form__group',
+      labelClassName:'tdb__form__label',
+      title:'',
+      placeholder:'Select an Item'
+}
