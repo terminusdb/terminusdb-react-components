@@ -67,6 +67,19 @@ export const NodeTree=(props)=> {
 			        	{comment}
 				        </title>				         
 				        </circle>)
+			case 'ChoiceClass':
+				return (<circle 
+				          markerEnd={props.isSelected ? 'url(#nodeTreeList)' : '' }
+				          r={width/2}		         
+				          fill={fillColor}
+				          stroke={lineColor}
+				          strokeWidth={lineSize}
+				          cursor={'pointer'}
+				      	  onClick={props.onClick}	>	          
+			             <title>
+			        	{comment}
+				        </title>				         
+				        </circle>)
 			default:
 			   return <ellipse rx="100" ry="50" fill={fillColor}
 						          stroke={lineColor}
@@ -106,7 +119,7 @@ export const NodeTree=(props)=> {
 		       {formatLabel(label)}
 		      </text>
 
-		      {props.isSelected &&
+		      {props.isSelected && node.data.type!== 'ChoiceClass' && 
 		      	<NodeMenu setNodeAction={props.setNodeAction} width={width} nodeId={node.data.name} menuList={menuData}/>
 		      }
 		    </g>

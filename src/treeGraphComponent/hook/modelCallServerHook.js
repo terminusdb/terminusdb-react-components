@@ -31,6 +31,9 @@ export const modelCallServerHook = (woqlClient) => {
 	//const [reloadGraph, setReloadGraph] = useState(null);
 
 
+	
+
+
 
 	/*
 	* create the mainGraphObject and format the data
@@ -38,7 +41,7 @@ export const modelCallServerHook = (woqlClient) => {
 	useEffect(() => {
 		const loadGraphData=()=> {
 			setLoading(true)
-			const classQuery = TerminusClient.WOQL.lib().classes();
+			const classQuery = TerminusClient.WOQL.lib().classesAndChoices();
     		//const classesResult = await woqlClient.query(classQuery);
 
     		const propsQuery = TerminusClient.WOQL.lib().properties();

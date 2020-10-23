@@ -213,6 +213,7 @@ export const mainGraphDescriptionText=`See New Patterns And Relationships
 export const ELEMENT_ICONS ={
 	'Document':'custom-img-entities',
 	'Class':'custom-img-classes',
+	'ChoiceClass':'custom-img-choice',
 	'Relationship':'custom-img-relationship'
 }
 

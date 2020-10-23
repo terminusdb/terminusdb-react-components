@@ -151,6 +151,7 @@ export const formatDataForTreeChart =(rootElement)=>{
     const classesList=new Map();
 	const entitiesList=new Map();
 	const objectPropertyList=[];
+	const objectChoiceList=[];
 
 	//this._descendantsNode=new Map();
     for(let node of treeNode){
@@ -164,12 +165,14 @@ export const formatDataForTreeChart =(rootElement)=>{
        }else if (node.data.type==='Class'){
        		classesList.set(node.data.name,{value:node.data.name,name:node.data.name,label:node.data.label});
        		objectPropertyList.push({type:node.data.type,value:node.data.name,name:node.data.name,label:node.data.label})
+       }else if (node.data.type==='ChoiceClass'){
+       		objectChoiceList.push({value:node.data.name,name:node.data.name,label:node.data.label});
        }
        
        descendantsNode.set(node.data.name,node);  
     }
 
-    return [descendantsNode,classesList,entitiesList,objectPropertyList];
+    return [descendantsNode,classesList,entitiesList,objectPropertyList,objectChoiceList];
 }
 
 const SCOPED_VALUE_ID="terminusdb:///schema#ScopedValue";
@@ -193,6 +196,25 @@ const getId=(classId) =>{
 const getAbstractValue=(item)=>{
 	return item['Abstract']['@value']==='Yes' ? true : false;
 }
+
+
+const checkOrdinaryClassType=(classElement,item)=>{
+	if(item["Choices"]!=="system:unknown" && Array.isArray(item["Choices"])){
+		const choicesList=[]
+		item["Choices"].forEach((choise)=>{
+			const  choiseId=getId(choise[0]);
+			const  choiseLabel=choise[1]['@value'];
+			choicesList.push({id:choiseId,label:choiseLabel})
+
+		})
+		classElement['type']='ChoiceClass';
+		classElement['choices']=choicesList;
+	}else{
+		classElement['type']='Class';
+	}
+}
+
+	
 //_rootIndexObj.OrdinaryClasses,_rootIndexObj.DocumentClasses
 const addElements=( _rootIndexObj, dataProvider=[])=>{
 
@@ -243,7 +265,11 @@ const addElements=( _rootIndexObj, dataProvider=[])=>{
 					}
 				})
 			}else{
-				_rootIndexObj[classId]['type']='Class';
+				/*
+				* check if it is a choiseClass
+				* special class No properties no children
+				*/
+			 	checkOrdinaryClassType(_rootIndexObj[classId],item);
 				_rootIndexObj.OrdinaryClasses.children.push(_rootIndexObj[classId]);
 				//_rootIndexObj[classId].parents=['OrdinaryClasses']
 			}

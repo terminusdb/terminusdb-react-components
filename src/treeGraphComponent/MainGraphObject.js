@@ -17,6 +17,8 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 
 	let _entitiesList=new Map();
 
+	let _objectChoiceList =[]
+
     /*
     * all the propertyList ????
     */
@@ -392,45 +394,6 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
         _descendantsNode.set(newNodeObj.name,newNode);
 	}
 
-	/*
-	*For an DELETE
-	 ELEMENT UNDO
-	*nodeElement is a tree node {x:0,y:0, data:{} ....}
-	*/
-	/*const addNodeTotreeModel=(nodeElement)=>{
-		_descendantsNode.set(nodeElement.data.name,nodeElement);
-		_rootIndexObj[nodeElement.data.name]=nodeElement.data;
-		elementToTreeModel({[nodeElement.data.name]:nodeElement.data.elementObjForSave()});
-	}
-
-	const elementToTreeModel=(elements)=>{		
-		for(let elementId in elements) {
-			const elementObj=elements[elementId];
-			const parentId=elementObj.parents && elementObj.parents.length>0 ?  elementObj.parents[0] : 'ROOT';
-
-			// add to parent
-			const nodeElement=createClassElement(elementId,elements);	
-			if (parentId!=='ROOT') {
-				// create child array if it doesn't exist
-				/*
-				* check how many parent of first level (direct parent)
-				*/
-				/*const firstLevelParents=getFirstLevelParentship(elementObj.parents,elements);
-				firstLevelParents.forEach((parentName)=>{
-					const parentElement=createClassElement(parentName,elements);
-					parentElement.addChild(elementId,nodeElement);
-					nodeElement.addParent(parentName,parentElement,false);
-				})
-			} else {
-				/*
-				* parent is null or missing
-				* I have get the group parent root
-				*/
-				//getRoot(nodeElement.type).children.push(nodeElement);
-			//}
-		//}
-	//}
-
 	const getPropertyListByDomain=(domainClassName)=>{
 		if(_domainToProperties[domainClassName]) return _domainToProperties[domainClassName];
 		return []
@@ -444,45 +407,15 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 		return property.domain && property.domain.length>0 ? property.domain[0] : undefined;
 	}
 
-	/*
-	*create a property class and match it with class 
-	*/
-	/*addPropertiesToClass(properties){
-		try{
-			for (let propertyId in properties){
-				const propertyObj=properties[propertyId];
-				
-				if(propertyObj.type==="SimpleProperty") continue;
-
-				addPropertyToClassObj(propertyId,propertyObj);
-			}
-		}catch(err){
-			console.log("PROPERTY TO CLASS",err.message);
-		}
-			
-	}
-
-	addPropertyToClassObj(propertyId,propertyObj){
-		const className=getPropertyDomain(propertyObj);
-
-		if(_rootIndexObj[className]){
-			const classObj=_rootIndexObj[className];
-			classObj.addProperty(propertyId,propertyObj.type,propertyObj);
-		}
-	}*/
-
 
 	function formatDataForTree(){
-		const [descendantsNode, classesList, entitiesList,objectPropertyList] = new formatDataForTreeChart(getRoot());
+		const [descendantsNode, classesList, entitiesList,objectPropertyList,objectChoiceList] = new formatDataForTreeChart(getRoot());
 		_descendantsNode=descendantsNode;
 		_classesList=classesList;
 		_entitiesList=entitiesList;
 		_objectPropertyList=objectPropertyList;
+		_objectChoiceList=_objectChoiceList;
 	}
-
-	/*get descendantsNode(){
-		return _descendantsNode
-	}*/
 
 	const descendantsNodeAsArray=()=>{
 		return [..._descendantsNode.values()]
