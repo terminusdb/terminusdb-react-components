@@ -28,6 +28,7 @@ export const BaseInputElement = (props) => {
 	                 <HelpComponent/>
                 </div>
                 <input onBlur={onBlur} {...disabled} onChange={onChange} value={value} name={props.name} className={props.inputClassName}></input>       
+            	<span>{props.itemError}</span>
             </div>
 
 	)

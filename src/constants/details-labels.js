@@ -13,11 +13,18 @@ export const TERMINUS_FONT_BASE = "https://assets.terminusdb.com/terminusdb-cons
 export const PROPERTY_TYPE_NAME={
 		STRING_PROPERTY:'StringProperty',
 		NUMERIC_PROPERTY:'NumericProperty',
-		CHIOCE_PROPERTY:'ChoiceProperty',
+		CHOICE_PROPERTY:'ChoiceProperty',
 		GEO_PROPERTY:'GeoProperty',
 		TEMPORAL_PROPERTY:'TemporalProperty',
 		OBJECT_PROPERTY:'ObjectProperty'
 }
+
+export const CLASS_TYPE_NAME={
+	  OBJECT_CLASS:'Class',
+	  CHOICE_CLASS:"ChoiceClass",
+	  DOCUMENT_CLASS:"Document"
+}
+
 //decimal, integer ,  decimalRange,long, bite,short,
 export const PROPERTY_STRING_BY_RANGE={'string':'xsd:string',
 										'json':'xdd:json',

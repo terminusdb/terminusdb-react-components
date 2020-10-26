@@ -24,7 +24,7 @@ export const SchemaBuilder = (props)=>{
 		  objectPropertyList,
 		  objPropsRelatedToClass,
 		  savedObjectToWOQL,
-		  updateParentsList,availableParentsList,elementsNumber
+		  //updateParentsList,availableParentsList
 		  //entitiesListArr,classesListArr
 		  } = GraphContextObj();
 
@@ -70,8 +70,7 @@ export const SchemaBuilder = (props)=>{
 		        </SizeMe>
 		    </div>
 		    {showInfoComp &&
-
-		    	<InfoBoxComponent elementsNumber={elementsNumber}/>
+		    	<InfoBoxComponent/>
 		    }
 		    {!showInfoComp && isEditMode===false && 
 		    	<ObjectClassModelViewMode 
@@ -79,11 +78,6 @@ export const SchemaBuilder = (props)=>{
 		    		classPropertyList={classPropertiesList} />}
 	        {!showInfoComp &&
 	        	<DetailsModelComponent
-	        	//classesListArr={classesListArr}
-	        	//entitiesListArr={entitiesListArr}
-		        	elementsNumber={elementsNumber}
-		        	availableParentsList={availableParentsList}
-		        	updateParentsList={updateParentsList}
 		        	objPropsRelatedToClass={objPropsRelatedToClass} 
 		        	objectPropertyList={objectPropertyList} 
 		        	removeElement={removeElement} 

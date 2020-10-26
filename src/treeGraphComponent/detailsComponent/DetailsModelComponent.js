@@ -8,6 +8,7 @@ import {ConstraintsComponent} from './ConstraintsComponent';
 import {ParentsFilter} from './ParentsFilter';
 import {PropertiesComponent} from './PropertiesComponent';
 import {ELEMENT_ICONS} from '../../constants/details-labels';
+import {ChoiceList} from './ChoiceList';
 
 export const DetailsModelComponent = (props)=>{
 	const nodeData = props.currentNodeJson ? props.currentNodeJson : {}
@@ -18,42 +19,37 @@ export const DetailsModelComponent = (props)=>{
 
 	const getTabs=()=>{
 		const tabsArr=[]
-
-
 		tabsArr.push({title:'Class',
 	             getContent: () =><div className="tdb__panel">
 	             					<BaseElement elementId={nodeData.name} elementType={nodeData.type} removeElement={props.removeElement} showCardinality={false} hasConstraints={hasConstraints} nodeJsonData={nodeData} updateValue={props.updateValue}/>
-						 	 		{nodeData.type==='ChoiceClass'&&
-
-						 	 		<div>chooise element</div>
-						 	 		}
 						 	 	</div>,				    
 						    	key: 1,
 						    	tabClassName: 'tab',
 						    	panelClassName: 'tdb__panel--nopad'
 							})
-		if(nodeData.type!=='ChoiceClass'){
-			tabsArr.push({title:'Properties',
-	            getContent: () =>
-	             				
-	             					<PropertiesComponent removeElement={props.removeElement} 
-		             					classPropertyList={props.classPropertyList}
-		             					updateValue={props.updateValue}
-		             					addNewProperty={props.addNewProperty}
-		             					objectPropertyList={props.objectPropertyList}
-	             					 />
-	             				,
-		
+		if(nodeData.type==='ChoiceClass'){
+			tabsArr.push({title:'Choices List',
+	             getContent: () =><div className="tdb__panel">
+	             					<ChoiceList choices={nodeData.choices} />
+	             				  </div>,				    
 						    	key: 2,
 						    	tabClassName: 'tab',
-						    	panelClassName: 'tdb__panel'
-						    })
+						    	panelClassName: 'tdb__panel--nopad'
+							})
+		}else if(nodeData.type!=='ChoiceClass'){
+			tabsArr.push({title:'Properties',
+	            getContent: () =><PropertiesComponent />,
+						    	key: 2,
+						    	tabClassName: 'tab',
+						    	panelClassName: 'tdb__panel'})
 		}
 		tabsArr.push({title:'Relationship',
 	            getContent: () =>
          					<div className="tdb__panel">
          						<ConstraintsComponent objectPropertyList={props.objectPropertyList} nodeJsonData={nodeData} objPropsRelatedToClass={props.objPropsRelatedToClass}/>
-         						<ParentsFilter availableParentsList={props.availableParentsList} nodeJsonData={nodeData} updateParentsList={props.updateParentsList}/>
+         						{nodeData.type!=='ChoiceClass' &&
+         							<ParentsFilter/>
+         				  		}
          				  	</div>,
 
 				    	key: 3,

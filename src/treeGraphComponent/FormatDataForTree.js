@@ -1,16 +1,24 @@
 import { tree, hierarchy } from 'd3-hierarchy';
-import {PROPERTY_TYPE_NAME,
+import {CLASS_TYPE_NAME,
+		PROPERTY_TYPE_NAME,
 		PROPERTY_STRING_BY_RANGE,
 		PROPERTY_NUMBER_BY_RANGE,
 		PROPERTY_GEO_BY_RANGE,
 		PROPERTY_TEMPORAL_BY_RANGE} from '../constants/details-labels'
 
-const addTypeRange=(item,newProperty) =>{
+const addTypeRange=(item,newProperty,_rootIndexObj) =>{
 	const range=item["Property Range"]
 
+	/*
+	* I have 2 types of special property LinkProperty and ChoiceProperty
+ 	*/
 	if(range.startsWith("terminusdb:///schema#")){
 		newProperty['range']=range;
-		newProperty['type']=PROPERTY_TYPE_NAME.OBJECT_PROPERTY; 
+		if(_rootIndexObj[range] && _rootIndexObj[range].type===CLASS_TYPE_NAME.CHOICE_CLASS){
+			newProperty['type']=PROPERTY_TYPE_NAME.CHOICE_PROPERTY
+		}else{
+			newProperty['type']=PROPERTY_TYPE_NAME.OBJECT_PROPERTY;
+		}		 
 		return;
 	}
 	//"http://terminusdb.com/schema/xdd#url"
@@ -63,7 +71,7 @@ export const addRestictionToProps=(propertiesList,restrDataProvider)=>{
 	})
 }
 
-export const formatProperties=(dataProvider,restrDataProvider,classesList)=>{
+export const formatProperties=(dataProvider,restrDataProvider,_rootIndexObj)=>{
 
 	const propertyByDomain={}
 	const objectPropertyRange={}
@@ -86,7 +94,7 @@ export const formatProperties=(dataProvider,restrDataProvider,classesList)=>{
 				          domain:classDomain
 						}
 
-		addTypeRange(item,newProperty);
+		addTypeRange(item,newProperty,_rootIndexObj);
 
 		if(newProperty.type===PROPERTY_TYPE_NAME.OBJECT_PROPERTY){
 			if(!objectPropertyRange[newProperty.range]){
@@ -165,7 +173,7 @@ export const formatDataForTreeChart =(rootElement)=>{
        }else if (node.data.type==='Class'){
        		classesList.set(node.data.name,{value:node.data.name,name:node.data.name,label:node.data.label});
        		objectPropertyList.push({type:node.data.type,value:node.data.name,name:node.data.name,label:node.data.label})
-       }else if (node.data.type==='ChoiceClass'){
+       }else if (node.data.type===CLASS_TYPE_NAME.CHOICE_CLASS){
        		objectChoiceList.push({value:node.data.name,name:node.data.name,label:node.data.label});
        }
        
@@ -204,7 +212,8 @@ const checkOrdinaryClassType=(classElement,item)=>{
 		item["Choices"].forEach((choise)=>{
 			const  choiseId=getId(choise[0]);
 			const  choiseLabel=choise[1]['@value'];
-			choicesList.push({id:choiseId,label:choiseLabel})
+			const  choiseComment=choise[2]['@value'];
+			choicesList.push({id:choiseId,label:choiseLabel,comment:choiseComment})
 
 		})
 		classElement['type']='ChoiceClass';

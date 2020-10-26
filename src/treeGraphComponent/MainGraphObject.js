@@ -11,8 +11,6 @@ import {graphUpdateObject} from './utils/graphUpdateObject'
 
 export const MainGraphObject = (mainGraphDataProvider)=>{
 
-	let _centralChoicesList=new Map();
-
 	let _classesList=new Map();
 
 	let _entitiesList=new Map();
@@ -52,6 +50,10 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 
 	const getObjectProperties=()=>{
 		return _objectPropertyList;
+	}
+
+	const getObjectChoices=()=>{
+		return _objectChoiceList;
 	}
 
 	const getRoot=(type=null)=>{
@@ -96,7 +98,7 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 	const createNewMainGraph=(mainGraphDataProvider)=>{
 		_mainGraphElementsJson=mainGraphDataProvider;
 		_rootIndexObj=formatData(mainGraphDataProvider.classesResult);		
-		const[propertyByDomain,objectPropertyRange,propertiesList]=formatProperties(mainGraphDataProvider.propsResult,mainGraphDataProvider.restResult);		
+		const[propertyByDomain,objectPropertyRange,propertiesList]=formatProperties(mainGraphDataProvider.propsResult,mainGraphDataProvider.restResult,_rootIndexObj);		
 		_domainToProperties=propertyByDomain;
 		_objectPropertyToRange=objectPropertyRange;
 		_propertiesList=propertiesList;
@@ -414,7 +416,7 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 		_classesList=classesList;
 		_entitiesList=entitiesList;
 		_objectPropertyList=objectPropertyList;
-		_objectChoiceList=_objectChoiceList;
+		_objectChoiceList=objectChoiceList;
 	}
 
 	const descendantsNodeAsArray=()=>{
@@ -422,7 +424,14 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 	}
 
 	const savedObjectToWOQL=()=>{
-		return _graphUpdateObject.savedObjectToWOQL();
+		return _graphUpdateObject.savedObjectToWOQL(_rootIndexObj);
+	}
+
+	const updateChoices=(elmentName,choicesList)=>{
+		const choiceClass=_rootIndexObj[elementName];
+		updateChoices['choices']=choicesList;
+
+		_graphUpdateObject.updateChoicesList(choiceClass)
 	}
 
 	const changeElementDataValue=(propName,propValue,elementDataObject)=>{
@@ -432,7 +441,8 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 		_graphUpdateObject.updateTripleElement(propName,propValue,elementDataObject);
 		switch(elementDataObject.type){
 			case 'Document':
-			case 'Class':							
+			case 'Class':
+			case 'ChoiseClass':						
 				const currentNode=_rootIndexObj[elementDataObject.name];
 				currentNode[propName]=propValue;
 				break;
@@ -443,7 +453,7 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 		}
 	}
 
-	return {getElementsNumber,getElement,getPropertyListByDomain,getObjPropsRelatedToClass,getAvailableParentsList,
+	return {getObjectChoices,getElementsNumber,getElement,getPropertyListByDomain,getObjPropsRelatedToClass,getAvailableParentsList,
       nodeApplyAction,addNewPropertyToClass,removePropertyToClass,changeElementDataValue,
       updateNodeParents,savedObjectToWOQL,getObjectProperties,getDescendantsNode,removeElementInMainGraph}
 }

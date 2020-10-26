@@ -1,16 +1,3 @@
-/*
-let choices = [
-        ["scm:inferred", "Inferred", "The value has been logically inferred from other evidence"],
-        ["scm:disputed", "Disputed", "The evidence is disputed - some believe this data to be incorrect"],
-        ["scm:dubious", "Dubious", "The evidence is dubious - most believe this data to be incorrect"],
-        ["scm:uncertain", "Uncertain", "The evidence has a high degree of uncertainty"]
-    ]
-
- WOQL.generateChoiceList("scm:Confidence", "Confidence Tags", "Tags that can be added to values to indicate confidence in the value of some piece data", choices)
-[5:55 PM]
-add_property('my_property', "scm:Confidence")....*/
-//delete choose
-//select('v:c','v:b').from("schema/main").triple('v:var','owl:oneOf','v:b').path('v:b','(rdf:rest|rdf:first)+','v:c','v:path')
 import {ADD_PARENT, REMOVE_PARENT} from './actionType';  
 import TerminusClient from '@terminusdb/terminusdb-client';
 import {PROPERTY_TYPE_NAME} from '../../constants/details-labels'
@@ -21,6 +8,8 @@ export const graphUpdateObject=()=>{
 
 	const deleteNodesList = new Map()
 	const deletePropertiesList= new Map()
+
+	const updateChoiceList= new Map()
 
 	const updateTriple=new Map()
 
@@ -46,6 +35,11 @@ export const graphUpdateObject=()=>{
 			newNode.type=currentNode.type
 		}
 
+	}
+
+	const updateChoicesList=(choiceClass)=>{
+		if(choiceClass.newElement===true)return
+		updateChoiceList.set(choiceClass.name,choiceClass);
 	}
 
 	/*
@@ -177,16 +171,30 @@ export const graphUpdateObject=()=>{
 		//return `scm:${arr[1]}`	
 	}
 
+	const formatChoiceListForWoql = (choicelist)=>{
+		const choices=[]
+		choicelist.forEach((item)=>{
+			const choiceArr=[`smc:${item.id}`,item.label,item.comment]
+			choices.push(choiceArr);
+		})
+		return choices;
+	}
+
 	const savedObjectToWOQL = ()=>{
 		let WOQL = TerminusClient.WOQL
 		const andValues = []
 		newNodesList.forEach((node,key) =>{
-			const newNode={id:node.id,
-						   label:node.label,
-						   description:node.comment,
-						   parent:node.parent,
-						   abstract:node.abstract} 
-			andValues.push(WOQL.insert_class_data(newNode))
+			if(node.type!=='choiceClass'){
+				const newNode={id:node.id,
+							   label:node.label,
+							   description:node.comment,
+							   parent:node.parent,
+							   abstract:node.abstract}			 
+				andValues.push(WOQL.insert_class_data(newNode))
+			}else{
+				const choices=formatChoiceListForWoql(node.choices)
+				addValues.push(WOQL.generateChoiceList(node.id, node.label, node.comment, choices))
+			}
 		})
 
 		newPropertiesList.forEach((property,key) =>{
@@ -230,6 +238,14 @@ export const graphUpdateObject=()=>{
 			andValues.push(WOQL.delete_property(proObj.name));
 		})
 
+		/*
+		* if I change somethingin the choicelist I have to remove and add again
+		*/
+		updateChoiceList.forEach((choiceObj,choiceName)=>{
+			const choiceId=getRealId(choiceName)
+			const choices=formatChoiceListForWoql(choiceObj.choices)
+			addValue.push(WOQL.updateChoiceList(choiceId, choiceObj.label, choiceObj.description, choices))
+		})
 
 		const query = WOQL.and(...andValues);
 		return query

@@ -6,26 +6,21 @@ import {ELEMENT_BASE_CLASS_LIST,ELEMENT_ENTITY_LIST_ITEM} from '../../constants/
 
 export const ObjectProperty =(props)=>{
 	
-	const [classType,setClassType]=useState('')
 	let currentNodeJson=props.currentNodeJson || {}
-	const parentClassId=props.parentClassId;
 	const id=props.id;
-	const dataProvider=props.objectPropertyList || [];
+	const dataProvider=props.comboDataProvider || [];
 
-	//const elementClassList=props.objectPropertyList || [];
 
 	const getSelectedValue=()=>{
 		if(currentNodeJson.range){
 			const rangeValue = dataProvider.find(element => element.name === currentNodeJson.range);
-
-			return {label:rangeValue.label,name:rangeValue.name,value:rangeValue.value}
+			if(rangeValue)return {label:rangeValue.label,name:rangeValue.name,value:rangeValue.value}
 		}
 
 		return null;
 	}
 
 	
-	const isDisabled=currentNodeJson.isRelatedWith || false;
 	const defaultValue=getSelectedValue();
 
 	const onChangeValue=(propName,newValue)=>{
@@ -39,11 +34,10 @@ export const ObjectProperty =(props)=>{
 	return(<BasePropertyComponent {...props} >
 			<BaseSelectReactElement
 				optionChange={onChangeValue}
-				defaultValue={defaultValue} 
-				isDisabled={isDisabled} 
+				defaultValue={defaultValue}
 				placeholder="Select a Class" 
 				resetSelection={true} 
-				dataProvider={dataProvider} name="range" parentClassId={parentClassId} />
+				dataProvider={dataProvider} name="range" />
 		   </BasePropertyComponent>			
 	)
 }

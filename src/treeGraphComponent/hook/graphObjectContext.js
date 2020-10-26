@@ -21,6 +21,8 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 	const [selectedNodeObject, setSelectedNodeObject] = useState({});
 	const [classPropertiesList, setClassPropertiesList] = useState([]);
 
+
+	const [objectChoicesList, setObjectChoicesList] = useState([]);
 	const [objectPropertyList, setObjectPropertyList] = useState([]);
 	const [objPropsRelatedToClass,setObjPropsRelatedToClass]=useState([]);
 
@@ -45,6 +47,7 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 			setMainGraphObj(mainGraphObject)
 			setGraphDataProvider(mainGraphObject.getDescendantsNode())
 			setObjectPropertyList(mainGraphObject.getObjectProperties())
+			setObjectChoicesList(mainGraphObject.getObjectChoices())
 			resetSelection()
 			/*
 			to be review
@@ -111,6 +114,10 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 		setGraphUpdateLabel(Date.now());
 	}
 
+	const updateChoices =(choicesList)=>{
+		mainGraphObj.updateChoices(selectedNodeObject.name,choicesList)	
+	}
+
 	const savedObjectToWOQL=()=>{
 		return mainGraphObj.savedObjectToWOQL()
 	}
@@ -133,7 +140,8 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 	        updateParentsList,
 	        availableParentsList,
 	        elementsNumber,
-	        mainGraphObj
+	        mainGraphObj,
+	        objectChoicesList
 	    	}}>
 	     {children}
         </GraphContext.Provider>
