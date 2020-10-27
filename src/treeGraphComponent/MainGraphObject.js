@@ -131,7 +131,8 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
             let currentNode=_rootIndexObj[nodeName];
             let elementType=currentNode.type;
             let actionType=actionName;         
-   
+   			let isChoiceClass= false;
+
             switch (actionName){
               case NODE_ACTION_NAME.ADD_NEW_ENTITY:
                    elementType='DocumentClasses';
@@ -151,6 +152,14 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
                    actionType=NODE_ACTION_NAME.ADD_CHILD;
                    
                    break;
+
+              case  NODE_ACTION_NAME.ADD_NEW_CHOICE_CLASS:
+              		elementType='OrdinaryClasses';
+                    //nodeName='OrdinaryClasses'
+                    currentNode=getRoot(elementType);
+                    actionType=NODE_ACTION_NAME.ADD_CHILD;
+              		isChoiceClass=true;
+              		break;
             }
         	 let newNodeObj={};
         	 if(actionName===NODE_ACTION_NAME.ADD_PARENT){
@@ -176,7 +185,7 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
         	 	nodeName=rootParentNode.name;
         	 }else{
 
-        	 	newNodeObj=_graphUpdateObject.addNodeToTree(currentNode);
+        	 	newNodeObj=_graphUpdateObject.addNodeToTree(currentNode,null,isChoiceClass);
 
         	 	if(currentNode.type==="Group"){
         	 		currentNode.children.push(newNodeObj);

@@ -18,7 +18,7 @@ export const graphUpdateObject=()=>{
 	*/
 	const changeParentList=new Map()
 
-	const addParent=(currentNode,newNode)=>{
+	const addParent=(currentNode,newNode,isChoiceClass)=>{
 		if(currentNode.type==='Group' ){
 			if(currentNode.name==="DocumentClasses"){
 				newNode.parent=['Document']
@@ -27,7 +27,9 @@ export const graphUpdateObject=()=>{
 			}else{
 				newNode.parent=[]
 				newNode.parents=[]
-				newNode.type='Class'
+				let nodeType='Class'
+				if(isChoiceClass)nodeType="ChoiceClass"
+				newNode.type=nodeType
 			}
 		}else{
 			newNode.parent=[currentNode.id]
@@ -68,7 +70,7 @@ export const graphUpdateObject=()=>{
   
 
 
-	const addNodeToTree=(currentNode,addParentToNode=null)=>{
+	const addNodeToTree=(currentNode,addParentToNode=null,isChoiceClass=false)=>{
 		const newName=`CLASS_${(new Date()).getTime()}`;
 		let elementModel={
 						 name:newName,
@@ -81,7 +83,7 @@ export const graphUpdateObject=()=>{
 			             abstract:false
 		          		}
 
-		addParent(currentNode,elementModel)
+		addParent(currentNode,elementModel,isChoiceClass)
 		
 		newNodesList.set(newName,elementModel);
 

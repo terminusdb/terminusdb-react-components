@@ -2,24 +2,9 @@ import React from 'react';
 import {BaseSchemaElementViewMode} from './BaseSchemaElementViewMode'
 import {PropertiesComponentViewMode} from './PropertiesComponentViewMode'
 import {ParentsElementViewMode} from './ParentsElementViewMode'
-import {ELEMENT_ICONS} from '../../../constants/details-labels'
-
+import {ELEMENT_ICONS,CLASS_TYPE_NAME} from '../../../constants/details-labels'
+import {ListComponent} from'../ListComponent';
 export const ObjectClassModelViewMode = (props) => {
-
-
-	/*getRelationshipElement(){
-		const members=props.members || {};
-		const relationship=[];
-		for (let id in members){
-			let item=members[id]
-			relationship.push(<BaseLabelsElementViewMode label={item.label} value={item.elementLabel} />)
-		   				
-		}
-		return relationship;
-	}*/
-
-	//render(){
-	
 	let currentNodeJson = props.currentNodeJson || {};
 	const imageType=ELEMENT_ICONS[currentNodeJson.type]
 
@@ -35,28 +20,16 @@ export const ObjectClassModelViewMode = (props) => {
 	  	 		<i className={`tdb__panel__title__icon ${imageType}`}></i>
 	  	 		{currentNodeJson.label}
 	  	 	</div>
-			<BaseSchemaElementViewMode  currentNodeJson={currentNodeJson}  />			
+			<BaseSchemaElementViewMode  currentNodeJson={currentNodeJson}  />
+			{currentNodeJson.type===CLASS_TYPE_NAME.CHOICE_CLASS && 
+			  <div className="tdb__panel__box"> 
+			  	<span className="tdb__panel__subtitle">Choices List</span>	  
+			  	<ListComponent dataProvider={currentNodeJson.choices} />		 
+			  </div>
+		    }			
 			<PropertiesComponentViewMode dataProvider={props.classPropertyList || []} />
 			{currentNodeJson.parents.length>0 && 
 				<ParentsElementViewMode  id={props.id} title={'Parents'} />}		       
 		</div>
 	)
 }
-
-/*
-	{/*	  	 {currentNodeJson.parents.length>0 && <ParentsElementViewMode parentsElementArr={currentNodeJson.parentsObjAsArray()} 
-				  	                       		id={props.id} title={'Parents'} />}
-			  		 
-			  		{addRelationship && 
-		               <RelationshipViewMode source={currentNodeJson.source} target={currentNodeJson.target} id={props.id}/>
-		            }*/
-
-/*
-<BaseObjectClassLayout key={id} label={nodeLabel} type={props.nodeType} panelName={MODEL_RIGHT_WINDOW_OBJ}>
-				  	 <BaseSchemaElementViewMode {...currentNodeJson} />
-				  	 {propertiesDataProvider.length>0 && <PropertiesComponentViewMode dataProvider={propertiesDataProvider} id="test"/> }
-				  	 {props.parents && <ParentsElementViewMode parentsElementArr={props.parents} 
-				  	                        treeModelGraph={props.treeModelGraph} id={id} title={'Parents'} />}
-			  		 
-			  		 {addRelationship && <RelationshipViewMode treeModelGraph={props.treeModelGraph} id={id} members={members} />}
-			  </BaseObjectClassLayout>*/
