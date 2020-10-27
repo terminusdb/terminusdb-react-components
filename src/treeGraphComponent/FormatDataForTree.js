@@ -96,14 +96,20 @@ export const formatProperties=(dataProvider,restrDataProvider,_rootIndexObj)=>{
 
 		addTypeRange(item,newProperty,_rootIndexObj);
 
-		if(newProperty.type===PROPERTY_TYPE_NAME.OBJECT_PROPERTY){
+		if(newProperty.type===PROPERTY_TYPE_NAME.OBJECT_PROPERTY || newProperty.type===PROPERTY_TYPE_NAME.CHOICE_PROPERTY){
 			if(!objectPropertyRange[newProperty.range]){
 				objectPropertyRange[newProperty.range]=[]
 			}
+
+			const classElement=_rootIndexObj[newProperty.range];
 			
 			//the item range is the Class-range of the ObjectProperty
 			
-			objectPropertyRange[newProperty.range].push({label:newProperty.label, name:newProperty.name})
+			objectPropertyRange[newProperty.range].push({classRangeType:classElement.type, 
+														classRangeLabel:classElement.label,
+														label:newProperty.label, 
+														name:newProperty.name,
+														type:newProperty.type})
 		}
 		propertiesList.set(newProperty.name,newProperty);
 

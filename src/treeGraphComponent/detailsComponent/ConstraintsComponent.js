@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 //import AccordionItemComponent from '../layoutComponent/AccordionItemComponent';
 //import RelationshipBox from '../relationshipView/RelationshipBox'
-
+import {PROPERTY_TYPE_NAME} from '../../constants/details-labels'
 const constraintMessage={childrenNum:'This node has',
 						inRelationship:'This node is in this Relationship',
 						relComplexProperty:'This node is a range of the ComplexProperty'}
@@ -13,7 +13,7 @@ export const ConstraintsComponent =(props)=>{
     const change=(evt)=>{
        setChecked({checked:evt.target.checked});
     }
-
+    //const elementLabel={}
 
     const getConstraintsMessage=()=>{
     	let message=[]
@@ -31,9 +31,9 @@ export const ConstraintsComponent =(props)=>{
 
     	if(props.objPropsRelatedToClass && props.objPropsRelatedToClass.length>0){
     		const complexMessage= props.objPropsRelatedToClass.map((complexPropertyObj)=>{
-                        return <div className="tdb__list__items">This node is related to 
-                                    <h5>Object Property {complexPropertyObj.label} </h5>
-                                          in the <h5>{complexPropertyObj.classRangeType} {complexPropertyObj.classRangeLabel}</h5>
+                        return <div className="tdb__list__items">In this node the  
+                                    <b> Property {complexPropertyObj.label} </b> is related with 
+                                       the <b>{complexPropertyObj.classRangeType} {complexPropertyObj.classRangeLabel}</b>
                                 </div>
             
 

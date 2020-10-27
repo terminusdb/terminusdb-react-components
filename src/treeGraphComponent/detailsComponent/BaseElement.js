@@ -25,7 +25,7 @@ export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassI
                 elementId={nodeJsonData.name}
                 elementType={nodeJsonData.type}
                 removeElement={removeElement}/>
-       	    	{isNodeObject &&
+       	    	{isNodeObject && nodeJsonData.type!=='ChoiceClass' && 
                     <BaseCheckboxElement title={'Abstract'}  name='abstract' defaultValue={nodeJsonData.abstract || false} onBlur={changeElement} />
                 }
                 <BaseInputElement 
