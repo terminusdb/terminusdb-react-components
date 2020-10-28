@@ -33,10 +33,12 @@ export const ObjectProperty =(props)=>{
 	*/
 	return(<BasePropertyComponent {...props} >
 			<BaseSelectReactElement
+				title="Class range"
 				optionChange={onChangeValue}
 				defaultValue={defaultValue}
 				placeholder="Select a Class" 
-				resetSelection={true} 
+				resetSelection={false} 
+				isClearable={false}
 				dataProvider={dataProvider} name="range" />
 		   </BasePropertyComponent>			
 	)

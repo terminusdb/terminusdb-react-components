@@ -87,7 +87,7 @@ export const formatProperties=(dataProvider,restrDataProvider,_rootIndexObj)=>{
 		}
 
 		const newProperty={name:item['Property ID'],
-						  id: item['Property ID'],
+						  id: getId(item['Property ID']),
 				          label:item['Property Name']['@value'],
 				          comment:item['Property Description']['@value'],
 				          newElement:false,

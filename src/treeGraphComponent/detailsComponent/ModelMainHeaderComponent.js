@@ -14,9 +14,9 @@ export const ModelMainHeaderComponent =(props)=>{
 		return(		
 		   <div className="tdb__model__hright">
 		   	   <div className="tdb__model__hright" {...style}>
-			   	   <div className="icon-header">
+			   	   {/*<div className="icon-header">
 				   		<i className="fa fa-sync" title={TOOLBAR_LABELS.ResetButtonTooltip} onClick={props.resetTreeModel}></i>
-				   </div>
+				   </div>*/}
 				   <div className="icon-header" >
 				   		<ToogleButton baseTooltip={TOOLBAR_LABELS.SaveButtonTooltip} 
 				   					  baseIcon="fa fa-save"

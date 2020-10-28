@@ -86,7 +86,7 @@ export const GEO_PROPERTY_VALUE_ID='value_type';
 */
 export const STRING_TYPE_DATAPROVIDER={label: 'String Type',
 	                                   id:'range',
-	                                   options:[{label:'Non Specified', value:'xsd:string'},
+	                                   options:[{label:'String', value:'xsd:string'},
 									  {label:'Json', value:'xdd:json',description:'A JSON Encoded String'},
 									  //{label:'Text', value:'text'},
 									  {label:'Base64 Binary', value:'xsd:base64Binary', description:'An xsd:base64Binary value.'},
@@ -122,9 +122,9 @@ export const NUMERIC_TYPE_ELEMENT_ID='interpretation';
 
 export const NUMBER_PROPERTY_PRECISION_DATAPROVIDER={label:'Precision',
 													id:'range',
-													options:[{label:'Non Specified', value:'xsd:decimal'},
+													options:[{label:'Decimal', value:'xsd:decimal'},
 										            {label:'Integer', value:'xsd:integer',description:'A simple number. An xsd:integer value.'},
-										            {label:'Decimal', value:'xsd:decimal', description:'A decimal value (e.g. 23.34)'},
+										            //{label:'Decimal', value:'xsd:decimal', description:'A decimal value (e.g. 23.34)'},
 										            {label:'Decimal Range', value:'xdd:decimalRange',description:'Uncertain range of decimal values (e.g.[23.4, 4.143]. Enables uncertainty to be encoded directly in the data'},
 										            {label:'Long', value:'xsd:long', description:'An xsd:long value.'},
 										            {label:'Bite', value:'xsd:bite', description:'An xsd:byte value'},
@@ -154,7 +154,7 @@ export const NUMBER_PROPERTY_TYPE_DATAPROVIDER=[{label:'Non Specified', value:''
 export const TEMPORAL_PROPERTY_DATAPROVIDER={label: 'Temporal Type',
 	                                   id:'range',
 	                                   options:
-	                                   [{label:'Not specified',value:'xsd:dateTime',description:''},
+	                                   [{label:'Date-Time',value:'xsd:dateTime',description:''},
 	                                   {label:'Year',value:'xsd:gYear',description:'A particular 4 digit year YYYY - negative years are BCE.'},
 									   {label:'Year (Uncertain Range)',value:'xdd:gYearRange',description:'A 4-digit year, YYYY, or if uncertain, a range of years. An xdd:gYearRange value.'},
 									   {label:'Month',value:'xsd:gMonth',description:'A particular 4 digit year YYYY - negative years are BCE.'},
@@ -168,7 +168,7 @@ export const TEMPORAL_PROPERTY_DATAPROVIDER={label: 'Temporal Type',
 									   {label:'Time',value:'xsd:time', description:'A time. An xsd:time value. hh:mm:ss.ssss'},
 									  // {label:'Hour',value:'hour'},
 									  // {label:'Second',value:'second'},
-									   {label:'Date-Time',value:'xsd:dateTime',description:'An xsd:dateTime value.'},
+									  // {label:'Date-Time',value:'xsd:dateTime',description:'An xsd:dateTime value.'},
 									   {label:'Date-Time Stamp',value:'xsd:dateTimeStamp',description:'An xsd:dateTimeStamp value.'}]}
 
 
@@ -179,9 +179,9 @@ export const TEMPORAL_PROPERTY_DATAPROVIDER={label: 'Temporal Type',
 
 export const GEOMETRY_PROPS_DATAPROVIDER={label:'Geometry Type',
     							id:'range',
-    							options:[{label:'Non Specified', value:'xdd:coordinate'},
+    							options:[{label:'Coordinate', value:'xdd:coordinate'},
 
-    							{label:'Coordinate', value:'xdd:coordinate',description:'A particular location on the surface of the earth, defined by latitude and longitude . An xdd:coordinate value.'},
+    							//{label:'Coordinate', value:'xdd:coordinate',description:'A particular location on the surface of the earth, defined by latitude and longitude . An xdd:coordinate value.'},
     							{label:'Coordinate Path', value:'xdd:coordinatePolyline',description:'A set of coordinates forming a line on a map, representing a route. An xdd:coordinatePolyline value.'},
     							{label:'Geographic Area',value:'xdd:coordinatePolygon', description:'A shape on a map which defines an area. within the defined set of coordinates   An xdd:coordinatePolygon value.'},
        							]}
