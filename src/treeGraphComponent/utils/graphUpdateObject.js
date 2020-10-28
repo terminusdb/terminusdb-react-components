@@ -1,6 +1,6 @@
 import {ADD_PARENT, REMOVE_PARENT} from './actionType';  
 import TerminusClient from '@terminusdb/terminusdb-client';
-import {PROPERTY_TYPE_NAME} from '../../constants/details-labels'
+import {PROPERTY_TYPE_NAME,CLASS_TYPE_NAME} from '../../constants/details-labels'
 
 export const graphUpdateObject=()=>{
 	const newNodesList = new Map()
@@ -28,7 +28,7 @@ export const graphUpdateObject=()=>{
 				newNode.parent=[]
 				newNode.parents=[]
 				let nodeType='Class'
-				if(isChoiceClass)nodeType="ChoiceClass"
+				if(isChoiceClass)nodeType=CLASS_TYPE_NAME.CHOICE_CLASS
 				newNode.type=nodeType
 			}
 		}else{
@@ -176,7 +176,7 @@ export const graphUpdateObject=()=>{
 	const formatChoiceListForWoql = (choicelist)=>{
 		const choices=[]
 		choicelist.forEach((item)=>{
-			const choiceArr=[`smc:${item.id}`,item.label,item.comment]
+			const choiceArr=[`scm:${item.id}`,item.label,item.comment]
 			choices.push(choiceArr);
 		})
 		return choices;
@@ -186,7 +186,7 @@ export const graphUpdateObject=()=>{
 		let WOQL = TerminusClient.WOQL
 		const andValues = []
 		newNodesList.forEach((node,key) =>{
-			if(node.type!=='choiceClass'){
+			if(node.type!==CLASS_TYPE_NAME.CHOICE_CLASS){
 				const newNode={id:node.id,
 							   label:node.label,
 							   description:node.comment,
@@ -195,7 +195,7 @@ export const graphUpdateObject=()=>{
 				andValues.push(WOQL.insert_class_data(newNode))
 			}else{
 				const choices=formatChoiceListForWoql(node.choices)
-				addValues.push(WOQL.generateChoiceList(node.id, node.label, node.comment, choices))
+				andValues.push(WOQL.generateChoiceList(node.id, node.label, node.comment, choices))
 			}
 		})
 
@@ -246,7 +246,7 @@ export const graphUpdateObject=()=>{
 		updateChoiceList.forEach((choiceObj,choiceName)=>{
 			const choiceId=getRealId(choiceName)
 			const choices=formatChoiceListForWoql(choiceObj.choices)
-			addValue.push(WOQL.updateChoiceList(choiceId, choiceObj.label, choiceObj.description, choices))
+			andValues.push(WOQL.updateChoiceList(choiceId, choiceObj.label, choiceObj.comment, choices))
 		})
 
 		const query = WOQL.and(...andValues);
@@ -274,8 +274,7 @@ export const graphUpdateObject=()=>{
 		          .add_quad(domainId, "subClassOf", cardName, "schema/main")
 		)
 	}
-
-	return {addNodeToTree,changeNodeParent,addPropertyToClass,removePropertyToClass,savedObjectToWOQL,removeNode,updateTripleElement}
+	return {updateChoicesList,addNodeToTree,changeNodeParent,addPropertyToClass,removePropertyToClass,savedObjectToWOQL,removeNode,updateTripleElement}
 }
 
 //new node 

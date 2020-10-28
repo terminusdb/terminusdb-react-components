@@ -103,7 +103,7 @@ export const STRING_TYPE_DATAPROVIDER={label: 'String Type',
 export const CLASS_PROPERTIES_LIST=[{label:'Choice Property', id:'ChoiceProperty',range:''},
 		    					   {label:'Numeric Property', id:'NumericProperty',defaultRange:'xsd:decimal'},
 		    					   {label:'String Property', id:'StringProperty',defaultRange:'xsd:string'},
-		    					   {label:'Geographic Property', id:'GeoProperty',defaultRange:'xsd:string'},
+		    					   {label:'Geo Property', id:'GeoProperty',defaultRange:'xsd:string'},
 		    					   {label:'Temporal Property', id:'TemporalProperty',defaultRange:'xsd:dateTime'},
 		    					   {label:'Object Property', id:'ObjectProperty',defaultRange:''}]
 

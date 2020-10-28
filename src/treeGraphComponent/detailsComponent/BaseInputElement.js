@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {HelpComponent} from './HelpComponent';
 export const BaseInputElement = (props) => {
 
-	const [value,setInputValue] = useState(props.defaultValue)
+	const [value,setInputValue] = useState('')
 
 	useEffect(() => {
         if(props.defaultValue!==value){

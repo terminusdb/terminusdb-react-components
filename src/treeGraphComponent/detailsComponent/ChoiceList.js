@@ -17,9 +17,9 @@ export const ChoiceList =(props)=> {
 			setIdReqError('This item is required')
 		}else{
 			const tmpList=choicesList.slice();		
-			tmpList.push(itemData);
-			setChoiceList(tmpList);
+			tmpList.push(itemData);			
 			setItemData({label:'',comment:'',id:''})
+			setChoiceList(tmpList);
 			if(props.updateChoiseList)props.updateChoiseList(tmpList)
 		}
 	}

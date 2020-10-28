@@ -7,7 +7,8 @@ import {formatData,
 		EntityClassObj,
 		availableParentsList} from './FormatDataForTree';
 
-import {graphUpdateObject} from './utils/graphUpdateObject'
+import {graphUpdateObject} from './utils/graphUpdateObject';
+import {CLASS_TYPE_NAME} from '../constants/details-labels' 
 
 export const MainGraphObject = (mainGraphDataProvider)=>{
 
@@ -436,9 +437,9 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 		return _graphUpdateObject.savedObjectToWOQL(_rootIndexObj);
 	}
 
-	const updateChoices=(elmentName,choicesList)=>{
+	const updateChoices=(elementName,choicesList)=>{
 		const choiceClass=_rootIndexObj[elementName];
-		updateChoices['choices']=choicesList;
+		choiceClass['choices']=choicesList;
 
 		_graphUpdateObject.updateChoicesList(choiceClass)
 	}
@@ -449,9 +450,9 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 		*/
 		_graphUpdateObject.updateTripleElement(propName,propValue,elementDataObject);
 		switch(elementDataObject.type){
-			case 'Document':
-			case 'Class':
-			case 'ChoiseClass':						
+			case CLASS_TYPE_NAME.DOCUMENT_CLASS:
+			case CLASS_TYPE_NAME.OBJECT_CLASS:
+			case CLASS_TYPE_NAME.CHOICE_CLASS:						
 				const currentNode=_rootIndexObj[elementDataObject.name];
 				currentNode[propName]=propValue;
 				break;
@@ -462,7 +463,7 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 		}
 	}
 
-	return {getObjectChoices,getElementsNumber,getElement,getPropertyListByDomain,getObjPropsRelatedToClass,getAvailableParentsList,
+	return {updateChoices,getObjectChoices,getElementsNumber,getElement,getPropertyListByDomain,getObjPropsRelatedToClass,getAvailableParentsList,
       nodeApplyAction,addNewPropertyToClass,removePropertyToClass,changeElementDataValue,
       updateNodeParents,savedObjectToWOQL,getObjectProperties,getDescendantsNode,removeElementInMainGraph}
 }

@@ -23,15 +23,15 @@ export const ConstraintsComponent =(props)=>{
             
     		const cName=childrenNum===1 ? 'child' : 'children';
     		const childrenMessage=`${childrenNum} direct ${cName}`
-    		message.push(<div className="tdb__list">
+    		message.push(<div className="tdb__list" key='children'>
     						<div className="tdb__list__title">Children</div>
     						<div className="tdb__list__items">{childrenMessage}</div>
     					</div>)
     	}
 
     	if(props.objPropsRelatedToClass && props.objPropsRelatedToClass.length>0){
-    		const complexMessage= props.objPropsRelatedToClass.map((complexPropertyObj)=>{
-                        return <div className="tdb__list__items">In this node the  
+    		const complexMessage= props.objPropsRelatedToClass.map((complexPropertyObj,index)=>{
+                        return <div className="tdb__list__items"  key={'obj'+index} >In this node the  
                                     <b> Property {complexPropertyObj.label} </b> is related with 
                                        the <b>{complexPropertyObj.classRangeType} {complexPropertyObj.classRangeLabel}</b>
                                 </div>
@@ -39,7 +39,7 @@ export const ConstraintsComponent =(props)=>{
 
             })
 
-            message.push(<div className="tdb__list">
+            message.push(<div className="tdb__list" key="object_property">
                            <div className="tdb__list__title">Object Property</div>
                            {complexMessage}
                         </div>)

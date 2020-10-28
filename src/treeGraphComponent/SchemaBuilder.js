@@ -23,7 +23,7 @@ export const SchemaBuilder = (props)=>{
 		  removeElement,
 		  objectPropertyList,
 		  objPropsRelatedToClass,
-		  savedObjectToWOQL,
+		  savedObjectToWOQL,updateChoices
 		  //updateParentsList,availableParentsList
 		  //entitiesListArr,classesListArr
 		  } = GraphContextObj();
@@ -78,6 +78,7 @@ export const SchemaBuilder = (props)=>{
 		    		classPropertyList={classPropertiesList} />}
 	        {!showInfoComp &&
 	        	<DetailsModelComponent
+	        		updateChoices={updateChoices}
 		        	objPropsRelatedToClass={objPropsRelatedToClass} 
 		        	objectPropertyList={objectPropertyList} 
 		        	removeElement={removeElement} 

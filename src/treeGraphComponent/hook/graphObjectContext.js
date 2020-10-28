@@ -141,7 +141,8 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 	        availableParentsList,
 	        elementsNumber,
 	        mainGraphObj,
-	        objectChoicesList
+	        objectChoicesList,
+	        updateChoices
 	    	}}>
 	     {children}
         </GraphContext.Provider>

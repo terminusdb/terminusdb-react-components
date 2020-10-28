@@ -77,13 +77,13 @@ export const ParentsFilter = (props) => {
 								id='elementsType'/>					 	
 						 }
 						 	<BaseSelectReactElement
-								 	id="addParent"
-								 	resetSelection={true} 
-									isClearable={false} 
-									onChange={addParent} 
-									placeholder='Add a new Parent' 
-									dataProvider={dataProvider} 
-									optionChange={addParent}/>
+							 	name="addParent"
+							 	resetSelection={true} 
+								isClearable={false} 
+								onChange={addParent} 
+								placeholder='Add a new Parent' 
+								dataProvider={dataProvider} 
+								optionChange={addParent}/>
 					
 					</div>
 				</div>	
