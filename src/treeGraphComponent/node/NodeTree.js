@@ -119,7 +119,7 @@ export const NodeTree=(props)=> {
 		       {formatLabel(label)}
 		      </text>
 
-		      {props.isSelected && node.data.type!== 'ChoiceClass' && 
+		      {props.isEditMode!==false && props.isSelected && node.data.type!== 'ChoiceClass' && 
 		      	<NodeMenu setNodeAction={props.setNodeAction} width={width} nodeId={node.data.name} menuList={menuData}/>
 		      }
 		    </g>

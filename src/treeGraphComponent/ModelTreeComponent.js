@@ -190,7 +190,8 @@ export const ModelTreeComponent = (props)=>{
                     height={height}
                     fill="#ffffff"
                   />
-                  <Tree id={'treeGraph'} 
+                  <Tree id={'treeGraph'}
+                    isEditMode={props.isEditMode}
                     needRefresh={needRefresh}
                     nodes={[...props.graphDataProvider.values()]}
                     nodeClick={changeSelectedNode}

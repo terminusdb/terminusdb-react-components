@@ -11,7 +11,7 @@ export const groupMenuList={'ROOT':[{id:NODE_ACTION_NAME.ADD_NEW_ENTITY, label: 
 					  				{id:NODE_ACTION_NAME.ADD_NEW_CHOICE_CLASS, label: "Add ChoiceClass"}],
 					  'OrdinaryClasses':[{id:NODE_ACTION_NAME.ADD_NEW_CLASS, label: "Add OrdinaryClass"},
 					  					 {id:NODE_ACTION_NAME.ADD_NEW_CHOICE_CLASS, label: "Add ChoiceClass"}],
-					  'DocumentClass':[{id:NODE_ACTION_NAME.ADD_NEW_ENTITY, label: "Add EntityClass"}]}
+					  'DocumentClasses':[{id:NODE_ACTION_NAME.ADD_NEW_ENTITY, label: "Add EntityClass"}]}
 
 export const nodeMenuList=[{id:NODE_ACTION_NAME.ADD_PARENT, label: "Add Parent"},
 				  		   {id:NODE_ACTION_NAME.ADD_CHILD, label: "Add Child"}]

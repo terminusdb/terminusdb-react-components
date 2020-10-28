@@ -57,7 +57,8 @@ export const SchemaBuilder = (props)=>{
 				<SizeMe monitorHeight={true}>{({ size }) =>
 		            <div style={{ minHeight:"400px", height: "calc(100vh - 10px)"}}>
 		              {graphDataProvider && 
-		              	<ModelTreeComponent 
+		              	<ModelTreeComponent
+		              		isEditMode={isEditMode}
 		              		setNodeAction={setNodeAction} 
 		              		selectedNodeObject={selectedNodeObject} 
 		              		changeCurrentNode={changeCurrentNode} 
