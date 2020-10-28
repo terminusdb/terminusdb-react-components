@@ -97,19 +97,9 @@ export const formatProperties=(dataProvider,restrDataProvider,_rootIndexObj)=>{
 		addTypeRange(item,newProperty,_rootIndexObj);
 
 		if(newProperty.type===PROPERTY_TYPE_NAME.OBJECT_PROPERTY || newProperty.type===PROPERTY_TYPE_NAME.CHOICE_PROPERTY){
-			if(!objectPropertyRange[newProperty.range]){
-				objectPropertyRange[newProperty.range]=[]
-			}
-
-			const classElement=_rootIndexObj[newProperty.range];
-			
-			//the item range is the Class-range of the ObjectProperty
-			
-			objectPropertyRange[newProperty.range].push({classRangeType:classElement.type, 
-														classRangeLabel:classElement.label,
-														label:newProperty.label, 
-														name:newProperty.name,
-														type:newProperty.type})
+			// newProperty.range is the className
+			const classDomain=_rootIndexObj[newProperty.domain];
+			addObjectPropertyRangeItem(objectPropertyRange,newProperty,classDomain)
 		}
 		propertiesList.set(newProperty.name,newProperty);
 
@@ -121,8 +111,30 @@ export const formatProperties=(dataProvider,restrDataProvider,_rootIndexObj)=>{
 	addRestictionToProps(propertiesList,restrDataProvider);
 
 	return [propertyByDomain,objectPropertyRange,propertiesList];
+}
 
 
+export const addObjectPropertyRangeItem=(objectPropertyRange,propertyElement,classDomain,previewRange=undefined)=>{
+	/*
+	* remove the relation
+	*/
+	if(previewRange){
+		const arrList=objectPropertyRange[previewRange];
+		if(arrList){ 
+			if(arrList.length===1)objectPropertyRange[previewRange]=[];
+			const index=arrList.findIndex((item)=>{return item.name===propertyElement.name})
+			arrList.splice(index,1)
+		}
+		//const index= arrList.find(propertyElement.name);
+	}
+	if(!objectPropertyRange[propertyElement.range]){
+		 objectPropertyRange[propertyElement.range]=[]
+	}
+	objectPropertyRange[propertyElement.range].push({classDomainType:classDomain.type, 
+											classDomainLabel:classDomain.label,
+											label:propertyElement.label, 
+											name:propertyElement.name,
+											type:propertyElement.type})
 }
 
 export const formatData =(dataProvider)=>{

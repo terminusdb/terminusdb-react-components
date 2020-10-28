@@ -66,7 +66,7 @@ export const DetailsModelComponent = (props)=>{
 	  	 		<i className={`tdb__panel__title__icon ${imageType}`}></i>
 	  	 		{nodeData.label || nodeData.id}
 	  	 	</div>
-			<Tabs items={getTabs()} transform={false}/>
+			<Tabs items={getTabs()} transform={false} selectedTabKey={1}/>
 		</div>
 	)
 }

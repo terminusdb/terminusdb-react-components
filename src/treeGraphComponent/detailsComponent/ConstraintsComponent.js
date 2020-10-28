@@ -31,9 +31,9 @@ export const ConstraintsComponent =(props)=>{
 
     	if(props.objPropsRelatedToClass && props.objPropsRelatedToClass.length>0){
     		const complexMessage= props.objPropsRelatedToClass.map((complexPropertyObj,index)=>{
-                        return <div className="tdb__list__items"  key={'obj'+index} >In this node the  
-                                    <b> Property {complexPropertyObj.label} </b> is related with 
-                                       the <b>{complexPropertyObj.classRangeType} {complexPropertyObj.classRangeLabel}</b>
+                        return <div className="tdb__list__items"  key={'obj'+index} >This node is related to  
+                                    <b> Property {complexPropertyObj.label} </b> in 
+                                       the <b>{complexPropertyObj.classDomainType} {complexPropertyObj.classDomainLabel}</b>
                                 </div>
             
 

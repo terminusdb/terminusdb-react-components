@@ -5,7 +5,7 @@ import {formatData,
 		checkInheritance,
 		OrdinaryClassObj,
 		EntityClassObj,
-		availableParentsList} from './FormatDataForTree';
+		availableParentsList,addObjectPropertyRangeItem} from './FormatDataForTree';
 
 import {graphUpdateObject} from './utils/graphUpdateObject';
 import {CLASS_TYPE_NAME} from '../constants/details-labels' 
@@ -458,8 +458,17 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 				break;
 			//property case
 			default:
-				const currentProperty=_propertiesList.get(elementDataObject.name);
-				currentProperty[propName]=propValue;
+			//objectPropertyRangeItem
+
+			const currentProperty=_propertiesList.get(elementDataObject.name);
+			const propRange=currentProperty.range;
+			currentProperty[propName]=propValue;
+
+			if(propName==='range' && _rootIndexObj[propValue]!==undefined){
+				const classElement=_rootIndexObj[propValue]
+				addObjectPropertyRangeItem(_objectPropertyToRange,currentProperty,classElement,propRange)
+			}
+			
 		}
 	}
 

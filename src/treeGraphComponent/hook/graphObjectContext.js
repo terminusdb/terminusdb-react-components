@@ -4,17 +4,6 @@ import {MainGraphObject} from "../MainGraphObject"
 export const GraphContext = React.createContext()
 export const GraphContextObj = () => useContext(GraphContext)
 
-/*and(
-     opt().triple("doc:test", "label", "v:label").delete_triple("doc:test", "label", "v:label"),
-     add_triple("doc:test", "label", "New label")
-)
- //appearance
-   15  /*
-   16: add_quad("MyClass", "subClassOf", "Parent", "schema/main")
-   17: delete_quad("MyClass", "subClassOf", "Parent", "schema/main")
-   18  
-*/
-
 export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 
 	const [graphDataProvider, setGraphDataProvider] = useState([]);
@@ -79,7 +68,7 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 
 	const setNodeAction=(actionName)=>{
 		const nodeObject=mainGraphObj.nodeApplyAction(selectedNodeObject.name,actionName);
-		setSelectedNodeObject(nodeObject)
+		changeCurrentNode(nodeObject.name);
 	}
 
 	const addNewProperty=(propertyType,propertyRange)=>{

@@ -249,6 +249,7 @@ export const graphUpdateObject=()=>{
 			andValues.push(WOQL.updateChoiceList(choiceId, choiceObj.label, choiceObj.comment, choices))
 		})
 
+		if(andValues.length===0)return undefined;
 		const query = WOQL.and(...andValues);
 		return query
 	}

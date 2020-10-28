@@ -70,14 +70,16 @@ export const modelCallServerHook = (woqlClient) => {
 
 	
 	const saveGraphChanges=(query)=>{
-		setLoading(true)
-		woqlClient.query(query).then(result=>{
-			setReloadGraph(Date.now())
-		}).catch(err=>{
-			setError(err.message)
-		}).finally(()=>{
-			setLoading(false)
-		})
+		if(query!==undefined){
+			setLoading(true)
+			woqlClient.query(query).then(result=>{
+				setReloadGraph(Date.now())
+			}).catch(err=>{
+				setError(err.message)
+			}).finally(()=>{
+				setLoading(false)
+			})
+		}
 	}
 
 	
