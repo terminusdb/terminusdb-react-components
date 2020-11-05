@@ -97,9 +97,14 @@ export const formatProperties=(dataProvider,restrDataProvider,_rootIndexObj)=>{
 		addTypeRange(item,newProperty,_rootIndexObj);
 
 		if(newProperty.type===PROPERTY_TYPE_NAME.OBJECT_PROPERTY || newProperty.type===PROPERTY_TYPE_NAME.CHOICE_PROPERTY){
-			// newProperty.range is the className
-			const classDomain=_rootIndexObj[newProperty.domain];
-			addObjectPropertyRangeItem(objectPropertyRange,newProperty,classDomain)
+            // newProperty.range is the className
+            if(newProperty.domain && _rootIndexObj[newProperty.domain]){
+    			const classDomain=_rootIndexObj[newProperty.domain];
+                addObjectPropertyRangeItem(objectPropertyRange,newProperty,classDomain)
+            }
+            else if(newProperty.domain && !_rootIndexObj[newProperty.domain]){
+                alert(newProperty.domain )
+            }
 		}
 		propertiesList.set(newProperty.name,newProperty);
 
@@ -256,7 +261,7 @@ const addElements=( _rootIndexObj, dataProvider=[])=>{
 		/*
 		"Parents": {"@type":"http://www.w3.org/2001/XMLSchema#string", "@value":""}
 		*/
-		if(classId!==SCOPED_VALUE_ID && classId!==BOX_ID){
+		//if(classId!==SCOPED_VALUE_ID && classId!==BOX_ID){
 			if(!_rootIndexObj[classId]){
 				_rootIndexObj[classId]={}		
 				_rootIndexObj[classId]['children']=[];
@@ -327,7 +332,7 @@ const addElements=( _rootIndexObj, dataProvider=[])=>{
 					_rootIndexObj[classId]['children'].push(_rootIndexObj[childId])
 
 				})
-			}
+		//	}
 		}
 	})
 }
