@@ -65,7 +65,7 @@ export const ParentsFilter = (props) => {
 				    <div className="tdb__list">
 				     	<div className="tdb__list__title" > Parents </div>
 			     		<div className="tdb__list__items" >
-			     			{selectedNodeObject.parents.length===0 && 'No Parents'}
+			     			{listDataProvider.length===0 && 'No Parents'}
  			     			<ListComponent removeItem={removeParent} elementId={elementId} elementType={elementType} dataProvider={listDataProvider}/>					 
 						 </div>						 
 						 {parentClassType!== "Class" && 					 	
@@ -87,7 +87,7 @@ export const ParentsFilter = (props) => {
 					
 					</div>
 				</div>	
-				{selectedNodeObject.parents.length>0 &&
+				{listDataProvider.length>0 &&
 					<ParentsElementViewMode />
 				}
 				</>

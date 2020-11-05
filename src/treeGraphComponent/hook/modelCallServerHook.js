@@ -13,7 +13,7 @@ import TerminusClient from '@terminusdb/terminusdb-client'
    18  
 */
 
-export const modelCallServerHook = (woqlClient) => {
+export const modelCallServerHook = (woqlClient,branch,ref) => {
 
 	const [mainGraphDataProvider, setResultMainGraph] = useState({classesResult:{},
 																  propsResult:{},
@@ -66,7 +66,7 @@ export const modelCallServerHook = (woqlClient) => {
     	if(woqlClient)loadGraphData()
    		//Promise.all([someCall(), anotherCall()]).then((results)=>{
 
-	}, [reloadGraph])
+	}, [reloadGraph,branch,ref])
 
 	
 	const saveGraphChanges=(query)=>{
