@@ -28,7 +28,7 @@ export const ObjectClassModelViewMode = (props) => {
 			  </div>
 		    }			
 			<PropertiesComponentViewMode dataProvider={props.classPropertyList || []} />
-			{currentNodeJson.parents.length>0 && 
+			{currentNodeJson.parents && currentNodeJson.parents.length>0 && 
 				<ParentsElementViewMode  id={props.id} title={'Parents'} />}		       
 		</div>
 	)
