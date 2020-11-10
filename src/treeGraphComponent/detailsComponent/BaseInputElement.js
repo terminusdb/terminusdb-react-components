@@ -24,11 +24,11 @@ export const BaseInputElement = (props) => {
 	return(
 			<div className={props.groupClassName}>
 			 	<div className="tdb__form__help">
-	                 <label className={props.labelClassName} for={props.name}>{props.title}</label>
+	                 <label className={props.labelClassName} htmlFor={props.name}>{props.title}</label>
 	                 <HelpComponent/>
                 </div>
-                <input onBlur={onBlur} {...disabled} onChange={onChange} value={value} name={props.name} className={props.inputClassName}></input>       
-            	<span>{props.itemError}</span>
+                <input placeholder={props.placeholder} onBlur={onBlur} {...disabled} onChange={onChange} value={value} name={props.name} className={props.inputClassName}></input>       
+            	<span className="tdb__form__error">{props.itemError}</span>
             </div>
 
 	)
@@ -42,7 +42,8 @@ BaseInputElement.propTypes = {
 	  labelClassName:PropTypes.string,
 	  name:PropTypes.string.isRequired,
 	  onBlur:PropTypes.func,
-	  disabled:PropTypes.bool
+	  disabled:PropTypes.bool,
+	  placeholder:PropTypes.string
 }
 
 BaseInputElement.defaultProps = {
@@ -51,5 +52,6 @@ BaseInputElement.defaultProps = {
 	  groupClassName:'tdb__form__group',
 	  inputClassName:'tdb__form__element',
 	  labelClassName:'tdb__form__label',
-	  disabled:false
+	  disabled:false,
+	  placeholder:''
 }

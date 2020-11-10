@@ -2,18 +2,25 @@ import React from 'react';
 import {BaseSchemaElementViewMode} from './BaseSchemaElementViewMode'
 import {PropertiesComponentViewMode} from './PropertiesComponentViewMode'
 import {ParentsElementViewMode} from './ParentsElementViewMode'
-import {ELEMENT_ICONS,CLASS_TYPE_NAME} from '../../../constants/details-labels'
+import {CLASS_TYPE_NAME} from '../../utils/elementsName' 
+import {ELEMENT_ICONS} from '../../../constants/details-labels'
 import {ListComponent} from'../ListComponent';
+import {GraphContextObj} from '../../hook/graphObjectContext';
+
+
 export const ObjectClassModelViewMode = (props) => {
-	let currentNodeJson = props.currentNodeJson || {};
+
+	const {selectedNodeObject,classPropertiesList,changeCurrentNode} = GraphContextObj();
+
+	let currentNodeJson = selectedNodeObject || {};
 	const imageType=ELEMENT_ICONS[currentNodeJson.type]
 
 	let id =currentNodeJson.id;
 	let nodeLabel =currentNodeJson.label;
 	const propertiesDataProvider=[];//this.getPropertiesDataProvider(id) || [];
 
-	const members=currentNodeJson.members || {};	
-	const addRelationship = currentNodeJson.type==="Relationship" ? true : false;
+	//const members=currentNodeJson.members || {};	
+	//const addRelationship = currentNodeJson.type==="Relationship" ? true : false;
 
 	return(<div className="tdb__panel">
 		   	<div className="tdb__panel__title">
@@ -27,7 +34,7 @@ export const ObjectClassModelViewMode = (props) => {
 			  	<ListComponent dataProvider={currentNodeJson.choices} />		 
 			  </div>
 		    }			
-			<PropertiesComponentViewMode dataProvider={props.classPropertyList || []} />
+			<PropertiesComponentViewMode changeCurrentNode={changeCurrentNode} dataProvider={classPropertiesList || []} />
 			{currentNodeJson.parents && currentNodeJson.parents.length>0 && 
 				<ParentsElementViewMode  id={props.id} title={'Parents'} />}		       
 		</div>

@@ -1,4 +1,4 @@
-import {NODE_ACTION_NAME} from '../../constants/ActionTypes'
+import {NODE_ACTION_NAME} from './actionType'
 
 const newNodeTemplate = {
        data:{},
@@ -10,6 +10,15 @@ const newNodeTemplate = {
 }
 
 let index_newObj=1;
+
+export const removeElementToArr=(arrayList,elementName)=>{
+        const index=arrayList.findIndex(function(item){return item.name===elementName})
+        if(index>-1){
+            arrayList.splice(index,1);
+            return elementName;
+        }
+        return undefined;
+}
 
 function initializeNewNode(type){
 	const newObj = Object.assign({}, newNodeTemplate);

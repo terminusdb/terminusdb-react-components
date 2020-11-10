@@ -8,7 +8,7 @@ import {formatData,
 		availableParentsList,addObjectPropertyRangeItem} from './FormatDataForTree';
 
 import {graphUpdateObject} from './utils/graphUpdateObject';
-import {CLASS_TYPE_NAME} from '../constants/details-labels' 
+import {CLASS_TYPE_NAME} from './utils/elementsName' 
 
 export const MainGraphObject = (mainGraphDataProvider)=>{
 
@@ -46,7 +46,8 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 	const getElementsNumber=()=>{
 		return {properties:_propertiesList.size,
 		        entities:_entitiesList.size,
-		        classes:_classesList.size}
+		        classes:_classesList.size,
+		    	choiceClasses:_objectChoiceList.length}
 	}
 
 	const getObjectProperties=()=>{
@@ -59,12 +60,15 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 
 	const getRoot=(type=null)=>{
 		switch(type){
-			case 'Class':
-			case 'OrdinaryClasses':
-				return _rootIndexObj.OrdinaryClasses;
-			case 'Document':
-			case 'DocumentClasses':
-				return _rootIndexObj.DocumentClasses;
+			case CLASS_TYPE_NAME.OBJECT_CLASS:
+			case CLASS_TYPE_NAME.OBJECT_CLASSES:
+				return _rootIndexObj[CLASS_TYPE_NAME.OBJECT_CLASSES]
+			case CLASS_TYPE_NAME.DOCUMENT_CLASS:
+			case CLASS_TYPE_NAME.DOCUMENT_CLASSES:
+				return _rootIndexObj[CLASS_TYPE_NAME.DOCUMENT_CLASSES]
+			case CLASS_TYPE_NAME.CHOICE_CLASS:
+			case CLASS_TYPE_NAME.CHOICE_CLASSES:
+				return _rootIndexObj[CLASS_TYPE_NAME.CHOICE_CLASSES];
 			default:
 			 	return _rootIndexObj.ROOT;
 		}		
@@ -150,17 +154,16 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
                    elementType='OrdinaryClasses';
                    nodeName='OrdinaryClasses'
                    currentNode=getRoot(elementType);
-                   actionType=NODE_ACTION_NAME.ADD_CHILD;
-                   
+                   actionType=NODE_ACTION_NAME.ADD_CHILD;                 
                    break;
 
               case  NODE_ACTION_NAME.ADD_NEW_CHOICE_CLASS:
-              		elementType='OrdinaryClasses';
-                    //nodeName='OrdinaryClasses'
-                    currentNode=getRoot(elementType);
-                    actionType=NODE_ACTION_NAME.ADD_CHILD;
-              		isChoiceClass=true;
-              		break;
+              		elementType=CLASS_TYPE_NAME.CHOICE_CLASSES
+                    nodeName=CLASS_TYPE_NAME.CHOICE_CLASSES
+                    currentNode=getRoot(elementType)
+                    actionType=NODE_ACTION_NAME.ADD_CHILD
+              		isChoiceClass=true
+              		break
             }
         	 let newNodeObj={};
         	 if(actionName===NODE_ACTION_NAME.ADD_PARENT){
@@ -181,7 +184,6 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
         	 	if(currentNode.parents.length===0){
         	 		removeChildFromRoot(currentNode)
         	 	}
-        	 	//currentNode.parents.push[newNodeObj];
 
         	 	nodeName=rootParentNode.name;
         	 }else{
@@ -244,9 +246,8 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 	   _graphUpdateObject.changeNodeParent(elementName,parentName,actionName);
 
 	   if(actionName===NODE_ACTION_NAME.ADD_PARENT){
-	   	    if(elementObjClass.parents.length===0 && 
-	   	       parentObjClass.type===elementObjClass.type){
-	   	    	removeChildFromRoot(elementObjClass);
+	   	    if(parentObjClass.type===elementObjClass.type){
+	   	       removeChildFromRoot(elementObjClass);
 	   	    }
 	   	    //{label:label,name:classId,type:_rootIndexObj[classId].type}
 			elementObjClass.parents.push({label:parentObjClass.label,name:parentObjClass.name,type:parentObjClass.type})//(parentName,parentObjClass);
@@ -260,12 +261,15 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 			* if the parents array is empty I move the node under the root group
 			*/
 			if(elementObjClass.parents.length===0){
-				const parentRoot=getRoot(elementObjClass.type);
-				parentRoot.children.push(elementObjClass);
-				parentName=parentRoot.name;
-				if(elementObjClass.type==='Document'){
-					_graphUpdateObject.changeNodeParent(elementName,'Document',NODE_ACTION_NAME.ADD_PARENT);
-				}				
+				parentName=addToParentGroup(elementObjClass)
+			}else if(elementObjClass.type===CLASS_TYPE_NAME.DOCUMENT_CLASS){
+				const docParent=elementObjClass.parents.findIndex((item)=>
+						{
+							return item.type===CLASS_TYPE_NAME.DOCUMENT_CLASS
+						})
+				if(docParent===-1){
+					parentName=addToParentGroup(elementObjClass)
+				}
 			}
 		}
 		/*
@@ -273,6 +277,15 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 		*/
 		moveNodeUnderParent(parentName,elementName);
 		return elementObjClass;
+	}
+
+	const addToParentGroup=(elementObjClass)=>{
+		const parentRoot=getRoot(elementObjClass.type);
+		parentRoot.children.push(elementObjClass);
+		if(elementObjClass.type==='Document'){
+			_graphUpdateObject.changeNodeParent(elementObjClass.name,'Document',NODE_ACTION_NAME.ADD_PARENT);
+		}
+		return parentRoot.name;
 	}
 
 	const _removeClassElement=(elementName)=>{
@@ -367,22 +380,10 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
       */
     const removeChildFromRoot=(currentNode)=>{
       	const rootNode=getRoot(currentNode.type);
-
       	if(!rootNode.children || rootNode.children.length===0)return;
-
-      	for (var index=0; index<rootNode.children.length; index++){
-          const child=rootNode.children[index];
-          if(child.name===currentNode.name)break;
-      	}
-          /*
-          *this is for d3 
-          */
-          rootNode.children.splice(index, 1);
-          /*
-          *this is for start data
-          */
-         // parentNode.data.children.slice(index,1);
+      	removeElementToArr(rootNode.children,currentNode.name);
     }
+    
 
     const moveNodeUnderParent=(parentId,nodeId)=>{
     	let parentNode=_descendantsNode.get(parentId);

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 //import AccordionItemComponent from '../layoutComponent/AccordionItemComponent';
 //import RelationshipBox from '../relationshipView/RelationshipBox'
-import {PROPERTY_TYPE_NAME} from '../../constants/details-labels'
+import {PROPERTY_TYPE_NAME} from '../utils/elementsName'
 const constraintMessage={childrenNum:'This node has',
 						inRelationship:'This node is in this Relationship',
 						relComplexProperty:'This node is a range of the ComplexProperty'}

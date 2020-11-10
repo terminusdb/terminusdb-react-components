@@ -3,27 +3,15 @@ export const TOOLBAR_LABELS={"ResetButtonTooltip":"Reset from start",
 	                            "RedoButtonTooltip":"Redo",
 	                            "SaveButtonTooltip" : "Save ",
 	                            "EditModeTooltip" : "Change to Edit Mode",
-	                            "ViewModeTooltip" : "Change to View Mode"
+	                            "ViewModeTooltip" : "Change to View Mode",
+	                            "ZoomInTooltip": "Zoom In",
+	                            "ZoomOutTooltip": "Zoom Out",
+	                            "ResetViewPoint": "Reset View"
                       		}
 
 
 export const TERMINUS_IMAGE_BASE = "https://assets.terminusdb.com/terminusdb-console/images/"
 export const TERMINUS_FONT_BASE = "https://assets.terminusdb.com/terminusdb-console/fonts/"
-
-export const PROPERTY_TYPE_NAME={
-		STRING_PROPERTY:'StringProperty',
-		NUMERIC_PROPERTY:'NumericProperty',
-		CHOICE_PROPERTY:'ChoiceProperty',
-		GEO_PROPERTY:'GeoProperty',
-		TEMPORAL_PROPERTY:'TemporalProperty',
-		OBJECT_PROPERTY:'ObjectProperty'
-}
-
-export const CLASS_TYPE_NAME={
-	  OBJECT_CLASS:'Class',
-	  CHOICE_CLASS:"ChoiceClass",
-	  DOCUMENT_CLASS:"Document"
-}
 
 //decimal, integer ,  decimalRange,long, bite,short,
 export const PROPERTY_STRING_BY_RANGE={'string':'xsd:string',
@@ -75,7 +63,14 @@ export const ELEMENT_BASE_CONST={
 	DESCRIPTION_TEXT:'Description',
 	ID_TEXT:'Unique ID',
 	ABSTRACT_TEXT:'Abstract',
+
+	LABEL_PLACEHOLDER:'Enter a label',
+	DESCRIPTION_PLACEHOLDER:'Enter a Description',
+	ID_PLACEHOLDER:'Enter a valid Unique ID',
+	ABSTRACT_PLACEHOLDER:'Abstract',
 }
+
+
 export const STRING_TYPE_LABEL='String Type';
 export const STRING_TYPE_ELEMENT_ID='value_type';
 

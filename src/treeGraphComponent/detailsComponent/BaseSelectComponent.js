@@ -16,7 +16,6 @@ export const BaseSelectComponent = (props) => {
 	}
 
 	const getOptions=(dataProvider,comboId,defaultValue,allowedValue)=>{
-
 		return dataProvider.map((comboData,index) =>{
 			 const value=(typeof comboData ==='object') ? comboData.value : comboData //|| index;
 			 const label=(typeof comboData ==='object') ? comboData.label : comboData //|| index;
@@ -25,17 +24,16 @@ export const BaseSelectComponent = (props) => {
 			// const 
        		 return( <option {...disabled} value={value} key={value +'__' + comboId + '__'+index}>{label}</option>)
       	})
-
 	}
 
 	const onChange=(evt)=>{
 		const value=evt.currentTarget.value;
 		setValue(value)
-		props.optionChange(props.id,value);
+		props.optionChange(props.name,value);
 	}
 
 	const dataProvider=props.dataProvider || [];
-	const comboId=props.id;
+	const comboId=props.name;
 	const options=getOptions(dataProvider,comboId,props.defaultValue,props.allowedValue);
 	
 	const title=props.title || ''
@@ -59,29 +57,28 @@ export const BaseSelectComponent = (props) => {
 
 
 BaseSelectComponent.propTypes = {
-      defaultValue :PropTypes.string,
-      groupClassName:PropTypes.string,
-      selectClassName:PropTypes.string,
-      labelClassName:PropTypes.string,
-      id:PropTypes.string.isRequired,
-      parentClassId:PropTypes.string.isRequired,
-      parentClassType:PropTypes.string.isRequired,
-      title:PropTypes.string,
-      showLabel:PropTypes.bool,
-      selErrorReporting:PropTypes.string,
-      addHelpComponent:PropTypes.bool,
-      dataProvider:PropTypes.array
+    defaultValue :PropTypes.string,
+    groupClassName:PropTypes.string,
+    selectClassName:PropTypes.string,
+    labelClassName:PropTypes.string,
+    name:PropTypes.string.isRequired,
+    optionChange:PropTypes.func.isRequired,
+    title:PropTypes.string,
+    showLabel:PropTypes.bool,
+    selErrorReporting:PropTypes.string,
+    addHelpComponent:PropTypes.bool,
+    dataProvider:PropTypes.array
 }
 
 
 BaseSelectComponent.defaultProps = {
-      defaultValue :'',
-      groupClassName:'tdb__form__group',
-      selectClassName:'tdb__form__element',
-      labelClassName:'tdb__form__label',
-      title:'',
-      showLabel:true,
-      addHelpComponent:true,
-      selErrorReporting:'',
-      dataProvider:[]
+   defaultValue :'',
+   groupClassName:'tdb__form__group',
+   selectClassName:'tdb__form__element',
+   labelClassName:'tdb__form__label',
+   title:'',
+   showLabel:true,
+   addHelpComponent:true,
+   selErrorReporting:'',
+   dataProvider:[]
 }

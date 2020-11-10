@@ -25,7 +25,7 @@ export const BaseTextareaElement = (props) => {
 	return(
 			<div className={props.groupClassName}>
 			 	<div className="tdb__form__help">
-	                 <label className={props.labelClassName} for={props.name}>{props.title}</label>
+	                 <label className={props.labelClassName} htmlFor={props.name}>{props.title}</label>
 	                 <HelpComponent/>
                 </div>
                 <textarea onBlur={onBlur} {...disabled} onChange={onChange} value={value} name={props.name} className={props.inputClassName}></textarea>       

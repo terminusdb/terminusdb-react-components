@@ -43,7 +43,7 @@ export const BasePropertyComponent = (props)=> {
 							optionChange={changePropertyValue}
 							title={props.selectDataProvider.label}
 		            		dataProvider={props.selectDataProvider.options}
-		            		id={props.selectDataProvider.id}
+		            		name={props.selectDataProvider.id}
 		               		defaultValue={currentNodeJson.range || ''}
 		               		/>
 	               	}

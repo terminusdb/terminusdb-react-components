@@ -65,7 +65,7 @@ export const TableComponent = ({columns, data, serverside})=>{
                     return (
                         <tr {...row.getRowProps()}>
                             {row.cells.map(cell => {
-                                return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                                return <td style={{maxWidth:'150px'}} {...cell.getCellProps()}>{cell.render("Cell")}</td>
                             })}
                         </tr>
                     )

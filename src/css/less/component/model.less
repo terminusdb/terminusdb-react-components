@@ -11,10 +11,22 @@
 	   min-height: 38px
 	}
 
+	&__message{
+		position: absolute;
+	    margin-top: 2px;
+	    margin-left: 20px;
+	    z-index: 2000;
+	}
+
 
 	&__left{
   		align-items: center;
   		flex-basis: 50px;
+	}
+
+	&__hcenter{
+		justify-content: flex-center;
+		display: flex;
 	}
 
 	&__hright{
@@ -41,9 +53,10 @@
 }
 
 .icon-header{
-  padding:5px 0px;
+  padding:0px;
   font-size: 1.6em;
   cursor: pointer;
+  color:#565656;
 }
 
 .icon-header .fa{

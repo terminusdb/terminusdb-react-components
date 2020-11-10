@@ -1,6 +1,6 @@
 import {ADD_PARENT, REMOVE_PARENT} from './actionType';  
 import TerminusClient from '@terminusdb/terminusdb-client';
-import {PROPERTY_TYPE_NAME,CLASS_TYPE_NAME} from '../../constants/details-labels'
+import {PROPERTY_TYPE_NAME,CLASS_TYPE_NAME} from '../utils/elementsName'
 
 export const graphUpdateObject=()=>{
 	const newNodesList = new Map()
@@ -74,7 +74,7 @@ export const graphUpdateObject=()=>{
 		const newName=`CLASS_${(new Date()).getTime()}`;
 		let elementModel={
 						 name:newName,
-						 id: "NEW NODE",
+						 id: "",
 			             label:"NEW NODE",
 			             comment:"",
 			             hasConstraints:false,
@@ -123,7 +123,7 @@ export const graphUpdateObject=()=>{
 		const newName=`PROPERTY_${(new Date()).getTime()}`;
 		let elementModel={
 							name:newName,
-							id: "NEW PROPERTY ID",
+							id: "",
 				            label:"NEW PROPERTY",
 				            comment:"",
 				            type:propertyType,

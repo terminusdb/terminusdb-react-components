@@ -43,8 +43,8 @@ export const BaseSelectReactElement=(props)=>{
 	  groupClassName:PropTypes.string,
 	  inputClassName:PropTypes.string,
 	  name:PropTypes.string.isRequired,
-	  onChange:PropTypes.func.isRequired,
-	  dataProvider:PropTypes.array.isRequired,
+	  optionChange:PropTypes.func.isRequired,
+	  dataProvider:PropTypes.array,
 	  placeholder:PropTypes.string
   }
 
@@ -53,5 +53,6 @@ export const BaseSelectReactElement=(props)=>{
       groupClassName:'tdb__form__group',
       labelClassName:'tdb__form__label',
       title:'',
-      placeholder:'Select an Item'
+      placeholder:'Select an Item',
+      dataProvider:[]
 }

@@ -7,18 +7,27 @@ import {ListComponent} from './ListComponent';
 
 export const ChoiceList =(props)=> {
 	const [choicesList,setChoiceList] =useState(props.choices || [])
-	const [itemData, setItemData] = useState({label:'',comment:'',id:''})
+	//const [itemData, setItemData] = useState({label:'',comment:'',id:''})
+	
+	const [labelValue,setLabel]=useState('')
+	const [commentValue,setComment]=useState('')
+	const [idValue,setId]=useState('')
+
 	const [idReqError,setIdReqError] =useState('')
 	
 	//const itemData={label:'',comment:'',id:''};
 
 	const addNewBox =()=>{
-		if(!itemData.id){
+		if(!idValue){
 			setIdReqError('This item is required')
 		}else{
 			const tmpList=choicesList.slice();		
-			tmpList.push(itemData);			
-			setItemData({label:'',comment:'',id:''})
+			tmpList.push({label:labelValue,comment:commentValue,id:idValue});			
+			//setItemData({label:'',comment:'',id:''})
+			setComment("")
+			setLabel("")
+			setId("")
+			
 			setChoiceList(tmpList);
 			if(props.updateChoiseList)props.updateChoiseList(tmpList)
 		}
@@ -34,26 +43,36 @@ export const ChoiceList =(props)=> {
 	}
 
 	const onBlur=(name,value)=>{		
-		itemData[name]=value;
-		setItemData(itemData)
-		if(name==="id" && value!=='')setIdReqError('');
+		switch (name){
+			case "comment":
+				setComment(value)
+				break;
+			case "label":
+				setLabel(value)
+				break;
+			case "id":
+				setId(value)
+				if(value!=='')setIdReqError('')
+				break
+		}
 	}
 
 	const title='Choices List';
 	const choiceTitle='Add a choice'
 	
 	return(<>
-		<div className="tdb__panel__box">		   
-	   		<span className="tdb__panel__subtitle">New Choice</span>		  		
-  			<BaseInputElement itemError={idReqError} title="ID" name="id"  onBlur={onBlur} defaultValue={itemData.id}/>
-	  		<BaseInputElement title="Label" name="label"  onBlur={onBlur} defaultValue={itemData.label}/>
-	  		<BaseInputElement title="Comment"  name="comment" onBlur={onBlur} defaultValue={itemData.comment}/>
-	  		<button className="tdb__button__base tdb__button__base--green" onClick={addNewBox}>{choiceTitle}</button>  			  
-		</div>
 		<div className="tdb__panel__box"> 
 		  <span className="tdb__panel__subtitle">{title}</span>	  
 		  <ListComponent dataProvider={choicesList} removeItem={removeChoice} />		 
-		</div></>
+		</div>
+		<div className="tdb__panel__box" >		   
+	   		<span className="tdb__panel__subtitle">New Choice</span>		  		
+  			<BaseInputElement itemError={idReqError} title="ID" name="id"  onBlur={onBlur} defaultValue={idValue}/>
+	  		<BaseInputElement title="Label" name="label"  onBlur={onBlur} defaultValue={labelValue}/>
+	  		<BaseInputElement title="Comment"  name="comment" onBlur={onBlur} defaultValue={commentValue}/>
+	  		<button className="tdb__button__base tdb__button__base--green" onClick={addNewBox}>{choiceTitle}</button>  			  
+		</div>
+		</>
 	)
 }
 

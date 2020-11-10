@@ -29,6 +29,8 @@ export const SchemaBuilder = (props)=>{
 		  } = GraphContextObj();
 
 	const [isEditMode,setIsEditMode]=useState(false)
+	const [zoomEvent,setZoomEvent]=useState(undefined)
+
 	const saveData=()=>{
 		const query = savedObjectToWOQL();
 		if(props.saveGraph)props.saveGraph(query)
@@ -50,7 +52,7 @@ export const SchemaBuilder = (props)=>{
 	return (	
 		<>
 		<div className="tdb__model__header">
-			<ModelMainHeaderComponent saveData={saveData} changeMode={setIsEditMode} isEditMode={isEditMode}/>
+			<ModelMainHeaderComponent extraTools={props.extraTools} setZoomEvent={setZoomEvent} saveData={saveData} changeMode={setIsEditMode} isEditMode={isEditMode}/>
 		</div>
 		<SplitPane className="colWindow" split="vertical" minSize={400} size={mainPanelSize}>							   							
 			<div>
@@ -58,6 +60,7 @@ export const SchemaBuilder = (props)=>{
 		            <div style={{ minHeight:"400px", height: "calc(100vh - 10px)"}}>
 		              {graphDataProvider && 
 		              	<ModelTreeComponent
+		              		zoomEvent={zoomEvent}
 		              		isEditMode={isEditMode}
 		              		setNodeAction={setNodeAction} 
 		              		selectedNodeObject={selectedNodeObject} 
@@ -74,9 +77,7 @@ export const SchemaBuilder = (props)=>{
 		    	<InfoBoxComponent/>
 		    }
 		    {!showInfoComp && isEditMode===false && 
-		    	<ObjectClassModelViewMode 
-		    		currentNodeJson={selectedNodeObject}
-		    		classPropertyList={classPropertiesList} />}
+		    	<ObjectClassModelViewMode />}
 	        {!showInfoComp &&
 	        	<DetailsModelComponent
 	        		updateChoices={updateChoices}
