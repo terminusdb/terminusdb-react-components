@@ -1,10 +1,10 @@
 import { tree, hierarchy } from 'd3-hierarchy';
-import {CLASS_TYPE_NAME,
-		PROPERTY_TYPE_NAME,
-		PROPERTY_STRING_BY_RANGE,
+import {PROPERTY_TYPE_NAME, CLASS_TYPE_NAME, getRootIndexObj} from './utils/elementsName';
+import {PROPERTY_STRING_BY_RANGE,
 		PROPERTY_NUMBER_BY_RANGE,
 		PROPERTY_GEO_BY_RANGE,
 		PROPERTY_TEMPORAL_BY_RANGE} from '../constants/details-labels'
+import {removeElementToArr} from './utils/modelTreeUtils'
 
 const addTypeRange=(item,newProperty,_rootIndexObj) =>{
 	const range=item["Property Range"]
@@ -143,19 +143,10 @@ export const addObjectPropertyRangeItem=(objectPropertyRange,propertyElement,cla
 }
 
 export const formatData =(dataProvider)=>{
-
-	let _rootIndexObj={ROOT:{"name": "ROOT", type:'ROOT', "label":"Main Graph", "children":[],"comment":'ROOT'},
-
-					   		OrdinaryClasses:{name:"OrdinaryClasses",type:"Group", parents:[],
-										    label:"Ordinary Classes ","children":[],comment:'Ordinary Classes'},
-		               		DocumentClasses:{name:'DocumentClasses', parents:[],
-		                              type:"Group",label:"Document Classes","children":[],comment:'Document Classes'}}
-
-
-
-		                             //_rootIndexObj.OrdinaryClasses,_rootIndexObj.DocumentClasses
-	_rootIndexObj.ROOT.children.push(_rootIndexObj.OrdinaryClasses);
-	_rootIndexObj.ROOT.children.push(_rootIndexObj.DocumentClasses);
+	let _rootIndexObj=getRootIndexObj();	
+	_rootIndexObj.ROOT.children.push(_rootIndexObj[CLASS_TYPE_NAME.CHOICE_CLASSES]);
+	_rootIndexObj.ROOT.children.push(_rootIndexObj[CLASS_TYPE_NAME.OBJECT_CLASSES]);
+	_rootIndexObj.ROOT.children.push(_rootIndexObj[CLASS_TYPE_NAME.DOCUMENT_CLASSES]);
 	                             
 	addElements(_rootIndexObj,dataProvider)
 
@@ -209,15 +200,14 @@ export const formatDataForTreeChart =(rootElement)=>{
 const SCOPED_VALUE_ID="terminusdb:///schema#ScopedValue";
 const BOX_ID="terminusdb:///schema#Box";
 
-const getLabel=(item) =>{
+const getLabel=(item,idName) =>{
 	if(item['Class Name']['@value']){
 		return item['Class Name']['@value']
 	}
-	//const classId=item['Class ID'];
+	return idName
 }
 //terminusdb:///schema#Box
 const getId=(classId) =>{
-	
 	return classId.replace("terminusdb:///schema#","");
 }
 
@@ -229,7 +219,7 @@ const getAbstractValue=(item)=>{
 }
 
 
-const checkOrdinaryClassType=(classElement,item)=>{
+const checkOrdinaryClassType=(classElement,item,_rootIndexObj)=>{
 	if(item["Choices"]!=="system:unknown" && Array.isArray(item["Choices"])){
 		const choicesList=[]
 		item["Choices"].forEach((choise)=>{
@@ -239,10 +229,12 @@ const checkOrdinaryClassType=(classElement,item)=>{
 			choicesList.push({id:choiseId,label:choiseLabel,comment:choiseComment})
 
 		})
-		classElement['type']='ChoiceClass';
+		classElement['type']=CLASS_TYPE_NAME.CHOICE_CLASS;
 		classElement['choices']=choicesList;
+		_rootIndexObj[CLASS_TYPE_NAME.CHOICE_CLASSES].children.push(classElement)
 	}else{
-		classElement['type']='Class';
+		classElement['type']=CLASS_TYPE_NAME.OBJECT_CLASS;
+		_rootIndexObj[CLASS_TYPE_NAME.OBJECT_CLASSES].children.push(classElement)
 	}
 }
 
@@ -255,21 +247,22 @@ const addElements=( _rootIndexObj, dataProvider=[])=>{
 	
 	bindings.forEach((item)=>{
 		const classId=item['Class ID'];
-		const label=getLabel(item)
 		const description=item['Description']['@value'];
 		const abstract=getAbstractValue(item);
 		/*
 		"Parents": {"@type":"http://www.w3.org/2001/XMLSchema#string", "@value":""}
 		*/
 		//if(classId!==SCOPED_VALUE_ID && classId!==BOX_ID){
-			if(!_rootIndexObj[classId]){
-				_rootIndexObj[classId]={}		
-				_rootIndexObj[classId]['children']=[];
-				_rootIndexObj[classId]['parents']=[];
-				_rootIndexObj[classId]['name']=classId;
-				_rootIndexObj[classId]['hasConstraints']=false;
-				_rootIndexObj[classId]['id']=getId(classId);	
-			}
+		if(!_rootIndexObj[classId]){
+			_rootIndexObj[classId]={}		
+			_rootIndexObj[classId]['children']=[];
+			_rootIndexObj[classId]['parents']=[];
+			_rootIndexObj[classId]['name']=classId;
+			_rootIndexObj[classId]['hasConstraints']=false;
+			_rootIndexObj[classId]['id']=getId(classId);	
+		}
+
+		const label=getLabel(item,_rootIndexObj[classId]['id'])
 
 			_rootIndexObj[classId]['abstract']=abstract;		
 			_rootIndexObj[classId]['label']=label;
@@ -278,32 +271,43 @@ const addElements=( _rootIndexObj, dataProvider=[])=>{
 			//add for children
 			if(Array.isArray(item['Parents'])){
 				const parentNum=item['Parents'].length;
-
+				
+				let isChildOFDocument=false;
+				let isObjectParent=false;
+				
 				item['Parents'].forEach((parentId)=>{
 
-					//const parentId=parent[0]
-					//if parent is document type is 'DocumentClass'
+					/*one node can be child of an Document and a Object Class
+					* so the parents can have 2 different types
+					*/
+					
 
 					if(parentId==='http://terminusdb.com/schema/system#Document'){
-						_rootIndexObj[classId]['type']='Document'
-						if(parentNum===1){
-							_rootIndexObj.DocumentClasses.children.push(_rootIndexObj[classId])
-							//_rootIndexObj[classId].parents=['DocumentClass']
-						}
-					//if get type from the parent
+						_rootIndexObj[classId]['type']='Document';						
+						/*only one parent and it is Document*/
+						//isChildOFDocument=true;
+						//if(parentNum===1){
+						_rootIndexObj.DocumentClasses.children.push(_rootIndexObj[classId])
+						//}
+					
 					}else if(_rootIndexObj[parentId] && _rootIndexObj[parentId]['type']){
-						
-						_rootIndexObj[classId]['type']=_rootIndexObj[parentId].type;
+
+						if(!_rootIndexObj[classId]['type']){
+							_rootIndexObj[classId]['type']=_rootIndexObj[parentId].type;
+						}
+						if(_rootIndexObj[parentId].type==='Class'){
+							isObjectParent=true;
+						}
 					}
 				})
+
 			}else{
 				/*
+				* if no parents can be or a first level Object class Type Or a Choice class type
 				* check if it is a choiseClass
 				* special class No properties no children
 				*/
-			 	checkOrdinaryClassType(_rootIndexObj[classId],item);
-				_rootIndexObj.OrdinaryClasses.children.push(_rootIndexObj[classId]);
-				//_rootIndexObj[classId].parents=['OrdinaryClasses']
+			 	checkOrdinaryClassType(_rootIndexObj[classId],item,_rootIndexObj);
 			}
 
 			//add for children
@@ -311,22 +315,37 @@ const addElements=( _rootIndexObj, dataProvider=[])=>{
 				/*
 				* I can't remove this node before move or remove all the children
 				*/
-				_rootIndexObj[classId].hasConstraints=true;
-
 				item['Children'].forEach((childId)=>{
 					if(!_rootIndexObj[childId]){
 						_rootIndexObj[childId]={}
 						_rootIndexObj[childId]['name']=childId
 						_rootIndexObj[childId]['id']=getId(childId)
 						_rootIndexObj[childId]['children']=[]
-						_rootIndexObj[childId]['hasConstraints']=false
 						_rootIndexObj[childId]['parents']=[]
-					}
-
-					if(_rootIndexObj[classId].type){
 						_rootIndexObj[childId]['type']=_rootIndexObj[classId].type;
-					}
+					}else{
+						/*
+						* if exist I remove it from document group
+						*/
+						if(_rootIndexObj[childId].type==='Document' && _rootIndexObj[classId].type==='Document'){
+							removeElementToArr(_rootIndexObj['DocumentClasses'].children,childId);						 
+						}
+						
+						/*
+						* if it has multi parents type the node is always a document type
+						* if child_type id undefined or object type
+						*/
 					
+						if(_rootIndexObj[classId].type && _rootIndexObj[childId].type!=='Document'){
+							_rootIndexObj[childId]['type']=_rootIndexObj[classId].type;
+							
+							/*
+							* check the other levels of relationship  
+							*/						
+							checkChildrenType(_rootIndexObj[childId].children,_rootIndexObj[classId].type);
+						}				
+					}
+				
 					_rootIndexObj[childId]['parents'].push({label:label,name:classId,type:_rootIndexObj[classId].type});
 					//add child to the current node
 					_rootIndexObj[classId]['children'].push(_rootIndexObj[childId])
@@ -337,12 +356,17 @@ const addElements=( _rootIndexObj, dataProvider=[])=>{
 	})
 }
 
+function checkChildrenType(childrenElements,parentType){
+	childrenElements.forEach((childrenEl)=>{
+		childrenEl.type=parentType;
+		checkChildrenType(childrenEl.children,parentType);
+	})
+}
 /*
 *the list of available parents depends on the type of node
 *the list can not have the node currents parents or the currents children
-*Ordinary Class can inherit only from Ordinary Classes 
-*Entity Class can inherit from Ordinary Classes and Entity Classes
-*Relationship Class can inherit from Ordinary Classes and Relationship
+*Object Class type can inherit only from Ordinary Classes 
+*Document Class type can inherit from Ordinary Classes and Entity Classes
 */
 
 export const availableParentsList = (classObj,classesMap,documentMap,_rootIndexObj)=>{

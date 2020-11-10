@@ -26,7 +26,7 @@ export const BaseCheckboxElement = (props) => {
 			 	<div className="tdb__form__help">
 			 		 <span className="tdb__form__span">
 			 		 	<input  type="checkbox" onChange={onChange} checked={value || false}  onBlur={onBlur} {...disabled} onChange={onChange} name={props.name} className={props.inputClassName}></input>            
-	                 	<label className={props.labelClassName} for={props.name}>{props.title}</label>
+	                 	<label className={props.labelClassName} htmlFor={props.name}>{props.title}</label>
 	                 </span>
 	                 <HelpComponent/>
                 </div>

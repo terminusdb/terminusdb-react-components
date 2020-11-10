@@ -74,7 +74,7 @@ export const ParentsFilter = (props) => {
 								dataProvider={elementClassList} 
 								optionChange={changeParentList} 
 								showLabel={false}  
-								id='elementsType'/>					 	
+								name='elementsType'/>					 	
 						 }
 						 	<BaseSelectReactElement
 							 	name="addParent"

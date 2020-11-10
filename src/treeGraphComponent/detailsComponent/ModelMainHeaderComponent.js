@@ -6,13 +6,41 @@ export const ModelMainHeaderComponent =(props)=>{
 //<PagesLink/>
 	//render(){
 		const viewEdit=props.isEditMode===true ? true : false;
-		let style={style:{display:'none'}}
+		let style={style:{visibility:'hidden'}}
 		if(viewEdit){
 			style={}
 		}
 
+		const setZoomIn=()=>{
+			props.setZoomEvent({type:'ZOOM_IN','zoom':Date.now()});
+
+		}
+		const setZoomOut=()=>{
+			props.setZoomEvent({type:'ZOOM_OUT','zoom':Date.now()});
+
+		}
+		const setResetView=()=>{
+			props.setZoomEvent({type:'RESET_ZOOM','zoom':Date.now()});
+		}
+//setZoomEventType
 		return(		
 		   <div className="tdb__model__hright">
+			   <div className="tdb__model__hright">
+			   </div>
+		   	   <div className="tdb__model__hright">
+		   	   	 <div className="icon-header" > 			   
+			   		<i className="fa fa-search-plus" title={TOOLBAR_LABELS.ZoomInTooltip} 
+			   		onClick={setZoomIn}></i>
+				 </div>
+			     <div className="icon-header" > 
+			   		<i className="fa fa-search-minus" title={TOOLBAR_LABELS.ZoomOutTooltip} 
+			   		onClick={setZoomOut}></i>
+			     </div>
+				 <div className="icon-header" >
+			   		<i className="fa fa-circle-notch" title={TOOLBAR_LABELS.ResetViewPoint} 
+			   		onClick={setResetView}></i>
+				 </div>
+		   	   </div>
 		   	   <div className="tdb__model__hright" {...style}>
 			   	   {/*<div className="icon-header">
 				   		<i className="fa fa-sync" title={TOOLBAR_LABELS.ResetButtonTooltip} onClick={props.resetTreeModel}></i>
@@ -24,6 +52,8 @@ export const ModelMainHeaderComponent =(props)=>{
 				   					  selectClassName="tdb__button__base tdb__panel__button"
 				   					  name="SAVE_BUTTON" onSelectionChange={props.saveData}/>
 				   </div>
+				   
+
 				   {/*
 				   <div className="icon-header" > 
 				   		<i className="fa fa-undo" title={TOOLBAR_LABELS.UndoButtonTooltip} onClick={props.undoAction}></i>
@@ -32,6 +62,7 @@ export const ModelMainHeaderComponent =(props)=>{
 				   		<i className="fa fa-redo" title={TOOLBAR_LABELS.RedoButtonTooltip}  onClick={props.redoAction}></i>
 				   </div>*/}
 			   </div>
+			  
 			   <div className="icon-header">
 			   	  <ToogleButton	 onSelectionChange={props.changeMode}
 		   	   					 baseTooltip={TOOLBAR_LABELS.EditModeTooltip}
@@ -40,6 +71,7 @@ export const ModelMainHeaderComponent =(props)=>{
 		   	                     baseIcon="fa fa-edit"
 		   	                     selectIcon="fa fa-edit"/>
 			   </div>
+
 			   <div className="icon-open-close">
 			   		<ToogleButton name="PANEL_OPEN_BUTTON" baseIcon="fas fa-sign-in-alt" selectIcon="fas fa-sign-in-alt fa-flip-horizontal"/>
 			   	</div>

@@ -12,11 +12,22 @@ import {BaseCheckboxElement} from './BaseCheckboxElement';
 
 export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassId,isNodeObject,hasConstraints})=>{	
 
+    const [indexError,setIndexError]=useState(false);
+
     const changeElement=(name,value)=>{
+        if(name==="id"){
+            if(value.indexOf(" ")>-1){
+                setIndexError("Please remove all the white space");
+                return;
+            }
+            setIndexError(false);
+        }
         if(updateValue){
             updateValue(name,value,nodeJsonData);
         }
     }
+
+
 
     return(
    	    <div key={nodeJsonData.name} className="tdb__panel__box">
@@ -30,42 +41,27 @@ export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassI
                 }
                 <BaseInputElement 
                     disabled={!nodeJsonData.newElement}
-                    title={ELEMENT_BASE_CONST.ID_TEXT}
+                    title={`${ELEMENT_BASE_CONST.ID_TEXT} *` }
+                    placeholder={ELEMENT_BASE_CONST.ID_PLACEHOLDER}
                     name='id'
                     onBlur={changeElement}
                     defaultValue={nodeJsonData.id || ''}
+                    itemError={indexError}
                     />
                 <BaseInputElement 
                     title={ELEMENT_BASE_CONST.LABEL_TEXT}
                     name='label'
+                    placeholder={ELEMENT_BASE_CONST.LABEL_PLACEHOLDER}
                     onBlur={changeElement}
                     defaultValue={nodeJsonData.label || ''}
                     />
-            {/*<div className="tdb__form__group" >
-	    		<input
-	    			{...disabled}
-	                name="id"
-	                placeholder= {ELEMENT_BASE_CONST.ID_TEXT}
-	                className = "tdb__form__element"
-	                onChange={changeValue}
-	                onBlur={saveValue}
-	                value={values.id || ''}
-	            />
-	        </div>*/}
-	         <BaseTextareaElement 
+	         <BaseTextareaElement
+                    placeholder={ELEMENT_BASE_CONST.DESCRIPTION_PLACEHOLDER} 
                     title={ELEMENT_BASE_CONST.DESCRIPTION_TEXT}
                     name='comment'
                     onBlur={changeElement}
                     defaultValue={nodeJsonData.comment || ''}
             />
-            {/*<textarea 
-                name="comment"
-                placeholder= {ELEMENT_BASE_CONST.DESCRIPTION_TEXT}
-                className = "tdb__form__element"
-                onChange={changeValue}
-                onBlur={saveValue}
-                value={values.comment || ''}
-            />*/}
     	</div>
     )
 }

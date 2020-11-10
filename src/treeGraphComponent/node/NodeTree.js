@@ -32,7 +32,8 @@ export const NodeTree=(props)=> {
 
 	const getNode=()=>{		
 		const node=props.node;
-		const elemStyle=elementsStyle[node.data.type] || {};
+		const elemStyleType=node.data.type==='Group' ? node.data.name : node.data.type
+		const elemStyle= elementsStyle[elemStyleType] || {};
 		let fillColor=elemStyle.fillColor || '#1eadfb';
 		let lineSize=elemStyle.lineSize || 2;
 		let lineColor=elemStyle.lineColor || '#1eadfb';
@@ -100,7 +101,7 @@ export const NodeTree=(props)=> {
 			const isEditMode= props.isEditMode===true ? true : false;
 
 			
-			const label = node.data.label || '';
+			const label = node.data.label || node.data.id || '';
 
   			
 		  return (
