@@ -89,11 +89,17 @@ function checkTime(props){
 
 //cell values that come back from queries can have
 function renderCellValue(props, woqt){
-    let value = props.cell.value || ""
-    let strval = checkTime(props);
-    if(strval===false)strval = getStringFromBindingValue(value);
-    if(typeof strval == "undefined") return ""
-    return strval
+    let rend = woqt.getSpecificRender(props.cell.column.id, props.cell.row.original)
+    if(rend){
+        return rend(props.cell)
+    }
+    else {
+        let value = props.cell.value || ""
+        let strval = checkTime(props);
+        if(strval===false)strval = getStringFromBindingValue(value);
+        if(typeof strval == "undefined") return ""
+        return strval
+    }
 }
 
 function getStringFromBindingValue(item, first){
