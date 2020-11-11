@@ -8,10 +8,12 @@ import { Table,Container,Row, Col, Pagination, PaginationItem, PaginationLink,Bu
  * sort - no, local, remote
  */
 
-export const TableComponent = ({columns, data, view, pages, orderBy, pageNumber, setLimits, setOrder, pagesizes})=>{
+export const TableComponent = ({columns, data, view, pages, freewidth, orderBy, rowCount, pageNumber, setLimits, setOrder, pagesizes})=>{
     
     pagesizes = pagesizes || [10, 20, 30, 40, 50]
     let pager = view.config.pager()
+
+    rowCount = rowCount || data.length
 
     let ut_config = {
         columns,
@@ -19,21 +21,23 @@ export const TableComponent = ({columns, data, view, pages, orderBy, pageNumber,
     }
 
     let init_state = {
-        pageIndex: 0
+        pageIndex: 0,
+        pageSize: data.length
     }
 
     if(pager){
         let ps = view.config.pagesize() || 20
         init_state.pageSize = ps
+        if(pager == "remote"){
+            ut_config.manualPagination = true
+            ut_config.manualSortBy = true
+            ut_config.pageCount = pages || 1
+            init_state.pageIndex = pageNumber || 0 
+            init_state.sortBy = woql_to_order(orderBy)
+        }
     }
 
-    if(pager == "remote"){
-        ut_config.manualPagination = true
-        ut_config.manualSortBy = true
-        ut_config.pageCount = pages || 1
-        init_state.pageIndex = pageNumber || 0 
-        init_state.sortBy = woql_to_order(orderBy)
-    }
+
 
     ut_config.initialState = init_state
     
@@ -66,10 +70,20 @@ export const TableComponent = ({columns, data, view, pages, orderBy, pageNumber,
 
    
     useEffect(() => {
-        if((pager == "remote") && setLimits && pageSize != ut_config.initialState.pageSize || pageIndex != (pageNumber || 0)) 
+        if((pager == "remote") && setLimits && (pageSize != ut_config.initialState.pageSize || pageIndex != (pageNumber || 0))) 
             setLimits(pageSize, (pageIndex)*pageSize)
      }, [pageIndex, pageSize ]) 
      
+     let rowCountStr = ""
+     if(pager){
+         let ps = view.config.pagesize() || 10 
+         let st = ((ps * pageIndex) + 1)
+         let en = page.length + st - 1
+         rowCountStr = "Record " + st + " to " + en
+        if(rowCount){
+            rowCountStr += " of " + rowCount
+        }
+    }
      return (
         <span>
             <Table {...getTableProps()} hover>
@@ -98,7 +112,7 @@ export const TableComponent = ({columns, data, view, pages, orderBy, pageNumber,
                         <tr {...row.getRowProps(getRowProps(row, view))}>
                             {row.cells.map(cell => {
                                 return <td {...cell.getCellProps([
-                                    getColumnProps(cell.column, view),
+                                    getColumnProps(cell.column, view, freewidth),
                                     getCellProps(cell, view),
                                 ])}>
                                     {cell.render("Cell")}
@@ -111,7 +125,7 @@ export const TableComponent = ({columns, data, view, pages, orderBy, pageNumber,
             </Table>
             {pager && 
                 <Row md={12} className="mr-0 ml-0">
-                    <Col md={6} >
+                    <Col md={5} >
                         <Pagination className="pagination">
                             <button onClick={() => previousPage()} disabled={!canPreviousPage}>
                             {'<'}
@@ -121,12 +135,12 @@ export const TableComponent = ({columns, data, view, pages, orderBy, pageNumber,
                             </button>{' '}
                         </Pagination>
                     </Col>
-                    <Col md={6} className="justify-content-end">
-                        <span>
-                        Page{' '}
-                        <strong>
-                            {pageIndex  + 1} of {pageCount}
-                        </strong>{' '}
+                    <Col md={4} className="justify-content-end">
+                         <span>
+                            Page{' '}
+                            <strong>
+                                {pageIndex  + 1} of {pageCount}
+                            </strong>{" ⚹ "}
                         </span>
                         <select value={pageSize}
                             onChange={e => {
@@ -139,20 +153,33 @@ export const TableComponent = ({columns, data, view, pages, orderBy, pageNumber,
                             ))}
                         </select>
                     </Col>
+                    <Col md={3} className="justify-content-end">
+                        {rowCountStr}
+                    </Col>
               </Row>
             }
     </span>
     )
 }
 
-function getCellProps(cell, config){
-    return {}
+function getCellProps(cell, view){
+    let cs = {}
+    if(view.hasCellClick(cell.row.original, cell.column.id)){
+        let onc = view.getCellClick(cell.row.original, cell.column.id)
+        if(onc){    
+            cs.onClick = function(){
+                onc(cell)
+            }
+            cs.style = { cursor: "pointer"}
+        }    
+    }        
+    return cs
 }
 
 function getRowProps(row, view){
     let cs = {}
-    if(view.hasRowClick(row)){
-        let onc = view.getRowClick(row)
+    if(view.hasRowClick(row.original)){
+        let onc = view.getRowClick(row.original)
         if(onc){    
             cs.onClick = function(){
                 onc(row)
@@ -164,20 +191,25 @@ function getRowProps(row, view){
 }
 
 
-function getColumnProps(column, view){
+function getColumnProps(column, view, freewidth){
     let cstyle = {}
-    if(column.width){
-        cstyle.width = column.width
+    if(freewidth){
+        cstyle = view.getColumnDimensions(column.id)
     }
-    if(column.maxWidth){
-        cstyle.maxWidth = column.maxWidth
-    }
-    if(column.minWidth){
-        cstyle.minWidth = column.minWidth
+    else {
+        if(column.width){
+            cstyle.width = column.width
+        }
+        if(column.maxWidth){
+            cstyle.maxWidth = column.maxWidth
+        }
+        if(column.minWidth){
+            cstyle.minWidth = column.minWidth
+        }
     }
     return {
         style: cstyle
-    }
+    }    
 }
 
 const order_to_woql = (lorder) => {

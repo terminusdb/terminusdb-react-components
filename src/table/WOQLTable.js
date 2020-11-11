@@ -3,13 +3,12 @@ import TerminusClient from '@terminusdb/terminusdb-client';
 import {TableComponent} from './TableComponent';
 import { format } from "date-fns";
 
-export const WOQLTable = ({bindings, result, view, query, limit, start, orderBy, totalRows, setLimits, setOrder, prefixes})=>{
+export const WOQLTable = ({bindings, result, view, freewidth, query, start, limit, orderBy, totalRows, setLimits, setOrder, prefixes})=>{
     let wt = TerminusClient.View.table()
     if(view && view.rules)  wt.loadJSON(view.table, view.rules)
     let woqt = new TerminusClient.WOQLTable(false, wt)
-
-    let pagenum = parseInt((start) / limit)
-    let pages = parseInt((totalRows/limit)+1)  
+    let pagenum = (limit ? parseInt((start) / limit) : 1)
+    let pages = (limit ? parseInt(((totalRows)/limit)+1) : 1)  
     
     const [data, columns]  = useMemo(() => makeData(), [bindings, result])
 
@@ -44,6 +43,7 @@ export const WOQLTable = ({bindings, result, view, query, limit, start, orderBy,
                     return renderCellValue(props, woqt)
                 }
             }
+            if(freewidth) return col
             return addColumnDimensions(item, col, woqt)
         })
         let colstruct = {columns:listOfColumns}
@@ -57,10 +57,12 @@ export const WOQLTable = ({bindings, result, view, query, limit, start, orderBy,
         <TableComponent 
             data={data} 
             columns={columns} 
+            freewidth={freewidth}
             view={woqt}
             orderBy={orderBy}
             pages={pages} 
             pageNumber={pagenum}
+            rowCount={totalRows}
             setLimits={setLimits} 
             setOrder={setOrder}
         />
