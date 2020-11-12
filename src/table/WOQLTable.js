@@ -3,25 +3,37 @@ import TerminusClient from '@terminusdb/terminusdb-client';
 import {TableComponent} from './TableComponent';
 import { format } from "date-fns";
 
-export const WOQLTable = ({bindings, view, query, serverside})=>{
-    const [data , columns]  = useMemo(() => makeData(), [bindings])
+export const WOQLTable = ({bindings, result, view, freewidth, query, start, limit, orderBy, totalRows, setLimits, setOrder, prefixes})=>{
+    let wt = TerminusClient.View.table()
+    if(view && view.rules)  wt.loadJSON(view.table, view.rules)
+    let woqt = new TerminusClient.WOQLTable(false, wt)
+    let pagenum = (limit ? parseInt((start) / limit) : 1)
+    let pages = (limit ? parseInt(((totalRows)/limit)+1) : 1)  
+    
+    const [data, columns]  = useMemo(() => makeData(), [bindings, result])
 
     function makeData(){
+        let qres = result || {bindings: bindings}
         view = view || {}
-        let wt = TerminusClient.View.table()
-        if(view.rules)  wt.loadJSON(view.table, view.rules)
-        let wr = new TerminusClient.WOQLResult({bindings: bindings},query)
-        let woqt = new TerminusClient.WOQLTable(false, wt)
+        let wr = new TerminusClient.WOQLResult(qres, query)
         woqt.setResult(wr, query)
         const columns = formatTableColumns(woqt)
-        return [bindings, columns];
+        return [wr.rows(), columns];
     }
 
-    function formatTableColumns(woqt){
+    function addColumnDimensions(item, col){
+        let cstyle = woqt.getColumnDimensions(item)
+        for(var k in cstyle){
+            col[k] = cstyle[k]
+        }
+        return col
+    }
+
+    function formatTableColumns(){
         let colids = woqt.getColumnsToRender()
         let listOfColumns = colids.map((item, index) => {
-            return {
-                Header: item,
+            let col = {
+                Header: woqt.getColumnHeaderContents(item) || item,
                 id: item,
                 accessor: item,
                 selector: item,
@@ -31,6 +43,8 @@ export const WOQLTable = ({bindings, view, query, serverside})=>{
                     return renderCellValue(props, woqt)
                 }
             }
+            if(freewidth) return col
+            return addColumnDimensions(item, col, woqt)
         })
         let colstruct = {columns:listOfColumns}
         if(woqt.config.header()) colstruct.Header = woqt.config.header()
@@ -38,8 +52,20 @@ export const WOQLTable = ({bindings, view, query, serverside})=>{
         return [colstruct]
     }
 
+    
     return(
-    	<TableComponent data={data} columns={columns} />
+        <TableComponent 
+            data={data} 
+            columns={columns} 
+            freewidth={freewidth}
+            view={woqt}
+            orderBy={orderBy}
+            pages={pages} 
+            pageNumber={pagenum}
+            rowCount={totalRows}
+            setLimits={setLimits} 
+            setOrder={setOrder}
+        />
     )
 }
 /*
@@ -63,11 +89,17 @@ function checkTime(props){
 
 //cell values that come back from queries can have
 function renderCellValue(props, woqt){
-    let value = props.cell.value || ""
-    let strval = checkTime(props);
-    if(strval===false)strval = getStringFromBindingValue(value);
-    if(typeof strval == "undefined") return ""
-    return strval
+    let rend = woqt.getSpecificRender(props.cell.column.id, props.cell.row.original)
+    if(rend){
+        return rend(props.cell)
+    }
+    else {
+        let value = props.cell.value || ""
+        let strval = checkTime(props);
+        if(strval===false)strval = getStringFromBindingValue(value);
+        if(typeof strval == "undefined") return ""
+        return strval
+    }
 }
 
 function getStringFromBindingValue(item, first){
