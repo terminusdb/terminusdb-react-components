@@ -2,8 +2,11 @@ import React,{useMemo} from 'react';
 import TerminusClient from '@terminusdb/terminusdb-client';
 import {TableComponent} from './TableComponent';
 import { format } from "date-fns";
+import { CellRenderer } from "./CellRenderer"
 
 export const WOQLTable = ({bindings, result, view, freewidth, query, start, limit, orderBy, totalRows, setLimits, setOrder, prefixes})=>{
+    console.log(prefixes, query['@context'])
+    prefixes = prefixes || (query && query['@context'] ? query['@context'] : {})
     let wt = TerminusClient.View.table()
     if(view && view.rules)  wt.loadJSON(view.table, view.rules)
     let woqt = new TerminusClient.WOQLTable(false, wt)
@@ -29,6 +32,30 @@ export const WOQLTable = ({bindings, result, view, freewidth, query, start, limi
         return col
     }
 
+    function renderCellValue(props, woqt){
+        let rend = woqt.getSpecificRender(props.cell.column.id, props.cell.row.original)
+        if(rend){
+            return rend(props.cell)
+        }
+        else {
+            let rendargs = woqt.getRenderer(props.cell.column.id, props.cell.row.original)
+            if(typeof props.cell.value == "string" || Array.isArray(props.cell.value) || 
+                (typeof props.cell.value == "object" && (props.cell.value['@type'] || 
+                typeof props.cell.value['@value'] != "undefined"))){
+                    return <CellRenderer 
+                        args={rendargs} 
+                        value={props.cell.value}
+                        column={props.cell.column.id} 
+                        row={props.cell.row.original} 
+                        view={woqt} 
+                        cell={props.cell}
+                    />                 
+            }
+            return props.cell.value
+        }
+    }
+    
+
     function formatTableColumns(){
         let colids = woqt.getColumnsToRender()
         let listOfColumns = colids.map((item, index) => {
@@ -38,7 +65,6 @@ export const WOQLTable = ({bindings, result, view, freewidth, query, start, limi
                 accessor: item,
                 selector: item,
                 canSort: woqt.isSortableColumn(item),
-                filterable: woqt.isFilterableColumn(item),
                 Cell: function(props){
                     return renderCellValue(props, woqt)
                 }
@@ -68,61 +94,4 @@ export const WOQLTable = ({bindings, result, view, freewidth, query, start, limi
         />
     )
 }
-/*
-* to be review we have to pass the column type in the table config like
-* {columnid:'Time', type:"seconds"} etc.....
-*/
-function checkTime(props){
-    let strval=false
-    if(props.cell.column
-        && props.cell.column.id==="Time"
-        && typeof props.cell.value==='object'
-        && props.cell.value['@type']==='http://www.w3.org/2001/XMLSchema#decimal'){
 
-        const ts=props.cell.value['@value']
-        if(!isNaN(parseFloat(ts))){
-            strval=format(new Date(parseFloat(ts*1000)), "hh:mm:ss, dd/MM/yy")
-         }
-    }
-    return strval
-}
-
-//cell values that come back from queries can have
-function renderCellValue(props, woqt){
-    let rend = woqt.getSpecificRender(props.cell.column.id, props.cell.row.original)
-    if(rend){
-        return rend(props.cell)
-    }
-    else {
-        let value = props.cell.value || ""
-        let strval = checkTime(props);
-        if(strval===false)strval = getStringFromBindingValue(value);
-        if(typeof strval == "undefined") return ""
-        return strval
-    }
-}
-
-function getStringFromBindingValue(item, first){
-    if(Array.isArray(item)){
-        return valueFromArray(item)
-    }
-    if(typeof item == "object"){
-        if(typeof item['@value'] != "undefined"){
-            let t = (item["@language"] ? "xsd:string" : item["@type"])
-            return (<span title={t}>{item['@value']}</span>)
-        }
-        else {
-            return item
-            //return JSON.stringify(item, false, 2) 
-        }
-    }
-    if(item == "terminus:unknown") return ""
-    return item;
-}
-
-function valueFromArray(arr){
-    let vals = arr.map((item) => {
-        return getStringFromBindingValue(item)
-    })
-    return vals.join(", ")
-}
