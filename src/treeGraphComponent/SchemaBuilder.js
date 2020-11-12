@@ -23,7 +23,7 @@ export const SchemaBuilder = (props)=>{
 		  removeElement,
 		  objectPropertyList,
 		  objPropsRelatedToClass,
-		  savedObjectToWOQL,updateChoices
+		  savedObjectToWOQL,updateChoices,isFocusOnNode
 		  //updateParentsList,availableParentsList
 		  //entitiesListArr,classesListArr
 		  } = GraphContextObj();
@@ -52,9 +52,11 @@ export const SchemaBuilder = (props)=>{
 	return (	
 		<>
 		<div className="tdb__model__header">
-			<ModelMainHeaderComponent extraTools={props.extraTools} setZoomEvent={setZoomEvent} saveData={saveData} changeMode={setIsEditMode} isEditMode={isEditMode}/>
+			<ModelMainHeaderComponent 
+				setNodeAction={setNodeAction} 
+				extraTools={props.extraTools} setZoomEvent={setZoomEvent} saveData={saveData} changeMode={setIsEditMode} isEditMode={isEditMode}/>
 		</div>
-		<SplitPane className="colWindow" split="vertical" minSize={400} size={mainPanelSize}>							   							
+		<SplitPane className="tdb_panel_split" split="vertical" minSize={400} size={mainPanelSize}>							   							
 			<div>
 				<SizeMe monitorHeight={true}>{({ size }) =>
 		            <div style={{ minHeight:"400px", height: "calc(100vh - 10px)"}}>
@@ -68,7 +70,8 @@ export const SchemaBuilder = (props)=>{
 		              		width={size.width} height={size.height} 
 		              		addedNewNode={selectedNodeObject.newNode}
 		              		graphUpdateLabel={graphUpdateLabel}
-		              		graphDataProvider={graphDataProvider}/>}
+		              		graphDataProvider={graphDataProvider}
+		              		isFocusOnNode={isFocusOnNode}/>}
 		              </div>
 		              }
 		        </SizeMe>

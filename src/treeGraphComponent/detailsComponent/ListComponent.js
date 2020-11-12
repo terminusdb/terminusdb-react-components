@@ -10,6 +10,7 @@ export const ListComponent = (props) =>  {
 
 	return(<>
 		{dataProvider.map((elementItem,index)=>{
+			
 		  	return(<div key={'__elementItem__'+index}>		  			
 		  			  <div className="tdb__list__item">
 		  			  		<label className="tdb__list__label">{elementItem.label}</label>

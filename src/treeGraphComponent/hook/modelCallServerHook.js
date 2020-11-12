@@ -2,17 +2,6 @@ import React, {useState,useEffect} from "react";
 import MainGraphObject from "../MainGraphObject"
 import TerminusClient from '@terminusdb/terminusdb-client'
 
-/*and(
-     opt().triple("doc:test", "label", "v:label").delete_triple("doc:test", "label", "v:label"),
-     add_triple("doc:test", "label", "New label")
-)
- //appearance
-   15  /*
-   16: add_quad("MyClass", "subClassOf", "Parent", "schema/main")
-   17: delete_quad("MyClass", "subClassOf", "Parent", "schema/main")
-   18  
-*/
-
 export const modelCallServerHook = (woqlClient,branch,ref) => {
 
 	const [mainGraphDataProvider, setResultMainGraph] = useState({classesResult:{},

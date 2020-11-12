@@ -19,7 +19,8 @@ export const BaseInputElement = (props) => {
 		setInputValue(evt.currentTarget.value)
 	}
 
-	const disabled= props.disabled === true ? {disabled:true} : {}
+	const disabled = props.disabled === true ? {disabled:true} : {}
+	const autoFocus= props.autoFocus === true ? {autoFocus:true} :{}
 
 	return(
 			<div className={props.groupClassName}>
@@ -27,7 +28,7 @@ export const BaseInputElement = (props) => {
 	                 <label className={props.labelClassName} htmlFor={props.name}>{props.title}</label>
 	                 <HelpComponent/>
                 </div>
-                <input placeholder={props.placeholder} onBlur={onBlur} {...disabled} onChange={onChange} value={value} name={props.name} className={props.inputClassName}></input>       
+                <input {...autoFocus} placeholder={props.placeholder} onBlur={onBlur} {...disabled} onChange={onChange} value={value} name={props.name} className={props.inputClassName}></input>       
             	<span className="tdb__form__error">{props.itemError}</span>
             </div>
 

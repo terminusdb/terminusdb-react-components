@@ -10,6 +10,8 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 	const [selectedNodeObject, setSelectedNodeObject] = useState({});
 	const [classPropertiesList, setClassPropertiesList] = useState([]);
 
+	const [isFocusOnNode, setFocusOnNode] = useState(false);
+
 
 	const [objectChoicesList, setObjectChoicesList] = useState([]);
 	const [objectPropertyList, setObjectPropertyList] = useState([]);
@@ -23,6 +25,8 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 	const [entitiesListArr, setEntitiesListArr] = useState(null);
 	const [availableParentsList, setAvailableParentsList] = useState({})
 	const [elementsNumber, setElementNumbers] = useState({})
+
+	const [needToSave, setNeedToSave] = useState(false)
 	//let mainGraphObj;
 
 	/*
@@ -53,7 +57,8 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 		setAvailableParentsList({})
 	}
 
-	const changeCurrentNode=(nodeId)=>{
+	const changeCurrentNode=(nodeId,focusOnNode=false)=>{
+		setFocusOnNode(focusOnNode);
 		if(nodeId===null){
 			setSelectedNodeObject({})
 			setClassPropertiesList([])
@@ -66,9 +71,10 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 		}
 	}
 
-	const setNodeAction=(actionName)=>{
-		const nodeObject=mainGraphObj.nodeApplyAction(selectedNodeObject.name,actionName);
-		changeCurrentNode(nodeObject.name);
+	const setNodeAction=(actionName,nodeName=null,focusOnNode=false)=>{
+		const node_name=nodeName || selectedNodeObject.name;
+		const nodeObject=mainGraphObj.nodeApplyAction(actionName,node_name);
+		changeCurrentNode(nodeObject.name,focusOnNode);
 	}
 
 	const addNewProperty=(propertyType,propertyRange)=>{
@@ -121,7 +127,7 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 	        changeCurrentNode,
 	        setNodeAction,
 	        updateValue,
-	        addNewProperty ,
+	        addNewProperty,
 	        removeElement,
 	        objectPropertyList,
 	        objPropsRelatedToClass,
@@ -131,7 +137,9 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 	        elementsNumber,
 	        mainGraphObj,
 	        objectChoicesList,
-	        updateChoices
+	        updateChoices,
+	        isFocusOnNode,
+	        needToSave
 	    	}}>
 	     {children}
         </GraphContext.Provider>

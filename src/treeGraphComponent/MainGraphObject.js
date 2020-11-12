@@ -1,20 +1,23 @@
 import * as NODE_ACTION_NAME from './utils/actionType';
+import {removeElementToArr} from './utils/modelTreeUtils'
+
 import {formatData,
 		formatProperties,
 		formatDataForTreeChart,
 		checkInheritance,
 		OrdinaryClassObj,
 		EntityClassObj,
-		availableParentsList,addObjectPropertyRangeItem} from './FormatDataForTree';
+		availableParentsList,addObjectPropertyRangeItem,
+		addElementToPropertyList} from './FormatDataForTree';
 
 import {graphUpdateObject} from './utils/graphUpdateObject';
 import {CLASS_TYPE_NAME} from './utils/elementsName' 
 
 export const MainGraphObject = (mainGraphDataProvider)=>{
 
-	let _classesList=new Map();
+	let _objectTypeList=new Map();
 
-	let _entitiesList=new Map();
+	let _documentTypeList=new Map();
 
 	let _objectChoiceList =[]
 
@@ -22,12 +25,13 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
     * all the propertyList ????
     */
 	let _propertiesList=new Map();
+
+	let _domainToProperties={};
+
 	/*
 	* the list of link properties
 	*/
 	let _objectPropertyList=[];
-
-	let _domainToProperties={};
 
 	let _objectPropertyToRange={};
 
@@ -45,8 +49,8 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 
 	const getElementsNumber=()=>{
 		return {properties:_propertiesList.size,
-		        entities:_entitiesList.size,
-		        classes:_classesList.size,
+		        entities:_documentTypeList.length,
+		        classes:_objectTypeList.length,
 		    	choiceClasses:_objectChoiceList.length}
 	}
 
@@ -95,11 +99,7 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 		return undefined;
 	}
 
-	/*
-	{classResult:{},
-	  propsResult:{},
-	  restResult:{}})
-	*/
+	
 	const createNewMainGraph=(mainGraphDataProvider)=>{
 		_mainGraphElementsJson=mainGraphDataProvider;
 		_rootIndexObj=formatData(mainGraphDataProvider.classesResult);		
@@ -114,7 +114,7 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 	
 	const getAvailableParentsList=(nodeId)=>{
 		const nodeObject=getElement(nodeId);
-		return  availableParentsList(nodeObject,_classesList,_entitiesList,_rootIndexObj)
+		return  availableParentsList(nodeObject,_objectTypeList,_documentTypeList,_rootIndexObj)
 	}
 
 	const addNewPropertyToClass=(nodeName, propertyType, propertyRange)=>{
@@ -131,7 +131,7 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 	}
 
 
-	const nodeApplyAction=(nodeName,actionName)=>{
+	const nodeApplyAction=(actionName,nodeName)=>{
 		if(nodeName!==null && _rootIndexObj[nodeName]){ 
             let currentNode=_rootIndexObj[nodeName];
             let elementType=currentNode.type;
@@ -140,8 +140,8 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 
             switch (actionName){
               case NODE_ACTION_NAME.ADD_NEW_ENTITY:
-                   elementType='DocumentClasses';
-                   nodeName='DocumentClasses';
+                   elementType=CLASS_TYPE_NAME.DOCUMENT_CLASS;
+                   nodeName=CLASS_TYPE_NAME.DOCUMENT_CLASSES;
                    /*
                    * I get as currentNode the DocumentClasses node 
                    */
@@ -151,14 +151,14 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
                    
                    break;
               case NODE_ACTION_NAME.ADD_NEW_CLASS:
-                   elementType='OrdinaryClasses';
-                   nodeName='OrdinaryClasses'
+                   elementType=CLASS_TYPE_NAME.OBJECT_CLASS
+                   nodeName=CLASS_TYPE_NAME.OBJECT_CLASSES
                    currentNode=getRoot(elementType);
                    actionType=NODE_ACTION_NAME.ADD_CHILD;                 
                    break;
 
               case  NODE_ACTION_NAME.ADD_NEW_CHOICE_CLASS:
-              		elementType=CLASS_TYPE_NAME.CHOICE_CLASSES
+              		elementType=CLASS_TYPE_NAME.CHOICE_CLASS
                     nodeName=CLASS_TYPE_NAME.CHOICE_CLASSES
                     currentNode=getRoot(elementType)
                     actionType=NODE_ACTION_NAME.ADD_CHILD
@@ -181,10 +181,11 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 
         	 	newNodeObj.children.push(currentNode);     	 	
 
-        	 	if(currentNode.parents.length===0){
-        	 		removeChildFromRoot(currentNode)
-        	 	}
-
+        	 	/*
+    	 		* check if I have to remove the child from the root node
+    	 		*/
+        	 	removeChildFromRoot(currentNode)
+        	 	
         	 	nodeName=rootParentNode.name;
         	 }else{
 
@@ -197,20 +198,35 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 	        		* currentNode is the parent node
 	        	 	*/
 	        	 	currentNode.children.push(newNodeObj);
-	        	 	/*
-	        	 	* update constraint for the node
-	        	 	*/
-	        	 	currentNode.hasConstraints=true;
-
-	        	 	//newNodeObj.parents.push({label:currentNode.label,name:currentNode.name});
-
-	        	 	//checkInheritance(currentNode,newNodeObj)
 	        	}
         	 }
         	 _rootIndexObj[newNodeObj.name]=newNodeObj;
+
+        	 /*
+        	 * to be review...
+        	 */
+        	 addNodeToclassList(newNodeObj);
+        	 
         	 setNewElementPosition(nodeName,newNodeObj);
         	 return newNodeObj;
          }
+	}
+
+	const addNodeToclassList=(elementObj)=>{
+		switch(elementObj.type){
+			case CLASS_TYPE_NAME.DOCUMENT_CLASS:
+				_documentTypeList.push(elementObj.name)
+				addElementToPropertyList(elementObj,_objectPropertyList);
+				break;
+			case CLASS_TYPE_NAME.OBJECT_CLASS:
+				_objectTypeList.push(elementObj.name)
+				addElementToPropertyList(elementObj,_objectPropertyList);
+				break;
+			case CLASS_TYPE_NAME.CHOICE_CLASS:
+				addElementToPropertyList(elementObj,_objectChoiceList);
+				break;
+				//_classesList.set(elementObj.name,{value:node.data.name,name:node.data.name,label:node.data.label});
+		}
 	}
 	
 	/*
@@ -218,9 +234,9 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
     *in this case I have to remove the direct parent
     */
     const checkRelatedParents=(elementObjClass,parentObjClass)=>{
-    	parentObjClass.parents.forEach((parent)=>{
-    		const parentOfParentObj=_rootIndexObj[parent.name];
-    		const parentRelated=removeElementToArr(elementObjClass.parents,parent.name);    		
+    	parentObjClass.parents.forEach((parentName)=>{
+    		const parentOfParentObj=_rootIndexObj[parentName];
+    		const parentRelated=removeElementToArr(elementObjClass.parents,parentName);    		
 	    	if(parentRelated){
 	    		
 	    		/*
@@ -230,7 +246,7 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 				/*
 				* register to be save to schema
 				*/
-				_graphUpdateObject.changeNodeParent(elementObjClass.name,parent.name,NODE_ACTION_NAME.REMOVE_PARENT)
+				_graphUpdateObject.changeNodeParent(elementObjClass.name,parentName,NODE_ACTION_NAME.REMOVE_PARENT)
 	    	}
 	    	checkRelatedParents(elementObjClass,parentOfParentObj)
 	    })
@@ -250,7 +266,9 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 	   	       removeChildFromRoot(elementObjClass);
 	   	    }
 	   	    //{label:label,name:classId,type:_rootIndexObj[classId].type}
-			elementObjClass.parents.push({label:parentObjClass.label,name:parentObjClass.name,type:parentObjClass.type})//(parentName,parentObjClass);
+			//elementObjClass.parents.push({label:parentObjClass.label,name:parentObjClass.name,type:parentObjClass.type})//(parentName,parentObjClass);
+				
+			elementObjClass.parents.push(parentObjClass.name);
 			parentObjClass.children.push(elementObjClass);
 
 		}else{
@@ -263,9 +281,10 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 			if(elementObjClass.parents.length===0){
 				parentName=addToParentGroup(elementObjClass)
 			}else if(elementObjClass.type===CLASS_TYPE_NAME.DOCUMENT_CLASS){
-				const docParent=elementObjClass.parents.findIndex((item)=>
-						{
-							return item.type===CLASS_TYPE_NAME.DOCUMENT_CLASS
+				const docParent=elementObjClass.parents.findIndex((pName)=>{
+							const pElement=_rootIndexObj[pName];
+
+							return pElement.type===CLASS_TYPE_NAME.DOCUMENT_CLASS
 						})
 				if(docParent===-1){
 					parentName=addToParentGroup(elementObjClass)
@@ -310,8 +329,8 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 			
 			// I have to remove the node from the nodeParents list
 			
-			classElement.parents.forEach((parent)=>{
-				const parentObj=_rootIndexObj[parent.name];
+			classElement.parents.forEach((parentName)=>{
+				const parentObj=_rootIndexObj[parentName];
 				removeElementToArr(parentObj.children,elementName)
 			})
 
@@ -324,10 +343,12 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 			
 			switch(classElement.type){
 				case 'Class':
-					 _classesList.delete(elementName);
-					 break;
+					removeElementToArr(_objectTypeList,elementName) //_classesList.delete(elementName);
+					break;
 			    case 'Document':
-			         _entitiesList.delete(elementName);
+			    	removeElementToArr(_documentTypeList,elementName)
+			    	break;
+			         //_entitiesList.delete(elementName);
 			}
 
 			_graphUpdateObject.removeNode(classElement)
@@ -365,14 +386,14 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 		return listOfProperty.slice();
 	}
 
-	const removeElementToArr=(arrayList,elementName)=>{
-		const index=arrayList.findIndex(function(item){return item.name===elementName})
+	/*const removeElementToArr=(arrayList,elementName)=>{
+		const index=arrayList.findIndex(function(item){return item.name===elementName || item===elementName})
 		if(index>-1){
 			arrayList.splice(index,1);
 			return elementName;
 		}
 		return undefined;
-	}
+	}*/
 
 	/*
       *if I remove a parent 
@@ -422,10 +443,16 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 
 
 	function formatDataForTree(){
-		const [descendantsNode, classesList, entitiesList,objectPropertyList,objectChoiceList] = new formatDataForTreeChart(getRoot());
+		const [descendantsNode, 
+			  objectTypeList,
+			  documentTypeList,
+			  objectPropertyList,
+			  objectChoiceList] = new formatDataForTreeChart(getRoot());
 		_descendantsNode=descendantsNode;
-		_classesList=classesList;
-		_entitiesList=entitiesList;
+		//_classesList=classesList;
+		//_entitiesList=entitiesList;
+		_documentTypeList=documentTypeList
+		_objectTypeList=objectTypeList
 		_objectPropertyList=objectPropertyList;
 		_objectChoiceList=objectChoiceList;
 	}
@@ -445,17 +472,35 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 		_graphUpdateObject.updateChoicesList(choiceClass)
 	}
 
+	const updateObjectPropertyListLabel=(objectPropList,elementDataObject)=>{
+
+		const index=objectPropList.findIndex(function(item){
+			if(item.name===elementDataObject.name){
+				item.label=elementDataObject.label || elementDataObject.id;
+			}
+			return item.name===elementDataObject.name
+			})
+      	
+	}
+
 	const changeElementDataValue=(propName,propValue,elementDataObject)=>{
 		/*
 		* put the data in the list to save
 		*/
 		_graphUpdateObject.updateTripleElement(propName,propValue,elementDataObject);
+		
+		let objectPropList=_objectPropertyList;
+
 		switch(elementDataObject.type){
-			case CLASS_TYPE_NAME.DOCUMENT_CLASS:
-			case CLASS_TYPE_NAME.OBJECT_CLASS:
-			case CLASS_TYPE_NAME.CHOICE_CLASS:						
+			case CLASS_TYPE_NAME.CHOICE_CLASS:	
+				 objectPropList=_objectChoiceList;
+			case CLASS_TYPE_NAME.DOCUMENT_CLASS:				 
+			case CLASS_TYPE_NAME.OBJECT_CLASS:								
 				const currentNode=_rootIndexObj[elementDataObject.name];
 				currentNode[propName]=propValue;
+				if(propName==='label'){
+					updateObjectPropertyListLabel(objectPropList,elementDataObject)
+				}
 				break;
 			//property case
 			default:

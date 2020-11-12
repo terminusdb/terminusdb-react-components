@@ -33,7 +33,7 @@ export const graphUpdateObject=()=>{
 			}
 		}else{
 			newNode.parent=[currentNode.id]
-			newNode.parents=[{name:currentNode.name,label:currentNode.label,type:currentNode.type}]
+			newNode.parents=[currentNode.name]
 			newNode.type=currentNode.type
 		}
 
@@ -186,6 +186,10 @@ export const graphUpdateObject=()=>{
 		let WOQL = TerminusClient.WOQL
 		const andValues = []
 		newNodesList.forEach((node,key) =>{
+			/*if(node.id===undefined){
+				alert(`The node ${node.name}`)
+			}*/
+
 			if(node.type!==CLASS_TYPE_NAME.CHOICE_CLASS){
 				const newNode={id:node.id,
 							   label:node.label,

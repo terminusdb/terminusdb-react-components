@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState,useEffect,Fragment} from 'react';
 import PropTypes from "prop-types";
 import {Accordion} from '../../form/Accordion'
 import Tabs from 'react-responsive-tabs';
@@ -11,30 +11,35 @@ import {ELEMENT_ICONS} from '../../constants/details-labels';
 import {ChoiceList} from './ChoiceList';
 
 export const DetailsModelComponent = (props)=>{
+	
+	const [tabKey,setTabKey]=useState(1)
+
 	const nodeData = props.currentNodeJson ? props.currentNodeJson : {}
 	const objPropsRelatedToClass = props.objPropsRelatedToClass || []
 	const childrenArr = nodeData.children || []
 	const hasConstraints = (childrenArr.length>0 || objPropsRelatedToClass.length >0) ? true : false; 
 	const imageType=ELEMENT_ICONS[nodeData.type]
 
+	useEffect(() => {
+        setTabKey(1)
+    },[props.currentNodeJson])
+
 	const getTabs=()=>{
 		const tabsArr=[]
 		tabsArr.push({title:'Class',
-	             getContent: () =><div className="tdb__panel">
-	             					<BaseElement elementId={nodeData.name} elementType={nodeData.type} removeElement={props.removeElement} showCardinality={false} hasConstraints={hasConstraints} nodeJsonData={nodeData} updateValue={props.updateValue}/>
-						 	 	</div>,				    
+	             getContent: () =><BaseElement elementId={nodeData.name} elementType={nodeData.type} removeElement={props.removeElement} showCardinality={false} hasConstraints={hasConstraints} nodeJsonData={nodeData} updateValue={props.updateValue}/>
+						 	 	,				    
 						    	key: 1,
 						    	tabClassName: 'tab',
-						    	panelClassName: 'tdb__panel--nopad'
+						    	panelClassName: 'tdb__panel'
 							})
 		if(nodeData.type==='ChoiceClass'){
 			tabsArr.push({title:'Choices List',
-	             getContent: () =><div className="tdb__panel">
-	             					<ChoiceList updateChoiseList={props.updateChoices} choices={nodeData.choices} />
-	             				  </div>,				    
+	             getContent: () =><ChoiceList updateChoiseList={props.updateChoices} choices={nodeData.choices} />
+	             				  ,				    
 						    	key: 2,
 						    	tabClassName: 'tab',
-						    	panelClassName: 'tdb__panel--nopad'
+						    	panelClassName: 'tdb__panel'
 							})
 		}else if(nodeData.type!=='ChoiceClass'){
 			tabsArr.push({title:'Properties',
@@ -44,21 +49,29 @@ export const DetailsModelComponent = (props)=>{
 						    	panelClassName: 'tdb__panel'})
 		}
 		tabsArr.push({title:'Relationship',
-	            getContent: () =>
-         					<div className="tdb__panel">
-         						<ConstraintsComponent objectPropertyList={props.objectPropertyList} nodeJsonData={nodeData} objPropsRelatedToClass={props.objPropsRelatedToClass}/>
-         						{nodeData.type!=='ChoiceClass' &&
-         							<ParentsFilter/>
-         				  		}
-         				  	</div>,
+	            getContent: () =><Fragment>
+	         						<ConstraintsComponent objectPropertyList={props.objectPropertyList} nodeJsonData={nodeData} objPropsRelatedToClass={props.objPropsRelatedToClass}/>
+	         						{nodeData.type!=='ChoiceClass' &&
+	         							<ParentsFilter/>
+	         				  		}
+         				  		</Fragment>
+         				  	,
 
 				    	key: 3,
 				    	tabClassName: 'tab',
-				    	panelClassName: 'tdb__panel--nopad'
+				    	panelClassName: 'tdb__panel'
 				})
 
 		return tabsArr;
-		} 
+	} 
+
+	const changeTab=(key)=>{
+		if(!currentNodeJson.id){
+			alert('please add a valid ID');
+		}else{
+			setTabKey(key)
+		}
+	}
 
 	return(
 		<div className="tdb__sidebar" >
@@ -66,7 +79,7 @@ export const DetailsModelComponent = (props)=>{
 	  	 		<i className={`tdb__panel__title__icon ${imageType}`}></i>
 	  	 		{nodeData.label || nodeData.id}
 	  	 	</div>
-			<Tabs items={getTabs()} transform={false} selectedTabKey={1}/>
+			<Tabs items={getTabs()} transform={false} onChange={setTabKey} selectedTabKey={tabKey}/>
 		</div>
 	)
 }

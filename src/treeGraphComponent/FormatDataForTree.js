@@ -170,8 +170,17 @@ export const formatDataForTreeChart =(rootElement)=>{
     const treeNode=d3Data.descendants();
 
     const descendantsNode = new Map();
-    const classesList=new Map();
-	const entitiesList=new Map();
+    
+    /*
+    * list of all object class id
+    */
+    const objectTypeList=[];
+    /*
+    *list of all Document class id
+    */
+	const documentTypeList=[];
+
+
 	const objectPropertyList=[];
 	const objectChoiceList=[];
 
@@ -181,21 +190,32 @@ export const formatDataForTreeChart =(rootElement)=>{
        		node.x=node.x*2;
        		//node.y=node.y/1.5;
        }*/
-       if(node.data.type==='Document'){
-       		entitiesList.set(node.data.name,{value:node.data.name,name:node.data.name,label:node.data.label});
-       		objectPropertyList.push({type:node.data.type,value:node.data.name,name:node.data.name,label:node.data.label})
-       }else if (node.data.type==='Class'){
-       		classesList.set(node.data.name,{value:node.data.name,name:node.data.name,label:node.data.label});
-       		objectPropertyList.push({type:node.data.type,value:node.data.name,name:node.data.name,label:node.data.label})
-       }else if (node.data.type===CLASS_TYPE_NAME.CHOICE_CLASS){
-       		objectChoiceList.push({value:node.data.name,name:node.data.name,label:node.data.label});
-       }
-       
-       descendantsNode.set(node.data.name,node);  
+       if(!descendantsNode.has(node.data.name)){
+	       if(node.data.type==='Document'){
+	       		documentTypeList.push(node.data.name);
+	      		objectPropertyList.push({type:node.data.type,value:node.data.name,name:node.data.name,label:node.data.label})
+	       }else if (node.data.type==='Class'){
+	       		objectTypeList.push(node.data.name);
+	       		objectPropertyList.push({type:node.data.type,value:node.data.name,name:node.data.name,label:node.data.label})
+	       }else if (node.data.type===CLASS_TYPE_NAME.CHOICE_CLASS){
+	       		objectChoiceList.push({value:node.data.name,name:node.data.name,label:node.data.label});
+	       }
+	       descendantsNode.set(node.data.name,node); 	       
+	   }	      
     }
 
-    return [descendantsNode,classesList,entitiesList,objectPropertyList,objectChoiceList];
+    return [descendantsNode,objectTypeList,documentTypeList,objectPropertyList,objectChoiceList];
 }
+
+export const addElementToPropertyList=(elementsObj,objectPropertyList)=>{
+   		objectPropertyList.push({type:elementsObj.type,
+   								 value:elementsObj.name,
+   								 name:elementsObj.name,
+   								 label:elementsObj.label})
+       
+}
+
+
 
 const SCOPED_VALUE_ID="terminusdb:///schema#ScopedValue";
 const BOX_ID="terminusdb:///schema#Box";
@@ -345,8 +365,10 @@ const addElements=( _rootIndexObj, dataProvider=[])=>{
 							checkChildrenType(_rootIndexObj[childId].children,_rootIndexObj[classId].type);
 						}				
 					}
+
+					_rootIndexObj[childId]['parents'].push(classId);
 				
-					_rootIndexObj[childId]['parents'].push({label:label,name:classId,type:_rootIndexObj[classId].type});
+					//_rootIndexObj[childId]['parents'].push({label:label,name:classId,type:_rootIndexObj[classId].type});
 					//add child to the current node
 					_rootIndexObj[classId]['children'].push(_rootIndexObj[childId])
 
@@ -381,28 +403,38 @@ export const availableParentsList = (classObj,classesMap,documentMap,_rootIndexO
 const removeRelatedElements=(classObj,classesMap,_rootIndexObj)=>{
 	if(classesMap.size===0)return [];
 
-	const objectClassMap=new Map(classesMap)
+	const objectClassMap=classesMap.slice()
+
+	removeElementToArr(objectClassMap,classObj.name);
 	
-	if(objectClassMap.has(classObj.name)){
-		objectClassMap.delete(classObj.name);
-	}
 	removeRelatedChildren(classObj.children,objectClassMap);
 	removeRelatedParent(classObj.parents,objectClassMap,_rootIndexObj)
+
+	const classList=[]
+
+	objectClassMap.forEach((elementName)=>{
+		const elementObj=_rootIndexObj[elementName];
+		const label=elementObj.label || elementObj.id
+		classList.push({name:elementName,value:elementName,label:label })
+
+	})
 	
-	return [...objectClassMap.values()]
+	return classList; //[...objectClassMap.values()]
 }
 
 /*
 * recursive remove related parents
+* parents=['parentName001','parentName002'...]
 */
 
 const removeRelatedParent=(parentsList,classesMap,_rootIndexObj)=>{
-	parentsList.forEach((childObj,key)=>{
-		if(classesMap.has(childObj.name)){
-			classesMap.delete(childObj.name)
-		}
+	parentsList.forEach((parentName,key)=>{
+		/*if(classesMap.has(parentName)){
+			classesMap.delete(parentName)
+		}*/
+		removeElementToArr(classesMap,parentName);
 		
-		const parentObj=_rootIndexObj[childObj.name];
+		const parentObj=_rootIndexObj[parentName];
 		removeRelatedParent(parentObj.parents,classesMap,_rootIndexObj);
 	})
 }
@@ -412,10 +444,11 @@ const removeRelatedParent=(parentsList,classesMap,_rootIndexObj)=>{
 */
 const removeRelatedChildren=(childrenList,classList)=>{
 	childrenList.forEach((childObj,key)=>{
-		if(classList.has(childObj.name)){
+		/*if(classList.has(childObj.name)){
 			classList.delete(childObj.name)
-		}
-		removeRelatedChildren(childObj.children,classList);
+		}*/
+		removeElementToArr(classList,childObj.name)
+		removeRelatedChildren(childObj.children,classList)
 	})
 }
 

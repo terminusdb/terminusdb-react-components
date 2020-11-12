@@ -47,13 +47,13 @@ export const BasePropertyComponent = (props)=> {
 		               		defaultValue={currentNodeJson.range || ''}
 		               		/>
 	               	}
+	               	{props.children}
 	               	{props.showCardinality &&
 	               		<Fragment>
 	               			<BaseInputElement defaultValue={currentNodeJson.min || ''} name='min' title={CARDINALITY_MIN_TITLE} onBlur={changePropertyValue}/>
                 			<BaseInputElement defaultValue={currentNodeJson.max || ''} name='max' title={CARDINALITY_MAX_TITLE} onBlur={changePropertyValue}/>
 	               		</Fragment>
-	               	}         
-					{props.children}
+	               	}         					
 				</div>
 			</Accordion>
 		)

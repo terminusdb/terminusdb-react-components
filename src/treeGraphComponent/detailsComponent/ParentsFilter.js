@@ -7,7 +7,8 @@ import {ParentsElementViewMode} from './viewMode/ParentsElementViewMode'
 import {GraphContextObj} from '../hook/graphObjectContext';
 
 export const ParentsFilter = (props) => {
-	const {selectedNodeObject,updateParentsList,availableParentsList} = GraphContextObj();
+	const {selectedNodeObject,graphDataProvider,updateParentsList,availableParentsList} = GraphContextObj();
+
 	const [classType,setClassType]=useState('Class')
 	const [dataProvider,setDataProvider]=useState(availableParentsList.classesListArr || [])
 
@@ -57,7 +58,19 @@ export const ParentsFilter = (props) => {
     const title='Edit Parents';
     const tooltip='Tooltip';
 
-    const listDataProvider=selectedNodeObject.parents || [];
+    const getParentList=()=>{
+    	const parents=selectedNodeObject.parents || [];
+    	const listParent=[]
+    	parents.forEach((parentName,index)=>{
+    		const elementObj=graphDataProvider.get(parentName);
+			const elementData=elementObj.data;
+			const label=elementData.label || elementData.id
+    		listParent.push({name:elementData.name,label:label})
+    	})
+    	return listParent;
+    }
+
+    const listDataProvider=getParentList()
     const parentClassType=selectedNodeObject.type 
 
 	return (	<>

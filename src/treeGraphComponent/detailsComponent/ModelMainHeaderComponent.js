@@ -1,31 +1,57 @@
 import React from 'react';
 import {ToogleButton} from './ToogleButton';
 import {TOOLBAR_LABELS} from '../../constants/details-labels';
+import {ADD_NEW_ENTITY,ADD_NEW_CLASS,ADD_NEW_CHOICE_CLASS} from '../utils/actionType'
+import {CLASS_TYPE_NAME_LABEL,CLASS_TYPE_NAME} from '../utils/elementsName'
+import {GraphContextObj} from '../hook/graphObjectContext';
 
 export const ModelMainHeaderComponent =(props)=>{
-//<PagesLink/>
-	//render(){
-		const viewEdit=props.isEditMode===true ? true : false;
-		let style={style:{visibility:'hidden'}}
+
+	const {setNodeAction} = GraphContextObj();
+
+	const viewEdit=props.isEditMode===true ? true : false;
+
+	let style={style:{visibility:'hidden'}}
 		if(viewEdit){
 			style={}
-		}
+	}
 
-		const setZoomIn=()=>{
-			props.setZoomEvent({type:'ZOOM_IN','zoom':Date.now()});
+	const setZoomIn=()=>{
+		props.setZoomEvent({type:'ZOOM_IN','zoom':Date.now()});
 
-		}
-		const setZoomOut=()=>{
-			props.setZoomEvent({type:'ZOOM_OUT','zoom':Date.now()});
+	}
+	const setZoomOut=()=>{
+		props.setZoomEvent({type:'ZOOM_OUT','zoom':Date.now()});
 
-		}
-		const setResetView=()=>{
-			props.setZoomEvent({type:'RESET_ZOOM','zoom':Date.now()});
-		}
-//setZoomEventType
-		return(		
+	}
+	const setResetView=()=>{
+		props.setZoomEvent({type:'RESET_ZOOM','zoom':Date.now()});
+	}
+
+	const addDocumentType=()=>{
+		setNodeAction(ADD_NEW_ENTITY,CLASS_TYPE_NAME.SCHEMA_ROOT,true)
+	}
+
+	const addObjectType=()=>{
+		setNodeAction(ADD_NEW_CLASS,CLASS_TYPE_NAME.SCHEMA_ROOT,true)
+	}
+
+	const addChoiceType=()=>{
+		setNodeAction(ADD_NEW_CHOICE_CLASS,CLASS_TYPE_NAME.SCHEMA_ROOT,true)
+	}
+
+	return(		
 		   <div className="tdb__model__hright">
-			   <div className="tdb__model__hright">
+			   <div className="tdb__model__hright" {...style}>
+			   		<div className="tdb__model__node tdb__model__node--doc" > 
+			   			<i className="custom-img-entities" title={`Add ${CLASS_TYPE_NAME_LABEL.DOCUMENT_CLASSES}`} onClick={addDocumentType}></i>
+			   		</div>
+			   		<div className="tdb__model__node tdb__model__node--class" > 
+			   			<i className="custom-img-classes" title={`Add ${CLASS_TYPE_NAME_LABEL.OBJECT_CLASSES}`} onClick={addObjectType}></i>
+			   		</div>
+			   		<div className="tdb__model__node tdb__model__node--choice" > 
+			   			<i className="custom-img-choice" title={`Add ${CLASS_TYPE_NAME_LABEL.CHOICE_CLASSES}`} onClick={addChoiceType}></i>
+			   		</div>
 			   </div>
 		   	   <div className="tdb__model__hright">
 		   	   	 <div className="icon-header" > 			   
@@ -77,25 +103,4 @@ export const ModelMainHeaderComponent =(props)=>{
 			   	</div>
 			</div>
 		)
-	//}
 }
-
-/*const mapDispatchToProps = (dispatch, ownProps) => (
-{
-	  resetTreeModel:(evt)=>{
-	  	 dispatch(resetTreeModel())
-	  },
-	  undoAction:(evt)=>{
-	  	dispatch(undoActionToMainGraph());
-	  },
-	  redoAction:(evt)=>{
-	  	dispatch(redoActionToMainGraph());
-	  }
-})
-
-const mapStateToProps = (state, ownProps)  => {
-  const {windowModeIsChanged} = state || {mainGraphIsChanged:{},windowModeIsChanged:{}}
-  return {isEditMode:windowModeIsChanged[MODEL_RIGHT_WINDOW_OBJ]};
-}
-
-export default connect(mapStateToProps,mapDispatchToProps)(ModelMainHeaderComponent)*/

@@ -9,7 +9,7 @@ export const BaseSchemaElementViewMode = (props)=>{
 	const currentNodeJson = props.currentNodeJson || {}
 
 	const selectNode=()=>{
-		props.changeCurrentNode(currentNodeJson.range)
+		props.changeCurrentNode(currentNodeJson.range,true)
 	}
 
 	const filterRangeValue=()=>{		

@@ -41,15 +41,11 @@ export const ModelTreeComponent = (props)=>{
             props.graphDataProvider.set(nodeId,nodeElement);
             //_tick();
         }
-     }
-
-    const linkWithD3=true;
-    //focusOnNode=focusOnNode.bind(this);
-    
+     }  
 
     const focusOnNode=(nodeId) =>{
 
-        let node=graphData.get(nodeId);
+        let node=props.graphDataProvider.get(nodeId);
 
         if(node){         
             let height=props.height || 500;
@@ -99,7 +95,8 @@ export const ModelTreeComponent = (props)=>{
 
     useEffect(() => {
       //if(selectedNode && props.addedNewNode===true){
-         _linkObjectToD3Action();
+      _linkObjectToD3Action();
+      if(props.isFocusOnNode)focusOnNode(selectedNode);
       //}
     },[selectedNode,props.graphDataProvider])
 

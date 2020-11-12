@@ -16,8 +16,13 @@ export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassI
 
     const changeElement=(name,value)=>{
         if(name==="id"){
+
             if(value.indexOf(" ")>-1){
                 setIndexError("Please remove all the white space");
+                return;
+            }
+            if(value.trim()===""){
+                setIndexError("Please enter a valid ID");
                 return;
             }
             setIndexError(false);
@@ -26,8 +31,6 @@ export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassI
             updateValue(name,value,nodeJsonData);
         }
     }
-
-
 
     return(
    	    <div key={nodeJsonData.name} className="tdb__panel__box">
@@ -39,7 +42,8 @@ export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassI
        	    	{isNodeObject && nodeJsonData.type!=='ChoiceClass' && 
                     <BaseCheckboxElement title={'Abstract'}  name='abstract' defaultValue={nodeJsonData.abstract || false} onBlur={changeElement} />
                 }
-                <BaseInputElement 
+                <BaseInputElement
+                    autoFocus={true} 
                     disabled={!nodeJsonData.newElement}
                     title={`${ELEMENT_BASE_CONST.ID_TEXT} *` }
                     placeholder={ELEMENT_BASE_CONST.ID_PLACEHOLDER}
