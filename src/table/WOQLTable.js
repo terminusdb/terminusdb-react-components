@@ -1,11 +1,10 @@
 import React,{useMemo} from 'react';
 import TerminusClient from '@terminusdb/terminusdb-client';
 import {TableComponent} from './TableComponent';
-import { format } from "date-fns";
 import { CellRenderer } from "./CellRenderer"
 
 export const WOQLTable = ({bindings, result, view, freewidth, query, start, limit, orderBy, totalRows, setLimits, setOrder, prefixes})=>{
-    console.log(prefixes, query['@context'])
+    //console.log(prefixes, query['@context'])
     prefixes = prefixes || (query && query['@context'] ? query['@context'] : {})
     let wt = TerminusClient.View.table()
     if(view && view.rules)  wt.loadJSON(view.table, view.rules)

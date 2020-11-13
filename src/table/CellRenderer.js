@@ -4,7 +4,8 @@ import {TableComponent} from './TableComponent';
 import { format } from "date-fns";
 
 
-export const CellRenderer = ({value, column, row, cell, view, args})=>{
+export const CellRenderer = ({value, column, row, cell, view, args, depth})=>{
+    depth = depth || 0
     if(isEmptyValue(value)){
         //has it a special empty render?
         //otherwise just return empty string
@@ -19,7 +20,7 @@ export const CellRenderer = ({value, column, row, cell, view, args})=>{
         if(value.length == 1 && Array.isArray(value[0])){
             value = value[0]
         }
-        return <ArrayRenderer value={value} depth={0} view={view} row={row} cell={cell} column={column} args={args} />
+        return <ArrayRenderer value={value} depth={depth} view={view} row={row} cell={cell} column={column} args={args} />
     }
     else if(typeof value == "object" && typeof value['@value'] != "undefined"){
         return <LiteralRenderer value={value} view={view} row={row} cell={cell} column={column} args={args} />            
@@ -49,16 +50,29 @@ export const LiteralRenderer = ({value, column, row, cell, view, args})=>{
     return <span>{value['@value']}</span>
 }
 
-export const ArrayRenderer = ({value, column, row, cell, view, args})=>{
+export const ArrayRenderer = ({depth, value, column, row, cell, view, args})=>{
     if(isEmptyValue(value)){
         //has it a special empty render?
         //otherwise just return empty string
         return ""
     }
-    if(typeof value == "string" && isIRI(value)){
+    //if(typeof value == "string" && isIRI(value)){
         //do we compress it? ... if not advised against...
         //having compressed / or not it, we see if there is any specific IRI rendering rules
+    //}
+    let vals = []
+    for(var i = 0; i<value.length; i++){
+        vals.push(<CellRenderer value={value[i]} column={column} row={row} cell={cell} view={view} args={args} depth={depth+1} />)
     }
+    return <span>
+        {depth > 0 && 
+            <span>[ </span>
+        } 
+        {vals}
+        {depth > 0 && 
+            <span> ]</span>
+        } 
+        </span>
 }
 
 
@@ -67,7 +81,7 @@ function isEmptyValue(val){
     if(val === "") return true
     if(typeof val == "object" && val['@value'] === "") return true
     if(Array.isArray(val) && val.length == 0) return true
-    if(Array.isArray(val) && val.length == 1 && isEmptyValue(val[i])) return true
+    if(Array.isArray(val) && val.length == 1 && isEmptyValue(val[1])) return true
     return false
 }
 //we have:
