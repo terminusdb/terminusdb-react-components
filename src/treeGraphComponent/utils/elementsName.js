@@ -19,7 +19,7 @@ export const CLASS_TYPE_NAME={
 }
 
 export const CLASS_TYPE_NAME_LABEL={
-	SCHEMA_ROOT:'Schema Graph',
+	SCHEMA_ROOT:'Type Hierarchy',
 	SCHEMA_GROUP: 'Group',
   	OBJECT_CLASS:'Object',
   	CHOICE_CLASS:"Choice",
@@ -42,21 +42,21 @@ export const getRootIndexObj=()=>{
 	_rootIndexObj[CLASS_TYPE_NAME.DOCUMENT_CLASSES]={name:CLASS_TYPE_NAME.DOCUMENT_CLASSES, 
 												parents:[],
 		                             			type:CLASS_TYPE_NAME.SCHEMA_GROUP,
-		                             			label:CLASS_TYPE_NAME_LABEL.DOCUMENT_CLASSES,
+		                             			label:CLASS_TYPE_NAME_LABEL.DOCUMENT_CLASSES + "s",
 		                             			children:[],
 		                             			comment:CLASS_TYPE_NAME_LABEL.DOCUMENT_CLASSES}
 
 	_rootIndexObj[CLASS_TYPE_NAME.OBJECT_CLASSES]={name:CLASS_TYPE_NAME.OBJECT_CLASSES, 
 												parents:[],
 		                             			type:CLASS_TYPE_NAME.SCHEMA_GROUP,
-		                             			label:CLASS_TYPE_NAME_LABEL.OBJECT_CLASSES,
+		                             			label:CLASS_TYPE_NAME_LABEL.OBJECT_CLASSES + "s",
 		                             			children:[],
 		                             			comment:CLASS_TYPE_NAME_LABEL.OBJECT_CLASSES}
 	
 	_rootIndexObj[CLASS_TYPE_NAME.CHOICE_CLASSES]={name:CLASS_TYPE_NAME.CHOICE_CLASSES, 
 												parents:[],
 		                             			type:CLASS_TYPE_NAME.SCHEMA_GROUP,
-		                             			label:CLASS_TYPE_NAME_LABEL.CHOICE_CLASSES,
+		                             			label:CLASS_TYPE_NAME_LABEL.CHOICE_CLASSES + "s",
 		                             			children:[],
 		                             			comment:CLASS_TYPE_NAME_LABEL.CHOICE_CLASSES}	
 	return _rootIndexObj	                             			  

@@ -53,11 +53,6 @@ export const ConstraintsComponent =(props)=>{
 
 	return(<>
             <div className="tdb__panel__box">
-			 	For removing a Node,
-			 	the Node doesn't be related with other nodes.
-			 	Here the list of contraints for the current node. 			 					
-			</div>
-            <div className="tdb__panel__box">
                 {message}   
             </div>
         </>

@@ -40,8 +40,9 @@ export const BasePropertyComponent = (props)=> {
 				<div className="tdb__panel__box">
 					{props.selectDataProvider &&
 						<BaseSelectComponent
+                            help={props.help}
 							optionChange={changePropertyValue}
-							title={props.selectDataProvider.label}
+                            title={props.selectDataProvider.label}
 		            		dataProvider={props.selectDataProvider.options}
 		            		name={props.selectDataProvider.id}
 		               		defaultValue={currentNodeJson.range || ''}
@@ -50,8 +51,8 @@ export const BasePropertyComponent = (props)=> {
 	               	{props.children}
 	               	{props.showCardinality &&
 	               		<Fragment>
-	               			<BaseInputElement defaultValue={currentNodeJson.min || ''} name='min' title={CARDINALITY_MIN_TITLE} onBlur={changePropertyValue}/>
-                			<BaseInputElement defaultValue={currentNodeJson.max || ''} name='max' title={CARDINALITY_MAX_TITLE} onBlur={changePropertyValue}/>
+	               			<BaseInputElement help="card_min" defaultValue={currentNodeJson.min || ''} name='min' title={CARDINALITY_MIN_TITLE} onBlur={changePropertyValue}/>
+                			<BaseInputElement help="card_max" defaultValue={currentNodeJson.max || ''} name='max' title={CARDINALITY_MAX_TITLE} onBlur={changePropertyValue}/>
 	               		</Fragment>
 	               	}         					
 				</div>

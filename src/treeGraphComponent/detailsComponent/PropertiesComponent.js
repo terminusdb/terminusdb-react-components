@@ -33,30 +33,31 @@ export const PropertiesComponent = (props)=> {
 
 			switch(propertyItem.type){
 		   		case 'ChoiceProperty':
-		   			baseObj['showCardinality'] =false;
+		   			//baseObj['showCardinality'] =false;
+                    baseObj.help = "choice_subtype"   
 		   			baseObj['comboDataProvider']=objectChoicesList || [];
-
 		   			return <ObjectProperty  {...baseObj} />;
 		   		case 'NumericProperty':
 		   			baseObj['selectDataProvider']=NUMBER_PROPERTY_PRECISION_DATAPROVIDER;	
+                    baseObj.help = "number_subtype"   
 		   			return <BasePropertyComponent {...baseObj} />
-
 		   		case 'StringProperty':
 		   			baseObj['selectDataProvider']=STRING_TYPE_DATAPROVIDER;			   				   			
-		   			return <BasePropertyComponent {...baseObj} />
-
+                    baseObj.help = "string_subtype"   
+                    return <BasePropertyComponent {...baseObj} />
 		   		case 'GeoProperty':
 		   			baseObj['selectDataProvider']=GEOMETRY_PROPS_DATAPROVIDER;	
+                    baseObj.help = "geo_subtype"   
 		   			return <BasePropertyComponent {...baseObj} />
 		   		case 'TemporalProperty':
-
 		   			baseObj['selectDataProvider']=TEMPORAL_PROPERTY_DATAPROVIDER;
+                    baseObj.help = "time_subtype"   
 		   			return <BasePropertyComponent {...baseObj} />
 		   		case 'ObjectProperty':
-		   				baseObj['comboDataProvider']=objectPropertyList || [];
-
-		   				return <ObjectProperty  {...baseObj} />;
-		   			default:
+                    baseObj['comboDataProvider']=objectPropertyList || [];
+                    baseObj.help = "object_subtype"   
+                    return <ObjectProperty  {...baseObj} />;
+                default:
 		   			return '';
 				}
 		});	
@@ -67,11 +68,7 @@ export const PropertiesComponent = (props)=> {
 	    	<PropertyMenuList buttonIconClassName="menuWithLabel"
 						  iconClassName="fa fa-caret-down iconWithLabel" 
 		                  dropdownMenuClassName="dropdownMenuProperty rightPosition" 
-		                  addNewProperty={addNewProperty}/>
-				     
-	        <div className="tdb__panel__box">
-	        	Too often huge amounts of data can’t answer the questions that actually matter. They deliver billions of isolated facts and zero intelligence. TerminusDB solves that problem.	        			
-		    </div>
+		                  addNewProperty={addNewProperty}/>				     
 	    	{propertiesPanels}
 	    </Fragment>
 	)

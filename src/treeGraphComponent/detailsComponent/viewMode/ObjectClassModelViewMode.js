@@ -29,14 +29,14 @@ export const ObjectClassModelViewMode = (props) => {
 			<BaseSchemaElementViewMode  currentNodeJson={currentNodeJson}  />
 			{currentNodeJson.type===CLASS_TYPE_NAME.CHOICE_CLASS && 
 			  <div className="tdb__panel__box"> 
-			  	<span className="tdb__panel__subtitle">Choices List</span>	  
+			  	<span className="tdb__panel__subtitle">Choices</span>	  
 			  	<ListComponent dataProvider={currentNodeJson.choices} />		 
 			  </div>
 		    }
 		    {classPropertiesList && classPropertiesList.length>0 &&
 			    <Fragment>
 				    <div className="tdb__panel__title tdb__panel__title--prop">
-			  	 		Property List
+			  	 		Properties
 			  	 	</div>
 					<PropertiesComponentViewMode changeCurrentNode={changeCurrentNode} dataProvider={classPropertiesList || []} />
 				</Fragment>
@@ -44,7 +44,7 @@ export const ObjectClassModelViewMode = (props) => {
 			{currentNodeJson.parents && currentNodeJson.parents.length>0 && 
 				<Fragment>
 					<div className="tdb__panel__title tdb__panel__title--parent">
-		  	 		Parent List
+		  	 		Parents
 		  	 		</div>
 					<ParentsElementViewMode  id={props.id} title={'Parents'} />
 				</Fragment>}		       

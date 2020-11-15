@@ -26,7 +26,7 @@ export const BaseInputElement = (props) => {
 			<div className={props.groupClassName}>
 			 	<div className="tdb__form__help">
 	                 <label className={props.labelClassName} htmlFor={props.name}>{props.title}</label>
-	                 <HelpComponent/>
+	                 <HelpComponent text={props.help}/>
                 </div>
                 <input {...autoFocus} placeholder={props.placeholder} onBlur={onBlur} {...disabled} onChange={onChange} value={value} name={props.name} className={props.inputClassName}></input>       
             	<span className="tdb__form__error">{props.itemError}</span>

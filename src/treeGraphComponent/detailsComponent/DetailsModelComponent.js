@@ -34,7 +34,7 @@ export const DetailsModelComponent = (props)=>{
 						    	panelClassName: 'tdb__panel'
 							})
 		if(nodeData.type==='ChoiceClass'){
-			tabsArr.push({title:'Choices List',
+			tabsArr.push({title:'Choices',
 	             getContent: () =><ChoiceList updateChoiseList={props.updateChoices} choices={nodeData.choices} />
 	             				  ,				    
 						    	key: 2,

@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import {ELEMENT_BASE_CONST}  from '../../constants/details-labels.js';
+import {ELEMENT_BASE_CONST, ELEMENT_HELP}  from '../../constants/details-labels.js';
 import {RemoveElementComponent} from './RemoveElementComponent';
 import PropTypes from "prop-types";
 import {HelpComponent} from "./HelpComponent";
@@ -40,7 +40,7 @@ export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassI
                 elementType={nodeJsonData.type}
                 removeElement={removeElement}/>
        	    	{isNodeObject && nodeJsonData.type!=='ChoiceClass' && 
-                    <BaseCheckboxElement title={'Abstract'}  name='abstract' defaultValue={nodeJsonData.abstract || false} onBlur={changeElement} />
+                    <BaseCheckboxElement title={'Abstract'} help={"abstract"} name='abstract' defaultValue={nodeJsonData.abstract || false} onBlur={changeElement} />
                 }
                 <BaseInputElement
                     autoFocus={true} 
@@ -48,6 +48,7 @@ export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassI
                     title={`${ELEMENT_BASE_CONST.ID_TEXT} *` }
                     placeholder={ELEMENT_BASE_CONST.ID_PLACEHOLDER}
                     name='id'
+                    help={"class_id"}
                     onBlur={changeElement}
                     defaultValue={nodeJsonData.id || ''}
                     itemError={indexError}
@@ -56,13 +57,15 @@ export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassI
                     title={ELEMENT_BASE_CONST.LABEL_TEXT}
                     name='label'
                     placeholder={ELEMENT_BASE_CONST.LABEL_PLACEHOLDER}
+                    help={"class_label"}
                     onBlur={changeElement}
                     defaultValue={nodeJsonData.label || ''}
                     />
-	         <BaseTextareaElement
+	            <BaseTextareaElement
                     placeholder={ELEMENT_BASE_CONST.DESCRIPTION_PLACEHOLDER} 
                     title={ELEMENT_BASE_CONST.DESCRIPTION_TEXT}
                     name='comment'
+                    help={"class_comment"}
                     onBlur={changeElement}
                     defaultValue={nodeJsonData.comment || ''}
             />
