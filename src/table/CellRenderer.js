@@ -1,7 +1,7 @@
 import React,{useState} from 'react';
 import TerminusClient from '@terminusdb/terminusdb-client';
 import { format } from "date-fns";
-
+import {MdExpandLess, MdExpandMore} from "react-icons/md"
 
 export const CellRenderer = ({value, column, row, cell, view, args, depth, prefixes})=>{
     depth = depth || 0
@@ -9,89 +9,89 @@ export const CellRenderer = ({value, column, row, cell, view, args, depth, prefi
         return ""
     }
     else if(typeof value == "string" && TerminusClient.UTILS.isIRI(value, prefixes, true)){
-        return <IRIRenderer 
-            value={value} 
-            depth={depth} 
-            prefixes={prefixes} 
-            view={view} 
-            row={row} 
-            cell={cell} 
-            column={column} 
-            args={args} 
+        return <IRIRenderer
+            value={value}
+            depth={depth}
+            prefixes={prefixes}
+            view={view}
+            row={row}
+            cell={cell}
+            column={column}
+            args={args}
         />
     }
     else if((typeof value == "string" || typeof value == "number" ) && args && args.datatype){
         let nvalue = {"@value": value, "@type": args.datatype}
-        return <LiteralRenderer 
-            prefixes={prefixes} 
-            value={nvalue} 
-            view={view} 
-            row={row} 
-            cell={cell} 
-            column={column} 
-            args={args} 
-        />            
+        return <LiteralRenderer
+            prefixes={prefixes}
+            value={nvalue}
+            view={view}
+            row={row}
+            cell={cell}
+            column={column}
+            args={args}
+        />
     }
     else if(Array.isArray(value)){
         if(value.length == 1 && Array.isArray(value[0])){
             value = value[0]
         }
-        return <ArrayRenderer 
-            prefixes={prefixes} 
-            value={value} 
-            depth={depth} 
-            view={view} 
-            row={row} 
-            cell={cell} 
-            column={column} 
-            args={args} 
+        return <ArrayRenderer
+            prefixes={prefixes}
+            value={value}
+            depth={depth}
+            view={view}
+            row={row}
+            cell={cell}
+            column={column}
+            args={args}
         />
     }
     else if(typeof value == "object" && typeof value['@value'] != "undefined"){
         if(args && args.types){
             return <span>
-                <LiteralRenderer 
-                    prefixes={prefixes} 
-                    value={value} 
-                    view={view} 
-                    row={row} 
-                    cell={cell} 
-                    column={column} 
-                    args={args} 
-                />            
-                <TypeRenderer 
-                    prefixes={prefixes} 
-                    value={ty} 
-                    view={view} 
-                    row={row} 
-                    cell={cell} 
-                    column={column} 
-                    args={args} 
-                />            
+                <LiteralRenderer
+                    prefixes={prefixes}
+                    value={value}
+                    view={view}
+                    row={row}
+                    cell={cell}
+                    column={column}
+                    args={args}
+                />
+                <TypeRenderer
+                    prefixes={prefixes}
+                    value={ty}
+                    view={view}
+                    row={row}
+                    cell={cell}
+                    column={column}
+                    args={args}
+                />
             </span>
         }
         else {
-            return <LiteralRenderer 
-                prefixes={prefixes} 
-                value={value} 
-                view={view} 
-                row={row} 
-                cell={cell} 
-                column={column} 
-                args={args} 
+            return <LiteralRenderer
+                prefixes={prefixes}
+                value={value}
+                view={view}
+                row={row}
+                cell={cell}
+                column={column}
+                args={args}
             />
-        }            
+        }
     }
     else if(typeof value == "object" && typeof value['@type']){
-        return <JSONLDRenderer 
-            prefixes={prefixes} 
-            value={value} 
-            view={view} 
-            row={row} 
-            cell={cell} 
-            column={column} 
-            args={args} 
-        />            
+        return <JSONLDRenderer
+            prefixes={prefixes}
+            value={value}
+            view={view}
+            row={row}
+            cell={cell}
+            column={column}
+            args={args}
+        />
     }
     return value
 }
@@ -118,14 +118,14 @@ export const TypeRenderer = ({value, column, row, cell, view, args, prefixes})=>
 
 
 export const JSONLDRenderer = ({value, column, row, cell, view, args})=>{
-    return <JSONRenderer 
-            prefixes={prefixes} 
-            value={value} 
-            view={view} 
-            row={row} 
-            cell={cell} 
-            column={column} 
-            args={args} 
+    return <JSONRenderer
+            prefixes={prefixes}
+            value={value}
+            view={view}
+            row={row}
+            cell={cell}
+            column={column}
+            args={args}
         />
 }
 
@@ -155,78 +155,78 @@ function isRangeType(ty){
 
 
 export const LiteralRenderer = ({value, column, row, cell, view, args, prefixes})=>{
-    let ty = (value["@type"] ? TerminusClient.UTILS.shorten(value["@type"], prefixes) : "xsd:string")   
+    let ty = (value["@type"] ? TerminusClient.UTILS.shorten(value["@type"], prefixes) : "xsd:string")
     let vy = value['@value']
     args = args || {}
     if(args.type=="time" || (!args.type && isTemporalType(ty))){
-        return <TimeRenderer 
-            value={vy} 
-            type={ty} 
-            prefixes={prefixes} 
-            column={column} 
-            row={row} 
-            cell={cell} 
-            view={view} 
-            args={args} 
-        /> 
+        return <TimeRenderer
+            value={vy}
+            type={ty}
+            prefixes={prefixes}
+            column={column}
+            row={row}
+            cell={cell}
+            view={view}
+            args={args}
+        />
     }
     if(args.type=="number" || (!args.type && typeof vy == "number")){
-        return <NumberRenderer 
-            value={vy} 
-            type={ty} 
-            prefixes={prefixes} 
-            column={column} 
-            row={row} 
-            cell={cell} 
-            view={view} 
-            args={args} 
-        /> 
-    } 
+        return <NumberRenderer
+            value={vy}
+            type={ty}
+            prefixes={prefixes}
+            column={column}
+            row={row}
+            cell={cell}
+            view={view}
+            args={args}
+        />
+    }
     if(args.type=="html" || (!args.type && isHTMLType(ty))){
-        return <HTMLRenderer 
-            value={vy} 
-            type={ty} 
-            prefixes={prefixes} 
-            column={column} 
-            row={row} 
-            cell={cell} 
-            view={view} 
-            args={args} 
-        />     
+        return <HTMLRenderer
+            value={vy}
+            type={ty}
+            prefixes={prefixes}
+            column={column}
+            row={row}
+            cell={cell}
+            view={view}
+            args={args}
+        />
     }
     if(args.type=="json" || (!args.type && isJSONType(ty))){
-        return <JSONRenderer 
-            value={vy} 
-            type={ty} 
-            prefixes={prefixes} 
-            column={column} 
-            row={row} 
-            cell={cell} 
-            view={view} 
-            args={args} 
-        />     
+        return <JSONRenderer
+            value={vy}
+            type={ty}
+            prefixes={prefixes}
+            column={column}
+            row={row}
+            cell={cell}
+            view={view}
+            args={args}
+        />
     }
     if(args.type=="range" || (!args.type && isRangeType(ty))){
-        return <RangeRenderer  
-            value={vy} 
-            type={ty} 
-            prefixes={prefixes} 
-            column={column} 
-            row={row} 
-            cell={cell} 
-            view={view} 
-            args={args} 
-        />     
+        return <RangeRenderer
+            value={vy}
+            type={ty}
+            prefixes={prefixes}
+            column={column}
+            row={row}
+            cell={cell}
+            view={view}
+            args={args}
+        />
     }
-    return <StringRenderer 
-        value={vy} 
-        type={ty} 
-        prefixes={prefixes} 
-        column={column} 
-        row={row} 
-        cell={cell} 
-        view={view} 
-        args={args} 
+    return <StringRenderer
+        value={vy}
+        type={ty}
+        prefixes={prefixes}
+        column={column}
+        row={row}
+        cell={cell}
+        view={view}
+        args={args}
     />
 }
 
@@ -242,14 +242,22 @@ export const StringRenderer = ({value, type, column, row, cell, view, args, pref
         setShowingFull(!showingFull)
     }
     return (<span>
-        {showingFull && 
-            <span>{value} </span> 
+        {showingFull &&
+            <span>{value} </span>
         }
-        {!showingFull && 
+        {!showingFull &&
             <span title={value}>{txt} </span>
         }
-        {canTruncate && 
+        {/*canTruncate &&
             <button onClick={toggleFull}> {(showingFull ? "less" : "more")} </button>
+        */}
+        {canTruncate && showingFull && <span className="" title={"Show Less"} onClick={toggleFull}>
+            <MdExpandLess color="#0055bb" className=''/>
+        </span>
+        }
+        {canTruncate && !showingFull && <span className="" title={"Show More"} onClick={toggleFull}>
+            <MdExpandMore color="#0055bb" className=''/>
+        </span>
         }
     </span>)
 }
@@ -271,30 +279,30 @@ export const ArrayRenderer = ({depth, value, column, row, cell, view, args, pref
         let l = (showingFull ? value.length :  maxlen)
         let vals = []
         for(var i = 0; i<l; i++){
-            vals.push(<CellRenderer 
+            vals.push(<CellRenderer
                 key={"cellr_" + i}
-                prefixes={prefixes} 
-                value={value[i]} 
+                prefixes={prefixes}
+                value={value[i]}
                 column={column}
-                row={row} 
-                cell={cell} 
-                view={view} 
-                args={args} 
-                depth={depth+1} 
+                row={row}
+                cell={cell}
+                view={view}
+                args={args}
+                depth={depth+1}
             />)
         }
         return vals
     }
 
     return <span>
-        {depth > 0 && 
+        {depth > 0 &&
             <span>[ </span>
-        } 
+        }
         <span>{getVals()}</span>
-        {depth > 0 && 
+        {depth > 0 &&
             <span> ]</span>
-        } 
-        {depth == 0 && canTruncate && 
+        }
+        {depth == 0 && canTruncate &&
             <button onClick={toggleFull}> {(showingFull ? "less" : "" + (value.length-maxlen) + " more")} </button>
         }
     </span>
@@ -363,7 +371,7 @@ export const HTMLRenderer = ({value, type, column, row, cell, view, args, prefix
 }
 
 function isEmptyValue(val){
-    if(val == "system:unknown") return true        
+    if(val == "system:unknown") return true
     if(val === "") return true
     if(typeof val == "object" && val['@value'] === "") return true
     if(Array.isArray(val) && val.length == 0) return true
