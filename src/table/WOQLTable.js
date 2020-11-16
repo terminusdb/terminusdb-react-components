@@ -51,6 +51,9 @@ export const WOQLTable = ({bindings, result, view, freewidth, query, start, limi
                         prefixes={prefixes}
                     />                 
             }
+            if(typeof props.cell.value == "undefined"){
+                return ""
+            }
             return props.cell.value
         }
     }    
@@ -77,7 +80,7 @@ export const WOQLTable = ({bindings, result, view, freewidth, query, start, limi
         else colstruct.Header = " "
         return [colstruct]
     }
-    
+    if(!data || !data.length) return null
     return(
         <TableComponent 
             data={data} 

@@ -239,7 +239,6 @@ export const StringRenderer = ({value, type, column, row, cell, view, args, pref
     const [showingFull, setShowingFull] = useState(sf)
     const toggleFull = (e) => {
         e.stopPropagation()
-        //alert(Object.keys(e))
         setShowingFull(!showingFull)
     }
     return (<span>
@@ -355,11 +354,11 @@ export const TimeRenderer = ({value, type, column, row, cell, view, args, prefix
     return <span title={"Temporal Type: " + type}>{format(d, fstr)}</span>
 }
 
-export const RangeRenderer = ({value, column, row, cell, view, args, prefixes})=>{
+export const RangeRenderer = ({value, type, column, row, cell, view, args, prefixes})=>{
     return <span title={"Range Type: " + type}>{value}</span>
 }
 
-export const HTMLRenderer = ({value, column, row, cell, view, args, prefixes})=>{
+export const HTMLRenderer = ({value, type, column, row, cell, view, args, prefixes})=>{
     return <span title={"HTML Type: " + type}>{value}</span>
 }
 
@@ -371,54 +370,3 @@ function isEmptyValue(val){
     if(Array.isArray(val) && val.length == 1 && isEmptyValue(val[1])) return true
     return false
 }
-//we have:
-//IRI 
-//[]
-//{@value}
-//{@type}
-//Foreign Entity - spit it out...
-
-/*
-* to be review we have to pass the column type in the table config like
-* {columnid:'Time', type:"seconds"} etc.....
-*/
-function checkTime(props){
-    let strval=false
-    if(props.cell.column
-        && props.cell.column.id==="Time"
-        && typeof props.cell.value==='object'
-        && props.cell.value['@type']==='http://www.w3.org/2001/XMLSchema#decimal'){
-
-        const ts=props.cell.value['@value']
-        if(!isNaN(parseFloat(ts))){
-            strval=format(new Date(parseFloat(ts*1000)), "hh:mm:ss, dd/MM/yy")
-         }
-    }
-    return strval
-}
-
-function getStringFromBindingValue(item, first){
-    if(Array.isArray(item)){
-        return valueFromArray(item)
-    }
-    if(typeof item == "object"){
-        if(typeof item['@value'] != "undefined"){
-            let t = (item["@language"] ? "xsd:string" : item["@type"])
-            return (<span title={t}>{item['@value']}</span>)
-        }
-        else {
-            return item
-            //return JSON.stringify(item, false, 2) 
-        }
-    }
-    if(item == "terminus:unknown") return ""
-    return item;
-}
-
-function valueFromArray(arr){
-    let vals = arr.map((item) => {
-        return getStringFromBindingValue(item)
-    })
-    return vals.join(", ")
-}
-
