@@ -5,7 +5,7 @@ import { CellRenderer } from "./CellRenderer"
 
 export const WOQLTable = ({bindings, result, view, freewidth, query, start, limit, orderBy, totalRows, setLimits, setOrder})=>{
     let wt = TerminusClient.View.table()
-    if(view && view.rules)  wt.loadJSON(view.table, view.rules)
+    if(view)  wt.loadJSON(view.table, view.rules)
     let woqt = new TerminusClient.WOQLTable(false, wt)
     let pagenum = (limit ? parseInt((start) / limit) : 1)
     let pages = (limit ? parseInt(((totalRows-1)/limit)+1) : 1)
@@ -16,6 +16,10 @@ export const WOQLTable = ({bindings, result, view, freewidth, query, start, limi
 
     function makeData(){
         let qres = result || {bindings: bindings}
+        if(woqt.bindings()){
+            let trans = woqt.bindings()
+            qres.bindings = trans(qres.bindings)
+        }
         let wr = new TerminusClient.WOQLResult(qres, query)
         woqt.setResult(wr, query)
         const columns = formatTableColumns(woqt)
