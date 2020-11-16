@@ -1,15 +1,24 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState,useEffect,useRef} from 'react';
 import PropTypes from 'prop-types'; 
 import {HelpComponent} from './HelpComponent';
 export const BaseInputElement = (props) => {
 
 	const [value,setInputValue] = useState('')
+	//const [autoFocus,setAutoFocus] = useState({})
+	const inputElement = useRef(null);
 
 	useEffect(() => {
         if(props.defaultValue!==value){
-        	setInputValue(props.defaultValue)
+          	setInputValue(props.defaultValue)
         }
+       
     },[props.defaultValue])
+
+    useEffect(()=>{
+       if(inputElement.current && props.defaultValue==="" && props.autoFocus===true && props.disabled!==true){
+        	inputElement.current.focus();
+        }
+    },[inputElement.current,props.panelName])
 	
 	const onBlur = (evt)=>{
 		if(typeof props.onBlur ==='function')props.onBlur(props.name,value);
@@ -20,7 +29,7 @@ export const BaseInputElement = (props) => {
 	}
 
 	const disabled = props.disabled === true ? {disabled:true} : {}
-	const autoFocus= props.autoFocus === true ? {autoFocus:true} :{}
+	//const autoFocus= props.disabled!==true && props.autoFocus === true ? {autoFocus:true} :{}
 
 	return(
 			<div className={props.groupClassName}>
@@ -28,7 +37,12 @@ export const BaseInputElement = (props) => {
 	                 <label className={props.labelClassName} htmlFor={props.name}>{props.title}</label>
 	                 <HelpComponent/>
                 </div>
-                <input {...autoFocus} placeholder={props.placeholder} onBlur={onBlur} {...disabled} onChange={onChange} value={value} name={props.name} className={props.inputClassName}></input>       
+                <input 	ref={inputElement}
+                		placeholder={props.placeholder} 
+                		onBlur={onBlur} 
+                		{...disabled} onChange={onChange} 
+                		value={value} name={props.name} id={props.name}
+                		className={props.inputClassName}></input>       
             	<span className="tdb__form__error">{props.itemError}</span>
             </div>
 

@@ -19,6 +19,7 @@ export const LinkTree = (props)=>  {
 		            target:[link.target.x,link.target.y]};
 
 	const path = getPath();
+
 		
 	return (
 		    <path
@@ -26,27 +27,11 @@ export const LinkTree = (props)=>  {
 			    stroke={stroke}
 			    strokeWidth={strokeWidth}
 			    strokeOpacity={1}
+			    //markerEnd= 'url(#markerSquare)'
 			    fill="none"
-		    />
+		    >
+		    </path>
 	)
-	//}
 }
 
-/*const mapStateToProps = (state, ownProps) => {
-	let isSelected=false;
-	const {lastTreeNodeClicked}=state
-
-	const {target, source}=ownProps.link || {target:{data:{}}, source:{data:{}}}
-
-	if(lastTreeNodeClicked.nodeId && (lastTreeNodeClicked.nodeId===target.data.name || lastTreeNodeClicked.nodeId===source.data.name)){
-
-    	isSelected=lastTreeNodeClicked.toBeSelected;
-	}
-
-	return {isSelected};
-}*/
-
-/*export default connect(
-  mapStateToProps
-)(LinkTree)*/
 

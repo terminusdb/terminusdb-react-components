@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
-//import AccordionItemComponent from '../layoutComponent/AccordionItemComponent';
-//import RelationshipBox from '../relationshipView/RelationshipBox'
-import {PROPERTY_TYPE_NAME} from '../utils/elementsName'
+import {PROPERTY_TYPE_NAME,PROPERTY_TYPE_LABEL} from '../utils/elementsName'
+import {GraphContextObj} from '../hook/graphObjectContext'
+ 
 const constraintMessage={childrenNum:'This node has',
 						inRelationship:'This node is in this Relationship',
 						relComplexProperty:'This node is a range of the ComplexProperty'}
 
 export const ConstraintsComponent =(props)=>{
     const [checked,setChecked] = useState({checked:false})
-    const nodeData = props.nodeJsonData ? props.nodeJsonData : {}
+
+    const {selectedNodeObject,objPropsRelatedToClass,graphDataProvider} = GraphContextObj();
+
+    const nodeData = selectedNodeObject ? selectedNodeObject : {}
     
     const change=(evt)=>{
        setChecked({checked:evt.target.checked});
@@ -28,19 +31,28 @@ export const ConstraintsComponent =(props)=>{
     						<div className="tdb__list__items">{childrenMessage}</div>
     					</div>)
     	}
+//This node is connected to the Journey Document Type with the Property Bicycle Used
+    	if(objPropsRelatedToClass && objPropsRelatedToClass.length>0){
 
-    	if(props.objPropsRelatedToClass && props.objPropsRelatedToClass.length>0){
-    		const complexMessage= props.objPropsRelatedToClass.map((complexPropertyObj,index)=>{
-                        return <div className="tdb__list__items"  key={'obj'+index} >This node is related to  
-                                    <b> Property {complexPropertyObj.label} </b> in 
-                                       the <b>{complexPropertyObj.classDomainType} {complexPropertyObj.classDomainLabel}</b>
-                                </div>
-            
+    		const complexMessage= objPropsRelatedToClass.map((complexPropertyObj,index)=>{
 
+                const propType=complexPropertyObj.type===PROPERTY_TYPE_NAME.CHOICE_PROPERTY 
+                               ? PROPERTY_TYPE_LABEL.CHOICE_PROPERTY : PROPERTY_TYPE_LABEL.OBJECT_PROPERTY
+
+                const domainElement=graphDataProvider.get(complexPropertyObj.domain) || {};
+                const domainData=domainElement.data || {}
+
+                return <div className="tdb__list__items"  key={'obj'+index} >
+                            {`This node is connected to `} 
+                            <b>{`${domainData.label || domainData.id} `}</b> 
+                            <i>{`${domainData.type} Type `}</i>
+                             with the <i>{` ${propType} `}</i> 
+                            <b>{complexPropertyObj.label}</b>
+                        </div>
             })
 
             message.push(<div className="tdb__list" key="object_property">
-                           <div className="tdb__list__title">Object Property</div>
+                           <div className="tdb__list__title">Property Relationship</div>
                            {complexMessage}
                         </div>)
     	}//*/

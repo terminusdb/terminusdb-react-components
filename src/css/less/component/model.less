@@ -1,3 +1,30 @@
+
+.icon-header{
+  padding:0px;
+  font-size: 1.6em;
+  cursor: pointer;
+  color:#565656;
+}
+
+.icon-header .fa{
+  background-color: transparent;
+  border:transparent !important;
+  padding:10px;
+  border-radius: 50%;
+}
+
+.icon-header .fa:focus{
+  border:transparent;
+  background-color: #ddd;
+  outline: 0;
+}
+
+.icon-header .fa:hover{
+  background-color: #ddd;
+  border:transparent !important;
+}
+
+
 .tdb__model{
 
 	&__node{
@@ -38,6 +65,7 @@
 	    margin-top: 0px;
 	    margin-left: 20px;
 	    z-index: 2000;
+	    display:flex;
 	}
 
 
@@ -57,10 +85,27 @@
 	   -ms-flex-positive: 1;
 	   flex-grow: 1;
 	   /* border-bottom: 1px solid #ddd;*/
-	   min-height: 42px;
+	   min-height: 45px;
 	   align-items: center;
 	   justify-content: flex-end;
 	}
+
+	 &__iclose{
+    	margin-right:20px;
+    	margin-left:60px;
+  	}
+
+  	&__xicon{
+  		position: absolute;
+	    z-index: 20;
+	    right: -5px;
+	    top: 0px;
+	    background: white;
+	    border: 2px solid #ccc;
+	    font-size: 14px;
+	    border-radius: 50%;
+  	}
+
 
 	&__footer{
 		height: 20px;
@@ -74,28 +119,4 @@
 
 }
 
-.icon-header{
-  padding:0px;
-  font-size: 1.6em;
-  cursor: pointer;
-  color:#565656;
-}
-
-.icon-header .fa{
-  background-color: transparent;
-  border:transparent !important;
-  padding:10px;
-  border-radius: 50%;
-}
-
-.icon-header .fa:focus{
-  border:transparent;
-  background-color: #ddd;
-  outline: 0;
-}
-
-.icon-header .fa:hover{
-  background-color: #ddd;
-  border:transparent !important;
-}
    

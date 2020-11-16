@@ -5,12 +5,14 @@ import {BaseSelectReactElement} from './BaseSelectReactElement'
 import {BaseSelectComponent} from './BaseSelectComponent'
 import {ParentsElementViewMode} from './viewMode/ParentsElementViewMode'
 import {GraphContextObj} from '../hook/graphObjectContext';
+import {Accordion} from  '../../form/Accordion'
 
 export const ParentsFilter = (props) => {
 	const {selectedNodeObject,graphDataProvider,updateParentsList,availableParentsList} = GraphContextObj();
 
 	const [classType,setClassType]=useState('Class')
 	const [dataProvider,setDataProvider]=useState(availableParentsList.classesListArr || [])
+	//const [listDataProvider,setListParents]=useState([])
 
 	const getClassDataProvider=(classTypeName)=>{
 		let dataProvider=[];
@@ -29,6 +31,7 @@ export const ParentsFilter = (props) => {
 	useEffect(() => {
 		getClassDataProvider(classType)
 	},[availableParentsList])
+
 
 	const changeParentList=(elementId,elementValue)=>{
 		//if(evt.currentTarget.value){
@@ -68,15 +71,24 @@ export const ParentsFilter = (props) => {
     		listParent.push({name:elementData.name,label:label})
     	})
     	return listParent;
-    }
-
-    const listDataProvider=getParentList()
+   }
+    const listDataProvider=getParentList();
+    
     const parentClassType=selectedNodeObject.type 
 
 	return (	<>
+				<div className="tdb__panel__title tdb__panel__title--parent">
+		  	 		Parent List
+		  	 	</div>
+		  	 	{listDataProvider.length>0 &&
+					<ParentsElementViewMode />
+				}
+				<Accordion titleClassName="tdb__accordion__head--green"
+									leftIconClassName = "custom-img-inherit-line"
+									title="Add/Remove Parents"  
+									tooltip="Add/Remove Parents">
 				<div className="tdb__panel__box">
 				    <div className="tdb__list">
-				     	<div className="tdb__list__title" > Parents </div>
 			     		<div className="tdb__list__items" >
 			     			{listDataProvider.length===0 && 'No Parents'}
  			     			<ListComponent removeItem={removeParent} elementId={elementId} elementType={elementType} dataProvider={listDataProvider}/>					 
@@ -100,9 +112,7 @@ export const ParentsFilter = (props) => {
 					
 					</div>
 				</div>	
-				{listDataProvider.length>0 &&
-					<ParentsElementViewMode />
-				}
+				</Accordion>
 				</>
 				
 	)

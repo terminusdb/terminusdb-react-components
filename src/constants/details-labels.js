@@ -100,7 +100,7 @@ export const CLASS_PROPERTIES_LIST=[{label:'Choice Property', id:'ChoiceProperty
 		    					   {label:'String Property', id:'StringProperty',defaultRange:'xsd:string'},
 		    					   {label:'Geo Property', id:'GeoProperty',defaultRange:'xsd:string'},
 		    					   {label:'Temporal Property', id:'TemporalProperty',defaultRange:'xsd:dateTime'},
-		    					   {label:'Object Property', id:'ObjectProperty',defaultRange:''}]
+		    					   {label:'Link Property', id:'LinkProperty',defaultRange:''}]
 
 
 export const GET_ICON_NAME={StringProperty:'custom-img-string',
@@ -108,7 +108,7 @@ export const GET_ICON_NAME={StringProperty:'custom-img-string',
 							ChoiceProperty:'custom-img-choice',
 							GeoProperty:'custom-img_map',
 							TemporalProperty:'custom-img-temporal',
-							ObjectProperty:'custom-img-classes'}
+							LinkProperty:'custom-img-classes'}
 
 
 export const UNITS_ELEMENT_ID='units';

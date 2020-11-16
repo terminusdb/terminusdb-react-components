@@ -17,7 +17,7 @@ export const ObjectProperty =(props)=>{
 			if(rangeValue)return {label:rangeValue.label,name:rangeValue.name,value:rangeValue.value}
 		}
 
-		return null;
+		return {};
 	}
 
 	

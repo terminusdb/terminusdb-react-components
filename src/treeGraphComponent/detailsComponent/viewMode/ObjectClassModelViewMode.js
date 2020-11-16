@@ -4,15 +4,24 @@ import {PropertiesComponentViewMode} from './PropertiesComponentViewMode'
 import {ParentsElementViewMode} from './ParentsElementViewMode'
 import {CLASS_TYPE_NAME} from '../../utils/elementsName' 
 import {ELEMENT_ICONS} from '../../../constants/details-labels'
-import {ListComponent} from'../ListComponent';
-import {GraphContextObj} from '../../hook/graphObjectContext';
+import {ListComponent} from'../ListComponent'
+import {GraphContextObj} from '../../hook/graphObjectContext'
+import {ConstraintsComponent} from '../ConstraintsComponent'
 
 export const ObjectClassModelViewMode = (props) => {
 
-	const {selectedNodeObject,classPropertiesList,changeCurrentNode} = GraphContextObj();
+	const {selectedNodeObject,
+		   nodePropertiesList,
+		   changeCurrentNode,
+		   objPropsRelatedToClass} = GraphContextObj();
 
 	let currentNodeJson = selectedNodeObject || {};
 	const imageType=ELEMENT_ICONS[currentNodeJson.type]
+
+	const childrenArr=currentNodeJson.children || []
+
+	const hasConstraints = (childrenArr.length>0 || objPropsRelatedToClass.length >0) ? true : false; 
+	
 
 	let id =currentNodeJson.id;
 	let nodeLabel =currentNodeJson.label;
@@ -21,33 +30,47 @@ export const ObjectClassModelViewMode = (props) => {
 	//const members=currentNodeJson.members || {};	
 	//const addRelationship = currentNodeJson.type==="Relationship" ? true : false;
 
-	return(<div className="tdb__panel">
-		   	<div className="tdb__panel__title">
+	return(<div className="RRT__container" >
+			<div className="tdb__panel__title">
 	  	 		<i className={`tdb__panel__title__icon ${imageType}`}></i>
 	  	 		{currentNodeJson.label}
 	  	 	</div>
+			<div className="tdb__panel">
 			<BaseSchemaElementViewMode  currentNodeJson={currentNodeJson}  />
 			{currentNodeJson.type===CLASS_TYPE_NAME.CHOICE_CLASS && 
+			  <Fragment>
+			  <span className="tdb__panel__title tdb__panel__title--parent">Choices List</span>
 			  <div className="tdb__panel__box"> 
-			  	<span className="tdb__panel__subtitle">Choices List</span>	  
+			  		  
 			  	<ListComponent dataProvider={currentNodeJson.choices} />		 
 			  </div>
+			  </Fragment>
 		    }
-		    {classPropertiesList && classPropertiesList.length>0 &&
+		    {nodePropertiesList && nodePropertiesList.length>0 &&
 			    <Fragment>
 				    <div className="tdb__panel__title tdb__panel__title--prop">
 			  	 		Property List
 			  	 	</div>
-					<PropertiesComponentViewMode changeCurrentNode={changeCurrentNode} dataProvider={classPropertiesList || []} />
+					<PropertiesComponentViewMode changeCurrentNode={changeCurrentNode} dataProvider={nodePropertiesList || []} />
 				</Fragment>
 			}
 			{currentNodeJson.parents && currentNodeJson.parents.length>0 && 
 				<Fragment>
 					<div className="tdb__panel__title tdb__panel__title--parent">
-		  	 		Parent List
+		  	 			Parent List
 		  	 		</div>
 					<ParentsElementViewMode  id={props.id} title={'Parents'} />
-				</Fragment>}		       
+				</Fragment>}
+			{hasConstraints && 
+				<Fragment>
+					<div className="tdb__panel__title tdb__panel__title--prop">
+		  	 		   Relationship 
+		  	 		</div>
+					<ConstraintsComponent/>
+				</Fragment>
+				
+			}
+		</div>
 		</div>
 	)
 }

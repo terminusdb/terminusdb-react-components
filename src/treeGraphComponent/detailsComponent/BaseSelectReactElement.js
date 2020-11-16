@@ -1,4 +1,4 @@
-import React,{useState}from 'react';
+import React,{useState,useEffect}from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select'; 
 
@@ -18,6 +18,14 @@ export const BaseSelectReactElement=(props)=>{
     		props.optionChange(props.name,selectedValue.value);
     	}
     }
+
+    useEffect(() => {
+    	const defVal=props.defaultValue || {}
+        if(defVal.value!==selectedOption.value){
+        	setSelectedOption(defVal)
+        }
+       
+    },[props.defaultValue])
 
 	const dataProvider=props.dataProvider || [];	
 	const isClearable=props.isClearable===false ? false : true

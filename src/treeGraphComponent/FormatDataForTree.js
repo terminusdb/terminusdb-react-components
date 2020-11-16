@@ -118,7 +118,9 @@ export const formatProperties=(dataProvider,restrDataProvider,_rootIndexObj)=>{
 	return [propertyByDomain,objectPropertyRange,propertiesList];
 }
 
-
+/*
+* to be review of don't get the label change
+*/
 export const addObjectPropertyRangeItem=(objectPropertyRange,propertyElement,classDomain,previewRange=undefined)=>{
 	/*
 	* remove the relation
@@ -135,11 +137,8 @@ export const addObjectPropertyRangeItem=(objectPropertyRange,propertyElement,cla
 	if(!objectPropertyRange[propertyElement.range]){
 		 objectPropertyRange[propertyElement.range]=[]
 	}
-	objectPropertyRange[propertyElement.range].push({classDomainType:classDomain.type, 
-											classDomainLabel:classDomain.label,
-											label:propertyElement.label, 
-											name:propertyElement.name,
-											type:propertyElement.type})
+	objectPropertyRange[propertyElement.range].push(propertyElement)
+											
 }
 
 export const formatData =(dataProvider)=>{

@@ -69,8 +69,11 @@ export const graphUpdateObject=()=>{
 	}
   
 
-
-	const addNodeToTree=(currentNode,addParentToNode=null,isChoiceClass=false)=>{
+	/*
+	* newNodeParent : parent of the new node 
+	* newNodeChild  : child of the new node
+	*/
+	const addNodeToTree=(newNodeParent,newNodeChild=null,isChoiceClass=false)=>{
 		const newName=`CLASS_${(new Date()).getTime()}`;
 		let elementModel={
 						 name:newName,
@@ -83,12 +86,16 @@ export const graphUpdateObject=()=>{
 			             abstract:false
 		          		}
 
-		addParent(currentNode,elementModel,isChoiceClass)
+		addParent(newNodeParent,elementModel,isChoiceClass)
 		
 		newNodesList.set(newName,elementModel);
 
-		if(addParentToNode){
-			changeNodeParent(addParentToNode.name,newName,ADD_PARENT)
+		if(newNodeChild){
+			/*
+			* add the parent relationship to the child node
+			*/
+			changeNodeParent(newNodeChild.name,newName,ADD_PARENT)
+			newNodeChild.parents.push(newName)
 		}
 
 		return elementModel;
@@ -231,7 +238,12 @@ export const graphUpdateObject=()=>{
 				if(['min','max','cardinality'].indexOf(vname)>-1){
 					andValues.push(updateCardinality(WOQL,subjectId,vname,valuesObject[vname],valuesObject['domain']))
 				}else{
- 					andValues.push(WOQL.update_quad(subjectId,vname,valuesObject[vname],'schema/main')) 					
+					if(vname==='abstract'){
+						andValues.push(updateAbstract(WOQL,subjectId,valuesObject[vname]))
+					}else{
+						andValues.push(WOQL.update_quad(subjectId,vname,valuesObject[vname],'schema/main'))
+					}
+ 					 					
  				}
 			}			
 		})
@@ -256,6 +268,17 @@ export const graphUpdateObject=()=>{
 		if(andValues.length===0)return undefined;
 		const query = WOQL.and(...andValues);
 		return query
+	}
+
+	const updateAbstract=(WOQL,subjectId,value)=>{
+		if(value===true){
+			return WOQL.update_quad(subjectId,'system:tag','system:abstract','schema/main')
+		}
+		
+		return WOQL.opt(
+	          WOQL.quad(subjectId, 'system:tag', "system:abstract", "schema/main")
+	          .delete_quad(subjectId, 'system:tag', "system:abstract", "schema/main")
+	    )
 	}
 
 	/*

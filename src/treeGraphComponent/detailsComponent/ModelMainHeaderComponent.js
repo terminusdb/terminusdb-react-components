@@ -92,14 +92,17 @@ export const ModelMainHeaderComponent =(props)=>{
 			   <div className="icon-header">
 			   	  <ToogleButton	 onSelectionChange={props.changeMode}
 		   	   					 baseTooltip={TOOLBAR_LABELS.EditModeTooltip}
-		   	                     selectedTooltip={TOOLBAR_LABELS.ViewModeTooltip} 
-		   	                     name="MODEL_RIGHT_WINDOW_OBJ" 
+		   	                     selectedTooltip={TOOLBAR_LABELS.ViewModeTooltip}  
 		   	                     baseIcon="fa fa-edit"
 		   	                     selectIcon="fa fa-edit"/>
 			   </div>
 
-			   <div className="icon-open-close">
-			   		<ToogleButton name="PANEL_OPEN_BUTTON" baseIcon="fas fa-sign-in-alt" selectIcon="fas fa-sign-in-alt fa-flip-horizontal"/>
+			   <div className="tdb__model__iclose">
+			   		<ToogleButton name="PANEL_OPEN_BUTTON" 
+			   					  buttonIsSelected={props.panelIsOpen}
+			   					  baseIcon="fas fa-sign-in-alt fa-flip-horizontal" 
+			   					  selectIcon="fas fa-sign-in-alt"
+			   					  onSelectionChange={props.openClosePanel}/>
 			   	</div>
 			</div>
 		)

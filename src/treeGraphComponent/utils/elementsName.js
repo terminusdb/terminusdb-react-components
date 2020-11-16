@@ -4,7 +4,16 @@ export const PROPERTY_TYPE_NAME={
 	CHOICE_PROPERTY:'ChoiceProperty',
 	GEO_PROPERTY:'GeoProperty',
 	TEMPORAL_PROPERTY:'TemporalProperty',
-	OBJECT_PROPERTY:'ObjectProperty'
+	OBJECT_PROPERTY:'LinkProperty'
+}
+
+export const PROPERTY_TYPE_LABEL={
+	STRING_PROPERTY:'String Property',
+	NUMERIC_PROPERTY:'Numeric Property',
+	CHOICE_PROPERTY:'Choice Property',
+	GEO_PROPERTY:'Geo Property',
+	TEMPORAL_PROPERTY:'Temporal Property',
+	OBJECT_PROPERTY:'Link Property'
 }
 
 export const CLASS_TYPE_NAME={

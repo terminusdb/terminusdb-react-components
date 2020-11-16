@@ -79,12 +79,17 @@ export const modelCallServerHook = (woqlClient,branch,ref) => {
 		}
 	}
 
+	const resetReport=()=>{
+		setReport(false)
+	}
+
 	
 	return {
         mainGraphDataProvider,
         saveGraphChanges,
         reportMessage,
-        callServerLoading
+        callServerLoading,
+        resetReport
     }
 }	
 

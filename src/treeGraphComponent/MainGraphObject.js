@@ -29,7 +29,7 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 	let _domainToProperties={};
 
 	/*
-	* the list of link properties
+	* the list of all the class for the link properties
 	*/
 	let _objectPropertyList=[];
 
@@ -76,6 +76,10 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 			default:
 			 	return _rootIndexObj.ROOT;
 		}		
+	}
+
+	const objectPropertyToRange=()=>{
+		return _objectPropertyToRange;
 	}
 
 	const getObjPropsRelatedToClass=(nodeId)=>{
@@ -179,7 +183,8 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 
         	 	rootParentNode.children.push(newNodeObj);
 
-        	 	newNodeObj.children.push(currentNode);     	 	
+        	 	newNodeObj.children.push(currentNode); 
+
 
         	 	/*
     	 		* check if I have to remove the child from the root node
@@ -518,7 +523,7 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 		}
 	}
 
-	return {updateChoices,getObjectChoices,getElementsNumber,getElement,getPropertyListByDomain,getObjPropsRelatedToClass,getAvailableParentsList,
+	return {objectPropertyToRange,updateChoices,getObjectChoices,getElementsNumber,getElement,getPropertyListByDomain,getObjPropsRelatedToClass,getAvailableParentsList,
       nodeApplyAction,addNewPropertyToClass,removePropertyToClass,changeElementDataValue,
       updateNodeParents,savedObjectToWOQL,getObjectProperties,getDescendantsNode,removeElementInMainGraph}
 }

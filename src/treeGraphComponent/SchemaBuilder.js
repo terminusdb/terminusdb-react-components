@@ -1,6 +1,7 @@
 import React,{useState} from 'react';
 import { SizeMe } from 'react-sizeme' 
 import SplitPane from "react-split-pane";
+import {CLASS_TYPE_NAME} from "./utils/elementsName";
 import {ModelTreeComponent} from './ModelTreeComponent';
 import {DetailsModelComponent} from './detailsComponent/DetailsModelComponent';
 import {ADD_NEW_ENTITY,ADD_NEW_CLASS,ADD_PARENT,ADD_CHILD} from './node/NodeConstants';
@@ -17,8 +18,9 @@ export const SchemaBuilder = (props)=>{
 		  graphUpdateLabel,
 		  selectedNodeObject,
 		  changeCurrentNode,
+		  nodePropertiesList,
+		  objectPropertyToRange,
 		  updateValue,
-		  classPropertiesList,
 		  addNewProperty,
 		  removeElement,
 		  objectPropertyList,
@@ -29,6 +31,7 @@ export const SchemaBuilder = (props)=>{
 		  } = GraphContextObj();
 
 	const [isEditMode,setIsEditMode]=useState(false)
+	const [panelIsOpen,setOpenClosePanel]=useState(true)
 	const [zoomEvent,setZoomEvent]=useState(undefined)
 
 	const saveData=()=>{
@@ -36,23 +39,23 @@ export const SchemaBuilder = (props)=>{
 		if(props.saveGraph)props.saveGraph(query)
 	}
 	
-	const panelIsOpen=props.panelIsOpen || true;
+	//const panelIsOpen=props.panelIsOpen || true;
 
 	const mainPanelSize=panelIsOpen ? "calc(100% - 450px)" : "100%";
 	const treeMainGraphObj=props.treeMainGraphObj;
 
 	let showInfoComp=false
-	if(!selectedNodeObject || !selectedNodeObject.name || selectedNodeObject.type==='Root' ||
-		 selectedNodeObject.type==='Group'){
-
+	if(!selectedNodeObject || !selectedNodeObject.name || selectedNodeObject.type===CLASS_TYPE_NAME.SCHEMA_ROOT ||
+		 selectedNodeObject.type===CLASS_TYPE_NAME.SCHEMA_GROUP){
 		showInfoComp=true;
-
 	}
 
 	return (	
 		<>
 		<div className="tdb__model__header">
-			<ModelMainHeaderComponent 
+			<ModelMainHeaderComponent
+				panelIsOpen={panelIsOpen}
+				openClosePanel={setOpenClosePanel}
 				setNodeAction={setNodeAction} 
 				extraTools={props.extraTools} setZoomEvent={setZoomEvent} saveData={saveData} changeMode={setIsEditMode} isEditMode={isEditMode}/>
 		</div>
@@ -62,6 +65,7 @@ export const SchemaBuilder = (props)=>{
 		            <div style={{ minHeight:"400px", height: "calc(100vh - 10px)"}}>
 		              {graphDataProvider && 
 		              	<ModelTreeComponent
+		              		objectPropertyToRange={objectPropertyToRange}
 		              		zoomEvent={zoomEvent}
 		              		isEditMode={isEditMode}
 		              		setNodeAction={setNodeAction} 
@@ -88,7 +92,7 @@ export const SchemaBuilder = (props)=>{
 		        	objectPropertyList={objectPropertyList} 
 		        	removeElement={removeElement} 
 		        	addNewProperty={addNewProperty} 
-		        	classPropertyList={classPropertiesList} 
+		        	nodePropertiesList={nodePropertiesList} 
 		        	currentNodeJson={selectedNodeObject} 
 		        	updateValue={updateValue}/>	}   
 	    </SplitPane>

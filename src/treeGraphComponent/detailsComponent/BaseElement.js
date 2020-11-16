@@ -32,8 +32,12 @@ export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassI
         }
     }
 
+    useEffect(() => {
+        setIndexError(false);
+    },[nodeJsonData])
+
     return(
-   	    <div key={nodeJsonData.name} className="tdb__panel__box">
+   	    <div className="tdb__panel__box">
             <RemoveElementComponent 
                 hasConstraints={hasConstraints} 
                 elementId={nodeJsonData.name}
@@ -48,6 +52,7 @@ export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassI
                     title={`${ELEMENT_BASE_CONST.ID_TEXT} *` }
                     placeholder={ELEMENT_BASE_CONST.ID_PLACEHOLDER}
                     name='id'
+                    panelName={nodeJsonData.name}
                     onBlur={changeElement}
                     defaultValue={nodeJsonData.id || ''}
                     itemError={indexError}

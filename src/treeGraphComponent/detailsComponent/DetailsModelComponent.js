@@ -50,7 +50,7 @@ export const DetailsModelComponent = (props)=>{
 		}
 		tabsArr.push({title:'Relationship',
 	            getContent: () =><Fragment>
-	         						<ConstraintsComponent objectPropertyList={props.objectPropertyList} nodeJsonData={nodeData} objPropsRelatedToClass={props.objPropsRelatedToClass}/>
+	         						<ConstraintsComponent/>
 	         						{nodeData.type!=='ChoiceClass' &&
 	         							<ParentsFilter/>
 	         				  		}
