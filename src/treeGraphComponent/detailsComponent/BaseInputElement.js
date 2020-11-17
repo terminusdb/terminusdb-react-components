@@ -35,7 +35,7 @@ export const BaseInputElement = (props) => {
 			<div className={props.groupClassName}>
 			 	<div className="tdb__form__help">
 	                 <label className={props.labelClassName} htmlFor={props.name}>{props.title}</label>
-	                 <HelpComponent/>
+	                 <HelpComponent text={props.help}/>
                 </div>
                 <input 	ref={inputElement}
                 		placeholder={props.placeholder} 

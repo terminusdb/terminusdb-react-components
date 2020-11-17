@@ -6,7 +6,7 @@ import {GraphContextObj} from '../../hook/graphObjectContext';
 
 export const ParentsElementViewMode =(props)=> {
 
-	const {graphDataProvider,selectedNodeObject} = GraphContextObj()
+	const {graphDataProvider,selectedNodeObject,changeCurrentNode} = GraphContextObj()
 
 	const getParentElement=()=>{
 		const parentElementArr=selectedNodeObject.parents;
@@ -23,7 +23,7 @@ export const ParentsElementViewMode =(props)=> {
 									leftIconClassName = "custom-img-inherit-line"
 									title={elementData.label}  
 									tooltip={elementData.comment}>
-					    	<BaseSchemaElementViewMode currentNodeJson={elementData} />					     	
+					    	<BaseSchemaElementViewMode changeCurrentNode={changeCurrentNode} idLink={true} currentNodeJson={elementData} />					     	
 					     </Accordion>)
 			})
 		}

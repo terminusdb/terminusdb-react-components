@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import { SizeMe } from 'react-sizeme' 
 import SplitPane from "react-split-pane";
 import {CLASS_TYPE_NAME} from "./utils/elementsName";
@@ -10,7 +10,7 @@ import {TERMINUS_FONT_BASE} from '../constants/details-labels';
 import {ModelMainHeaderComponent} from './detailsComponent/ModelMainHeaderComponent';
 import {InfoBoxComponent} from './detailsComponent/InfoBoxComponent'
 import {ObjectClassModelViewMode} from './detailsComponent/viewMode/ObjectClassModelViewMode'
-
+import {InfoObjectComponent} from './detailsComponent/InfoObjectComponent'
 export const SchemaBuilder = (props)=>{
 
 	const {graphDataProvider, 
@@ -38,6 +38,16 @@ export const SchemaBuilder = (props)=>{
 		const query = savedObjectToWOQL();
 		if(props.saveGraph)props.saveGraph(query)
 	}
+
+	/*
+	* Edit mode when model is empty, so it has only the group type
+	*/
+	useEffect(() => {
+         //startDataProsition();      
+        if(graphDataProvider && graphDataProvider.size===4){
+			setIsEditMode(true);
+		}
+    }, [graphDataProvider])
 	
 	//const panelIsOpen=props.panelIsOpen || true;
 
@@ -45,7 +55,8 @@ export const SchemaBuilder = (props)=>{
 	const treeMainGraphObj=props.treeMainGraphObj;
 
 	let showInfoComp=false
-	if(!selectedNodeObject || !selectedNodeObject.name || selectedNodeObject.type===CLASS_TYPE_NAME.SCHEMA_ROOT ||
+	if(!selectedNodeObject || !selectedNodeObject.name || 
+		selectedNodeObject.type===CLASS_TYPE_NAME.SCHEMA_ROOT || 
 		 selectedNodeObject.type===CLASS_TYPE_NAME.SCHEMA_GROUP){
 		showInfoComp=true;
 	}
@@ -80,8 +91,11 @@ export const SchemaBuilder = (props)=>{
 		              }
 		        </SizeMe>
 		    </div>
-		    {showInfoComp &&
+		    {showInfoComp && selectedNodeObject.type!==CLASS_TYPE_NAME.SCHEMA_GROUP &&
 		    	<InfoBoxComponent/>
+		    }
+		    {showInfoComp && selectedNodeObject.type===CLASS_TYPE_NAME.SCHEMA_GROUP &&
+		    	<InfoObjectComponent panelType={selectedNodeObject.name}/>
 		    }
 		    {!showInfoComp && isEditMode===false && 
 		    	<ObjectClassModelViewMode />}

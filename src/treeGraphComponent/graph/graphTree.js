@@ -39,10 +39,9 @@ export const Tree = (props) =>{
       let linksChildren=[];
 
       for (let souceName in nodeIndex){
-         let isSelected=false;
-
          const source=nodeIndex[souceName];
          source.data.children.map((targetClass,i)=>{
+             let isSelected=false;
              if(nodeIndex[targetClass.name]){
                 if(targetClass.name===props.selectedNode || source.data.name===props.selectedNode){
                     isSelected=true;
@@ -60,8 +59,7 @@ export const Tree = (props) =>{
          })
       }
 
-      /*let linksProperty=[];
-
+    /*  let linksProperty=[];
         for (let rangeName in objectPropertyToRange){
             const target=nodeIndex[rangeName];
             let linkData={};
@@ -76,9 +74,7 @@ export const Tree = (props) =>{
                           <LinkProperty label={property.label}  id={property.id} lineColor="#ff0000" source={source} target={target}/>
                       </g>)
             })
-      }*/
-
-    
+      }  */ 
 
     return(
       <>

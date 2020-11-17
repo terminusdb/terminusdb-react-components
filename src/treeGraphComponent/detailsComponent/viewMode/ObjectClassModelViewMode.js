@@ -24,7 +24,7 @@ export const ObjectClassModelViewMode = (props) => {
 	
 
 	let id =currentNodeJson.id;
-	let nodeLabel =currentNodeJson.label;
+	let label =currentNodeJson.label || currentNodeJson.id;
 	const propertiesDataProvider=[];//this.getPropertiesDataProvider(id) || [];
 
 	//const members=currentNodeJson.members || {};	
@@ -32,8 +32,9 @@ export const ObjectClassModelViewMode = (props) => {
 
 	return(<div className="RRT__container" >
 			<div className="tdb__panel__title">
-	  	 		<i className={`tdb__panel__title__icon ${imageType}`}></i>
-	  	 		{currentNodeJson.label}
+	  	 		<i className={`tdb__panel__title__icon ${imageType}`}>
+	  	 		</i>
+	  	 		<p className="tdb__panel__label" title={label}> {label}</p>
 	  	 	</div>
 			<div className="tdb__panel">
 			<BaseSchemaElementViewMode  currentNodeJson={currentNodeJson}  />
@@ -41,7 +42,6 @@ export const ObjectClassModelViewMode = (props) => {
 			  <Fragment>
 			  <span className="tdb__panel__title tdb__panel__title--parent">Choices List</span>
 			  <div className="tdb__panel__box"> 
-			  		  
 			  	<ListComponent dataProvider={currentNodeJson.choices} />		 
 			  </div>
 			  </Fragment>
@@ -49,7 +49,7 @@ export const ObjectClassModelViewMode = (props) => {
 		    {nodePropertiesList && nodePropertiesList.length>0 &&
 			    <Fragment>
 				    <div className="tdb__panel__title tdb__panel__title--prop">
-			  	 		Property List
+			  	 		Properties
 			  	 	</div>
 					<PropertiesComponentViewMode changeCurrentNode={changeCurrentNode} dataProvider={nodePropertiesList || []} />
 				</Fragment>
@@ -64,7 +64,7 @@ export const ObjectClassModelViewMode = (props) => {
 			{hasConstraints && 
 				<Fragment>
 					<div className="tdb__panel__title tdb__panel__title--prop">
-		  	 		   Relationship 
+		  	 		   Relationships
 		  	 		</div>
 					<ConstraintsComponent/>
 				</Fragment>

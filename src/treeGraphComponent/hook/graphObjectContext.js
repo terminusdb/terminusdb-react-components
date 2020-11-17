@@ -6,7 +6,7 @@ export const GraphContextObj = () => useContext(GraphContext)
 
 export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 
-	const [graphDataProvider, setGraphDataProvider] = useState([]);
+	const [graphDataProvider, setGraphDataProvider] = useState(null);
 	const [selectedNodeObject, setSelectedNodeObject] = useState({});
 	const [nodePropertiesList, setNodePropertiesList] = useState([]);
 //NodePropertiesList
@@ -15,6 +15,7 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 
 	const [objectChoicesList, setObjectChoicesList] = useState([]);
 	const [objectPropertyList, setObjectPropertyList] = useState([]);
+
 	const [objPropsRelatedToClass,setObjPropsRelatedToClass]=useState([]);
 
 	const [mainGraphObj, setMainGraphObj] = useState(null);
@@ -121,6 +122,7 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 	return (
 		<GraphContext.Provider
             value={{
+            mainGraphObj,
             objectPropertyToRange,
 	        graphDataProvider,
 	        selectedNodeObject,

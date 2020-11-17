@@ -11,15 +11,14 @@ export const LinkTree = (props)=>  {
 
 	//render(){
 
-	const strokeWidth=props.isSelected ?  4 : 3;
-	const stroke=props.isSelected ? '#696969' : "#dddddd";
+	const strokeWidth=props.isSelected===true ?  4 : 3;
+	const stroke=props.isSelected===true ? '#696969' : "#dddddd";
 	const link = props.link;
 
 	const pathData={source:[link.source.x,link.source.y],
 		            target:[link.target.x,link.target.y]};
 
 	const path = getPath();
-
 		
 	return (
 		    <path

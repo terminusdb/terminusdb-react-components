@@ -2,7 +2,11 @@ import React from 'react';
 
 export const BaseLabelsElementViewMode =(props)=> {
 
-	const onClick=props.onClick ? {onClick:props.onClick} : {}
+	const selectValue=()=>{
+		props.onClick(props.name,props.value)
+	}
+
+	const onClick=props.onClick ? {onClick:selectValue} : {}
 	const className = props.onClick ? "tdb__panel__viewvalue tdb__panel__viewvalue--active" : "tdb__panel__viewvalue"
 
 	return(

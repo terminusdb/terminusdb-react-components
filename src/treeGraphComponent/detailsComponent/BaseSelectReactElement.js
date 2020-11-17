@@ -1,16 +1,16 @@
 import React,{useState,useEffect}from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select'; 
+import {HelpComponent} from './HelpComponent';
 
 export const BaseSelectReactElement=(props)=>{
 	
-	const [selectedOption, setSelectedOption]=useState(props.defaultValue || {})
+	const [selectedOption, setSelectedOption]=useState(props.defaultValue)
 
     const onChange=(selectedValue)=>{
-    	if(selectedValue && selectedOption.value!==selectedValue.value){
-    		//props.onChangeValue(selectedValue);
+    	if(!selectedOption || (selectedValue && selectedOption.value!==selectedValue.value)){
     		if(props.resetSelection){
-    			setSelectedOption({});
+    			setSelectedOption(null);
     		}else{
     			setSelectedOption(selectedValue);
     		}
@@ -21,7 +21,7 @@ export const BaseSelectReactElement=(props)=>{
 
     useEffect(() => {
     	const defVal=props.defaultValue || {}
-        if(defVal.value!==selectedOption.value){
+        if(selectedOption && defVal.value!==selectedOption.value){
         	setSelectedOption(defVal)
         }
        
@@ -30,16 +30,24 @@ export const BaseSelectReactElement=(props)=>{
 	const dataProvider=props.dataProvider || [];	
 	const isClearable=props.isClearable===false ? false : true
 	const isDisabled=props.isDisabled ? true : false;
+//
+  const value = selectedOption!==null ? {value:selectedOption} : {}
+  const itemError = selectedOption===null ? props.itemError : ''
 
 	return(
 		 <div className={props.groupClassName}>
-           	<label className={props.labelClassName} >{props.title}</label>
-		  	<Select value={selectedOption} 
+        <div className="tdb__form__help">
+          <label className={props.labelClassName} >{props.title}</label>
+          <HelpComponent text={props.help}/>
+        </div>
+		  	<Select  
+          value={selectedOption}
 			  	isClearable={isClearable} 
 			  	onChange={onChange} 
 			  	options={dataProvider}  
 			  	placeholder={props.placeholder}
 			  	isDisabled={isDisabled}/>
+          <span className="tdb__form__error">{itemError}</span>
 		 </div>
 
 	)
@@ -57,7 +65,6 @@ export const BaseSelectReactElement=(props)=>{
   }
 
  BaseSelectReactElement.defaultProps = {
-      defaultValue :{},
       groupClassName:'tdb__form__group',
       labelClassName:'tdb__form__label',
       title:'',

@@ -36,22 +36,24 @@ export const BasePropertyComponent = (props)=> {
 										   nodeJsonData={currentNodeJson}
 										   showAllButton={showAllButton}
 										   isNodeObject={false}
-								   />}
-				<div className="tdb__panel__box">
-					{props.selectDataProvider &&
-						<BaseSelectComponent
-							optionChange={changePropertyValue}
-							title={props.selectDataProvider.label}
-		            		dataProvider={props.selectDataProvider.options}
-		            		name={props.selectDataProvider.id}
-		               		defaultValue={currentNodeJson.range || ''}
-		               		/>
-	               	}
-	               	{props.children}
+								   >
+								   {props.selectDataProvider &&
+									<BaseSelectComponent
+			                            help={props.help}
+										optionChange={changePropertyValue}
+			                            title={props.selectDataProvider.label}
+					            		dataProvider={props.selectDataProvider.options}
+					            		name={props.selectDataProvider.id}
+					               		defaultValue={currentNodeJson.range || ''}
+					               		/>
+	               					}
+	               					{props.children}
+								   </BaseElement>}
+				<div className="tdb__panel__box">	               
 	               	{props.showCardinality &&
 	               		<Fragment>
-	               			<BaseInputElement defaultValue={currentNodeJson.min || ''} name='min' title={CARDINALITY_MIN_TITLE} onBlur={changePropertyValue}/>
-                			<BaseInputElement defaultValue={currentNodeJson.max || ''} name='max' title={CARDINALITY_MAX_TITLE} onBlur={changePropertyValue}/>
+	               			<BaseInputElement help="card_min" defaultValue={currentNodeJson.min || ''} name='min' title={CARDINALITY_MIN_TITLE} onBlur={changePropertyValue}/>
+                			<BaseInputElement help="card_max" defaultValue={currentNodeJson.max || ''} name='max' title={CARDINALITY_MAX_TITLE} onBlur={changePropertyValue}/>
 	               		</Fragment>
 	               	}         					
 				</div>

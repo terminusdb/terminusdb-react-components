@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import {ELEMENT_BASE_CONST}  from '../../constants/details-labels.js';
+import {ELEMENT_BASE_CONST, ELEMENT_HELP}  from '../../constants/details-labels.js';
 import {RemoveElementComponent} from './RemoveElementComponent';
 import PropTypes from "prop-types";
 import {HelpComponent} from "./HelpComponent";
@@ -10,9 +10,10 @@ import {BaseCheckboxElement} from './BaseCheckboxElement';
 * I change the value in the dataprovider but don't render
 */
 
-export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassId,isNodeObject,hasConstraints})=>{	
+export const BaseElement = (props)=>{	
 
     const [indexError,setIndexError]=useState(false);
+    const nodeJsonData=props.nodeJsonData || {}
 
     const changeElement=(name,value)=>{
         if(name==="id"){
@@ -27,8 +28,8 @@ export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassI
             }
             setIndexError(false);
         }
-        if(updateValue){
-            updateValue(name,value,nodeJsonData);
+        if(props.updateValue){
+            props.updateValue(name,value,nodeJsonData);
         }
     }
 
@@ -39,12 +40,12 @@ export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassI
     return(
    	    <div className="tdb__panel__box">
             <RemoveElementComponent 
-                hasConstraints={hasConstraints} 
+                hasConstraints={props.hasConstraints} 
                 elementId={nodeJsonData.name}
                 elementType={nodeJsonData.type}
-                removeElement={removeElement}/>
-       	    	{isNodeObject && nodeJsonData.type!=='ChoiceClass' && 
-                    <BaseCheckboxElement title={'Abstract'}  name='abstract' defaultValue={nodeJsonData.abstract || false} onBlur={changeElement} />
+                removeElement={props.removeElement}/>
+       	    	{props.isNodeObject && nodeJsonData.type!=='ChoiceClass' && 
+                    <BaseCheckboxElement title={'Abstract'} help={"abstract"} name='abstract' defaultValue={nodeJsonData.abstract || false} onBlur={changeElement} />
                 }
                 <BaseInputElement
                     autoFocus={true} 
@@ -53,6 +54,7 @@ export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassI
                     placeholder={ELEMENT_BASE_CONST.ID_PLACEHOLDER}
                     name='id'
                     panelName={nodeJsonData.name}
+                    help={"class_id"}
                     onBlur={changeElement}
                     defaultValue={nodeJsonData.id || ''}
                     itemError={indexError}
@@ -61,13 +63,16 @@ export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassI
                     title={ELEMENT_BASE_CONST.LABEL_TEXT}
                     name='label'
                     placeholder={ELEMENT_BASE_CONST.LABEL_PLACEHOLDER}
+                    help={"class_label"}
                     onBlur={changeElement}
                     defaultValue={nodeJsonData.label || ''}
                     />
-	         <BaseTextareaElement
+                {props.children}
+	            <BaseTextareaElement
                     placeholder={ELEMENT_BASE_CONST.DESCRIPTION_PLACEHOLDER} 
                     title={ELEMENT_BASE_CONST.DESCRIPTION_TEXT}
                     name='comment'
+                    help={"class_comment"}
                     onBlur={changeElement}
                     defaultValue={nodeJsonData.comment || ''}
             />

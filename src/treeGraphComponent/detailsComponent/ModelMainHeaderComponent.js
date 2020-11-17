@@ -75,6 +75,7 @@ export const ModelMainHeaderComponent =(props)=>{
 				   		<ToogleButton baseTooltip={TOOLBAR_LABELS.SaveButtonTooltip} 
 				   					  baseIcon="fa fa-save"
 				   					  selectIcon="fa fa-save"
+				   					  isSelected={false}
 				   					  selectClassName="tdb__button__base tdb__panel__button"
 				   					  name="SAVE_BUTTON" onSelectionChange={props.saveData}/>
 				   </div>
@@ -94,12 +95,13 @@ export const ModelMainHeaderComponent =(props)=>{
 		   	   					 baseTooltip={TOOLBAR_LABELS.EditModeTooltip}
 		   	                     selectedTooltip={TOOLBAR_LABELS.ViewModeTooltip}  
 		   	                     baseIcon="fa fa-edit"
-		   	                     selectIcon="fa fa-edit"/>
+		   	                     selectIcon="fa fa-edit"
+		   	                     isSelected={viewEdit}/>
 			   </div>
 
 			   <div className="tdb__model__iclose">
 			   		<ToogleButton name="PANEL_OPEN_BUTTON" 
-			   					  buttonIsSelected={props.panelIsOpen}
+			   					  isSelected={props.panelIsOpen}
 			   					  baseIcon="fas fa-sign-in-alt fa-flip-horizontal" 
 			   					  selectIcon="fas fa-sign-in-alt"
 			   					  onSelectionChange={props.openClosePanel}/>

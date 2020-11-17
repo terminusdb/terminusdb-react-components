@@ -15,9 +15,9 @@ import {CLASS_TYPE_NAME} from './utils/elementsName'
 
 export const MainGraphObject = (mainGraphDataProvider)=>{
 
-	let _objectTypeList=new Map();
+	let _objectTypeList=[];
 
-	let _documentTypeList=new Map();
+	let _documentTypeList=[];
 
 	let _objectChoiceList =[]
 
@@ -523,7 +523,22 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 		}
 	}
 
-	return {objectPropertyToRange,updateChoices,getObjectChoices,getElementsNumber,getElement,getPropertyListByDomain,getObjPropsRelatedToClass,getAvailableParentsList,
+	const getObjectTypeList=()=>{
+		return _objectTypeList;
+	}
+
+	const getDocumentTypeList=()=>{
+		return _documentTypeList;
+	}
+
+	 
+
+	return {objectPropertyToRange,
+			updateChoices,
+			getObjectChoices,
+			getObjectTypeList,
+			getDocumentTypeList,
+			getElementsNumber,getElement,getPropertyListByDomain,getObjPropsRelatedToClass,getAvailableParentsList,
       nodeApplyAction,addNewPropertyToClass,removePropertyToClass,changeElementDataValue,
       updateNodeParents,savedObjectToWOQL,getObjectProperties,getDescendantsNode,removeElementInMainGraph}
 }

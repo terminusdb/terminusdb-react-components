@@ -36,6 +36,8 @@ export const PropertiesComponent = (props)=> {
 		   		case PROPERTY_TYPE_NAME.CHOICE_PROPERTY:
 		   			baseObj['showCardinality'] =false;
 		   			baseObj['comboDataProvider']=objectChoicesList || [];
+		   			baseObj['title']='Choice Type *'
+		   			baseObj['placeholder']='Select Choice Type'
 		   			return <ObjectProperty  {...baseObj} key={`${PROPERTY_TYPE_NAME.CHOICE_PROPERTY}__${index}`}/>;
 		   		
 		   		case PROPERTY_TYPE_NAME.NUMERIC_PROPERTY:
@@ -54,10 +56,12 @@ export const PropertiesComponent = (props)=> {
 		   			baseObj['selectDataProvider']=TEMPORAL_PROPERTY_DATAPROVIDER;
 		   			return <BasePropertyComponent {...baseObj}  key={`${PROPERTY_TYPE_NAME.TEMPORAL_PROPERTY}__${index}`}/>
 		   		case PROPERTY_TYPE_NAME.OBJECT_PROPERTY:
+		   			baseObj['title']='Links To Type *'
+		   			baseObj['placeholder']='Select Type'
 		   			baseObj['comboDataProvider']=objectPropertyList || [];
 		   			return <ObjectProperty  {...baseObj} key={`${PROPERTY_TYPE_NAME.OBJECT_PROPERTY}__${index}`}/>;
 		   			default:
-		   			return '';
+		   				return '';
 				}
 		});	
 	}
@@ -67,11 +71,7 @@ export const PropertiesComponent = (props)=> {
 	    	<PropertyMenuList buttonIconClassName="menuWithLabel"
 						  iconClassName="fa fa-caret-down iconWithLabel" 
 		                  dropdownMenuClassName="dropdownMenuProperty rightPosition" 
-		                  addNewProperty={addNewProperty}/>
-				     
-	        <div className="tdb__panel__box">
-	        	Too often huge amounts of data can’t answer the questions that actually matter. They deliver billions of isolated facts and zero intelligence. TerminusDB solves that problem.	        			
-		    </div>
+		                  addNewProperty={addNewProperty}/>				     
 	    	{propertiesPanels}
 	    </Fragment>
 	)

@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 export const ToogleButton =(props)=>{
 
-	const [isSelected,setIsSelectd] = useState(props.buttonIsSelected)
+	const isSelected=props.isSelected===true ? true : false;
 	
 	const baseTooltip=props.baseTooltip || '';
 	const selectedTooltip=props.selectedTooltip || baseTooltip;	
@@ -13,7 +13,6 @@ export const ToogleButton =(props)=>{
 
 	const onClick=()=>{
 		if(props.onSelectionChange)props.onSelectionChange(!isSelected)
-		setIsSelectd(!isSelected)
 	}
 
 	return(

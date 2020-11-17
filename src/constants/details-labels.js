@@ -206,17 +206,41 @@ export const CARDINALITY_MIN_TITLE='Cardinality Min';
 export const CARDINALITY_MAX_TITLE='Cardinality Max';
 
 
-export const mainGraphDescriptionText=`See New Patterns And Relationships
-		Using advanced mathematical techniques TerminusDB enables the identification and visualisation of
-		relationships between real-world entities, at depths unmatched by any other competing approach, and most importantly enforces compliance with whatever rules concerning those relationships we’ve already specified.
-
-		We deliver more insight, faster than any competing approach. We call it Business Intelligence 2.0`
+export const mainGraphDescriptionText=`Shows the type inheritance hierarchy of the database schema. Types inherit their parents' properties.`
 
 export const ELEMENT_ICONS ={
 	'Document':'custom-img-entities',
-	'Class':'custom-img-classes',
+	'DocumentClasses':'custom-img-entities',
+	'Object':'custom-img-classes',
+	'ObjectClasses':'custom-img-classes',
 	'ChoiceClass':'custom-img-choice',
-	'Relationship':'custom-img-relationship'
+	'ChoiceClasses':'custom-img-choice'
+}
+
+export const ELEMENT_DESCRIPTIONS ={
+	'Document':'Document types are top level objects which are only ever linked to',
+	'Object':'Object types are structure types that can appear inside documents',
+    'ChoiceClass':'Choice Types or Enumerated Types are sets of possible choices',
+    'Properties':'Objects have properties with values to represent their state'
+}
+
+export const ELEMENT_HELP = {
+    'abstract': "Abstract types cannot be directly created - their non-abstract sub-types can",
+    'class_id': "A unique ID for the element - cannot contain spaces",
+    'class_label': "A short name for the element",
+    'class_comment': "A textual description of the element - what does it represent",
+    'choice_id': "A unique ID for the choice - cannot contain spaces - normally lowercase",
+    'choice_label': "A short name for the choice - as it will appear in choice lists",
+    'choice_comment': "A description of the choice - what does it represent",
+    'property_id': "A unique ID for the propercase - cannot contain spaces - normally starts with a lowercase letter",
+    'property_label': "A short name for the property - as it will appear in user interface elements",
+    'property_comment': "A description of the property - what does it represent",
+    'card_min': "The minimum number of values of this property that must exist for each object",
+    'card_max': "The maximum number of values of this property that may exist for each object",
+    'string_subtype': "You can choose to make this value be a specific type of string",
+    'number_subtype': "Choose from a decimal, integer or other, more refined numeric types",
+    'geo_subtype': "A geographic point (coordinate), a path (coordinate line) or a shape (coordinate polygon)",
+    'time_subtype': "A date, a date and time, or a range of date times"
 }
 
 /*export default {

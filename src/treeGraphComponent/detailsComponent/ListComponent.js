@@ -14,7 +14,7 @@ export const ListComponent = (props) =>  {
 		  	return(<div key={'__elementItem__'+index}>		  			
 		  			  <div className="tdb__list__item">
 		  			  		<label className="tdb__list__label">{elementItem.label}</label>
-		  			  		{props.removeItem && <button className="tdb__button__base tdb__panel__button tdb__panel__button--green fa fa-minus"  name={elementItem.name} onClick={removeItem}></button>}
+		  			  		{props.removeItem && <button className="tdb__button__base tdb__panel__button tdb__panel__button--orange fa fa-minus"  name={elementItem.name} onClick={removeItem}></button>}
 		  			  </div>			  		
 		  		  </div>)
 		})}

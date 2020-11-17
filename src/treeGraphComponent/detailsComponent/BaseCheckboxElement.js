@@ -28,7 +28,7 @@ export const BaseCheckboxElement = (props) => {
 			 		 	<input  type="checkbox" onChange={onChange} checked={value || false}  onBlur={onBlur} {...disabled} onChange={onChange} name={props.name} className={props.inputClassName}></input>            
 	                 	<label className={props.labelClassName} htmlFor={props.name}>{props.title}</label>
 	                 </span>
-	                 <HelpComponent/>
+	                 <HelpComponent text={props.help}/>
                 </div>
             </div>
 

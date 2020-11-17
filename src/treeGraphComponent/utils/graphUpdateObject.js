@@ -19,15 +19,15 @@ export const graphUpdateObject=()=>{
 	const changeParentList=new Map()
 
 	const addParent=(currentNode,newNode,isChoiceClass)=>{
-		if(currentNode.type==='Group' ){
-			if(currentNode.name==="DocumentClasses"){
+		if(currentNode.type===CLASS_TYPE_NAME.SCHEMA_GROUP ){
+			if(currentNode.name===CLASS_TYPE_NAME.DOCUMENT_CLASSES){
 				newNode.parent=['Document']
 				newNode.parents=[]
-				newNode.type='Document'
+				newNode.type=CLASS_TYPE_NAME.DOCUMENT_CLASS
 			}else{
 				newNode.parent=[]
 				newNode.parents=[]
-				let nodeType='Class'
+				let nodeType=CLASS_TYPE_NAME.OBJECT_CLASS
 				if(isChoiceClass)nodeType=CLASS_TYPE_NAME.CHOICE_CLASS
 				newNode.type=nodeType
 			}

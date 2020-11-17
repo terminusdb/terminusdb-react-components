@@ -57,7 +57,7 @@ export const ChoiceList =(props)=> {
 		}
 	}
 
-	const title='Choices List';
+	const title='Choices';
 	const choiceTitle='Add a choice'
 	
 	return(<>
@@ -67,9 +67,9 @@ export const ChoiceList =(props)=> {
 		</div>
 		<div className="tdb__panel__box" >		   
 	   		<span className="tdb__panel__subtitle">New Choice</span>		  		
-  			<BaseInputElement itemError={idReqError} title="ID" name="id"  onBlur={onBlur} defaultValue={idValue}/>
-	  		<BaseInputElement title="Label" name="label"  onBlur={onBlur} defaultValue={labelValue}/>
-	  		<BaseInputElement title="Comment"  name="comment" onBlur={onBlur} defaultValue={commentValue}/>
+  			<BaseInputElement help="choice_id" itemError={idReqError} title="ID" name="id"  onBlur={onBlur} defaultValue={idValue}/>
+	  		<BaseInputElement help="choice_label" title="Label" name="label"  onBlur={onBlur} defaultValue={labelValue}/>
+	  		<BaseInputElement help="choice_comment" title="Comment"  name="comment" onBlur={onBlur} defaultValue={commentValue}/>
 	  		<button className="tdb__button__base tdb__button__base--green" onClick={addNewBox}>{choiceTitle}</button>  			  
 		</div>
 		</>

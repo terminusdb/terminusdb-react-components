@@ -1,6 +1,7 @@
 import React from 'react';
 import {BaseLabelsElementViewMode} from './BaseLabelsElementViewMode'
 import {GET_ICON_NAME,CARDINALITY_MIN_TITLE,CARDINALITY_MAX_TITLE,ELEMENT_BASE_CONST} from '../../../constants/details-labels';
+import { BiBorderNone } from 'react-icons/bi';
 
 export const BaseSchemaElementViewMode = (props)=>{
 
@@ -8,8 +9,8 @@ export const BaseSchemaElementViewMode = (props)=>{
 
 	const currentNodeJson = props.currentNodeJson || {}
 
-	const selectNode=()=>{
-		props.changeCurrentNode(currentNodeJson.range,true)
+	const selectNode=(elementName)=>{
+		props.changeCurrentNode(elementName,true)
 	}
 
 	const filterRangeValue=()=>{		
@@ -23,21 +24,26 @@ export const BaseSchemaElementViewMode = (props)=>{
 		return rangeStr;
 	}
 
+	if(props.idLink===true){
+		onClickEvent={onClick:selectNode}
+	}
+			
 	const rangeValue=currentNodeJson.range ? filterRangeValue() : ''
+
 
 	return(
 		<div className="tdb__panel__box tdb__panel__box--hideEmpty">		 
 			{currentNodeJson.abstract && <div className="tdb__panel__row">
-				<i className="tdb__panel__title__icon custom-img-history" title="Abstract Class"></i>
+				<BiBorderNone className="tdb__panel__title__icon" title="Abstract Class"/>
 			</div>}
 			
-			{currentNodeJson.id && <BaseLabelsElementViewMode label={ELEMENT_BASE_CONST.ID_TEXT} value={`scm:${currentNodeJson.id}`} />}
+			{currentNodeJson.id && <BaseLabelsElementViewMode name={currentNodeJson.name} {...onClickEvent} label={ELEMENT_BASE_CONST.ID_TEXT} value={`scm:${currentNodeJson.id}`} />}
 
 			{currentNodeJson.comment && <BaseLabelsElementViewMode label={ELEMENT_BASE_CONST.DESCRIPTION_TEXT} value={currentNodeJson.comment} />}			
 			{currentNodeJson.min && <BaseLabelsElementViewMode label={CARDINALITY_MIN_TITLE} value={currentNodeJson.min} />}
 			{currentNodeJson.max && <BaseLabelsElementViewMode label={CARDINALITY_MAX_TITLE} value={currentNodeJson.max} />}
 			{currentNodeJson.range && 
-				<BaseLabelsElementViewMode {...onClickEvent} label="Range Type" value={rangeValue} />
+				<BaseLabelsElementViewMode {...onClickEvent} name={currentNodeJson.range} label="Range Type" value={rangeValue} />
 			}				
 		</div>		
 	)
