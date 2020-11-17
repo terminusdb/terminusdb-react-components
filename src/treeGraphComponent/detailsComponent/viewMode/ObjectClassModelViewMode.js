@@ -7,6 +7,7 @@ import {ELEMENT_ICONS} from '../../../constants/details-labels'
 import {ListComponent} from'../ListComponent'
 import {GraphContextObj} from '../../hook/graphObjectContext'
 import {ConstraintsComponent} from '../ConstraintsComponent'
+import {RelationshipView} from '../../relationshipView/RelationshipView'
 
 export const ObjectClassModelViewMode = (props) => {
 
@@ -20,7 +21,7 @@ export const ObjectClassModelViewMode = (props) => {
 
 	const childrenArr=currentNodeJson.children || []
 
-	const hasConstraints = (childrenArr.length>0 || objPropsRelatedToClass.length >0) ? true : false; 
+	//const hasConstraints = (childrenArr.length>0 || objPropsRelatedToClass.length >0) ? true : false; 
 	
 
 	let id =currentNodeJson.id;
@@ -61,15 +62,12 @@ export const ObjectClassModelViewMode = (props) => {
 		  	 		</div>
 					<ParentsElementViewMode  id={props.id} title={'Parents'} />
 				</Fragment>}
-			{hasConstraints && 
-				<Fragment>
-					<div className="tdb__panel__title tdb__panel__title--prop">
-		  	 		   Relationships
-		  	 		</div>
-					<ConstraintsComponent/>
-				</Fragment>
-				
-			}
+			<Fragment>
+				<div className="tdb__panel__title tdb__panel__title--prop">
+	  	 		   Relationships
+	  	 		</div>
+				<ConstraintsComponent/>
+			</Fragment>		
 		</div>
 		</div>
 	)

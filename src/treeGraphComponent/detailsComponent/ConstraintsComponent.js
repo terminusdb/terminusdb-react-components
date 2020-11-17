@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import {PROPERTY_TYPE_NAME,PROPERTY_TYPE_LABEL} from '../utils/elementsName'
 import {GraphContextObj} from '../hook/graphObjectContext'
+import {RelationshipView} from '../relationshipView/RelationshipView'
+
  
 const constraintMessage={childrenNum:'This node has',
 						inRelationship:'This node is in this Relationship',
@@ -32,7 +34,7 @@ export const ConstraintsComponent =(props)=>{
     					</div>)
     	}
 //This node is connected to the Journey Document Type with the Property Bicycle Used
-    	if(objPropsRelatedToClass && objPropsRelatedToClass.length>0){
+    	/*if(objPropsRelatedToClass && objPropsRelatedToClass.length>0){
 
     		const complexMessage= objPropsRelatedToClass.map((complexPropertyObj,index)=>{
 
@@ -64,8 +66,9 @@ export const ConstraintsComponent =(props)=>{
     const message=getConstraintsMessage();
 
 	return(<>
-            <div className="tdb__panel__box">
-                {message}   
+            <div className="tdb__panel__box">    
+                <RelationshipView />  
+                {message}
             </div>
         </>
 	)
