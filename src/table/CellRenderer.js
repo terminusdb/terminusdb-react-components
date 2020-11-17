@@ -232,7 +232,7 @@ export const LiteralRenderer = ({value, column, row, cell, view, args, prefixes}
 
 export const StringRenderer = ({value, type, column, row, cell, view, args, prefixes})=>{
     let maxlen = (args && args.maxlen ? args.maxlen : 200)
-    let maxword = (args && args.maxword ? args.maxword : 20)
+    let maxword = (args && args.maxword ? args.maxword : 32)
     let txt = shortenedText(value, maxlen, maxword)
     let sf = (txt == value || args && args.full)
     let canTruncate = !(txt == value)
@@ -243,10 +243,10 @@ export const StringRenderer = ({value, type, column, row, cell, view, args, pref
     }
     return (<span>
         {showingFull && 
-            <span>{value} </span> 
+            <span title={"String Type: " + type}>{value} </span> 
         }
         {!showingFull && 
-            <span title={value}>{txt} </span>
+            <span title={"Type: " + type + ", Value: " + value}>{txt} </span>
         }
         {canTruncate && 
             <button onClick={toggleFull}> {(showingFull ? "less" : "more")} </button>
