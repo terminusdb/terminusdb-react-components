@@ -27,3 +27,6 @@ export {GraphObjectProvider} from './treeGraphComponent/hook/graphObjectContext'
  //export {FormatProps} from './treeGraphComponent/FormatDataForTree';
 export {SchemaBuilder} from './treeGraphComponent/SchemaBuilder';
 
+/*Frame Viewer */
+
+export {FrameViewer} from "./document/FrameViewer"
