@@ -33,6 +33,9 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 	*/
 	let _objectPropertyList=[];
 
+	/*
+	* {range:[propertyId001,propertyId002...]}
+	*/
 	let _objectPropertyToRange={};
 
 	let _rootIndexObj={}
@@ -347,13 +350,16 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 			_descendantsNode.delete(elementName);
 			
 			switch(classElement.type){
-				case 'Class':
-					removeElementToArr(_objectTypeList,elementName) //_classesList.delete(elementName);
+				case CLASS_TYPE_NAME.OBJECT_CLASS:
+					removeElementToArr(_objectTypeList,elementName)
+					removeElementToArr(_objectPropertyList,elementName) //_classesList.delete(elementName);
 					break;
-			    case 'Document':
+			    case CLASS_TYPE_NAME.DOCUMENT_CLASSES:
 			    	removeElementToArr(_documentTypeList,elementName)
+			    	removeElementToArr(_objectPropertyList,elementName)
 			    	break;
-			         //_entitiesList.delete(elementName);
+			    case CLASS_TYPE_NAME.CHOICE_CLASS:
+			    	removeElementToArr(_objectChoiceList,elementName)
 			}
 
 			_graphUpdateObject.removeNode(classElement)
