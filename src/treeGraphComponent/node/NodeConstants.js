@@ -3,14 +3,14 @@ import {CLASS_TYPE_NAME} from '../utils/elementsName'
 
 const getElementsStyle=()=>{
 	const elementsStyleTmp={}
-	elementsStyleTmp[CLASS_TYPE_NAME.DOCUMENT_CLASSES]={fillColor:"#ffb266",lineColor:"#ffb266",lineSize:2}
-	elementsStyleTmp[CLASS_TYPE_NAME.OBJECT_CLASSES] = {fillColor:"#96e997",lineColor:"#96e997",lineSize:2}
-	elementsStyleTmp[CLASS_TYPE_NAME.CHOICE_CLASSES] = {fillColor:"#a783c9",lineColor:"#a783c9",lineSize:2}
-	elementsStyleTmp[CLASS_TYPE_NAME.DOCUMENT_CLASS]={fillColor:"#ffb266",lineColor:"#ffb266",lineSize:2}
-	elementsStyleTmp[CLASS_TYPE_NAME.OBJECT_CLASS]= {fillColor:"#96e997",lineColor:"#96e997",lineSize:2}
+	elementsStyleTmp[CLASS_TYPE_NAME.DOCUMENT_CLASSES]={ fillColor:"#cccccc",lineColor:"#ffb266",lineSize:4}
+	elementsStyleTmp[CLASS_TYPE_NAME.OBJECT_CLASSES] = { fillColor:"#cccccc",lineColor:"#96e997",lineSize:4}
+	elementsStyleTmp[CLASS_TYPE_NAME.CHOICE_CLASSES] = {fillColor:"#cccccc",lineColor:"#a783c9",lineSize:4}
+	elementsStyleTmp[CLASS_TYPE_NAME.DOCUMENT_CLASS]={fillColor_ab:"#fcdbba", fillColor:"#ffb266",lineColor:"#ffb266",lineSize:2}
+	elementsStyleTmp[CLASS_TYPE_NAME.OBJECT_CLASS]= {fillColor_ab:"#bdf8be", fillColor:"#96e997",lineColor:"#96e997",lineSize:2}
 	elementsStyleTmp[CLASS_TYPE_NAME.CHOICE_CLASS] =  {fillColor:"#a783c9",lineColor:"#a783c9",lineSize:2}
 
-	elementsStyleTmp[CLASS_TYPE_NAME.SCHEMA_ROOT] ={fillColor:"#1eadfb",lineColor:"#1eadfb",lineSize:2}
+	elementsStyleTmp[CLASS_TYPE_NAME.SCHEMA_ROOT] ={fillColor:"#cccccc",lineColor:"#cccccc",lineSize:2}
 
 	return elementsStyleTmp;
 }

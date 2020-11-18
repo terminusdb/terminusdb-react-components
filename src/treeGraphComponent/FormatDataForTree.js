@@ -141,10 +141,10 @@ export const addObjectPropertyRangeItem=(objectPropertyRange,propertyElement,cla
 											
 }
 
-export const formatData =(dataProvider)=>{
-	let _rootIndexObj=getRootIndexObj();	
+export const formatData =(dataProvider,dbName)=>{
+	let _rootIndexObj=getRootIndexObj(dbName);	
 	_rootIndexObj.ROOT.children.push(_rootIndexObj[CLASS_TYPE_NAME.CHOICE_CLASSES]);
-	_rootIndexObj.ROOT.children.push(_rootIndexObj[CLASS_TYPE_NAME.OBJECT_CLASSES]);
+	_rootIndexObj.ROOT.children.push(_rootIndexObj[CLASS_TYPE_NAME.OBJECT_CLASSES]);	
 	_rootIndexObj.ROOT.children.push(_rootIndexObj[CLASS_TYPE_NAME.DOCUMENT_CLASSES]);
 	                             
 	addElements(_rootIndexObj,dataProvider)
@@ -183,6 +183,7 @@ export const formatDataForTreeChart =(rootElement)=>{
 	const objectPropertyList=[];
 	const objectChoiceList=[];
 
+
 	//this._descendantsNode=new Map();
     for(let node of treeNode){
        /*if(node.data.type==='Group' && node.x && Math.abs(node.x)<200){
@@ -198,9 +199,10 @@ export const formatDataForTreeChart =(rootElement)=>{
 	       		objectPropertyList.push({type:node.data.type,value:node.data.name,name:node.data.name,label:node.data.label})
 	       }else if (node.data.type===CLASS_TYPE_NAME.CHOICE_CLASS){
 	       		objectChoiceList.push({value:node.data.name,name:node.data.name,label:node.data.label});
-	       }
-	       descendantsNode.set(node.data.name,node); 	       
-	   }	      
+	       }	        	       
+	   	
+	   }
+	   descendantsNode.set(node.data.name,node);      
     }
 
     return [descendantsNode,objectTypeList,documentTypeList,objectPropertyList,objectChoiceList];

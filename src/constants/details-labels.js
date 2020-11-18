@@ -1,4 +1,4 @@
-export const TOOLBAR_LABELS={"ResetButtonTooltip":"Reset from start",
+export const TOOLBAR_LABELS={"ResetButtonTooltip":"Reset the schema to the last save",
 	                            "UndoButtonTooltip":"Undo",
 	                            "RedoButtonTooltip":"Redo",
 	                            "SaveButtonTooltip" : "Save ",
@@ -220,7 +220,7 @@ export const ELEMENT_ICONS ={
 export const ELEMENT_DESCRIPTIONS ={
 	'Document':'Document types are top level objects which are only ever linked to',
 	'Object':'Object types are structure types that can appear inside documents',
-    'ChoiceClass':'Choice Types or Enumerated Types are sets of possible choices',
+    'ChoiceClass':'Enum Types or Enumerated Types are sets of possible choices',
     'Properties':'Objects have properties with values to represent their state'
 }
 
@@ -229,9 +229,9 @@ export const ELEMENT_HELP = {
     'class_id': "A unique ID for the element - cannot contain spaces",
     'class_label': "A short name for the element",
     'class_comment': "A textual description of the element - what does it represent",
-    'choice_id': "A unique ID for the choice - cannot contain spaces - normally lowercase",
-    'choice_label': "A short name for the choice - as it will appear in choice lists",
-    'choice_comment': "A description of the choice - what does it represent",
+    'choice_id': "A unique ID for the enum - cannot contain spaces - normally lowercase",
+    'choice_label': "A short name for the enum - as it will appear in enum lists",
+    'choice_comment': "A description of the enum - what does it represent",
     'property_id': "A unique ID for the propercase - cannot contain spaces - normally starts with a lowercase letter",
     'property_label': "A short name for the property - as it will appear in user interface elements",
     'property_comment': "A description of the property - what does it represent",

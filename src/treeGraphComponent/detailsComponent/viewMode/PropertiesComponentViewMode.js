@@ -10,7 +10,7 @@ export const PropertiesComponentViewMode =(props)=> {
 	const getPropertiesPanels=()=>{
 		return dataProvider.map((propertyItem,index)=>{
 
-			const title=propertyItem.label;
+			const title=propertyItem.label || propertyItem.id;
 
 			//const leftIconClassName=CONST.GET_ICON_NAME[propertyItem.type];
 			const leftIconClassName=GET_ICON_NAME[propertyItem.type] || "custom-img-string"
@@ -20,7 +20,8 @@ export const PropertiesComponentViewMode =(props)=> {
 					   arrowCloseClassName = "accordion__arrow fa fa-caret-down"
 					   title={title}
 					   leftIconClassName={leftIconClassName}
-					   tooltip={propertyItem.type || ''}>
+					   tooltip={propertyItem.type || ''}
+					   key={`view__${propertyItem.id}`}>
 
 					  <BaseSchemaElementViewMode changeCurrentNode={props.changeCurrentNode} currentNodeJson={propertyItem} />
 					</Accordion>)

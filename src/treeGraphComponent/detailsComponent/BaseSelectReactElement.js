@@ -20,10 +20,10 @@ export const BaseSelectReactElement=(props)=>{
     }
 
     useEffect(() => {
-    	const defVal=props.defaultValue || {}
-        if(selectedOption && defVal.value!==selectedOption.value){
-        	setSelectedOption(defVal)
-        }
+    	const defVal=props.defaultValue
+      if(selectedOption && defVal.value!==selectedOption.value){
+        setSelectedOption(props.defaultValue)
+      }
        
     },[props.defaultValue])
 

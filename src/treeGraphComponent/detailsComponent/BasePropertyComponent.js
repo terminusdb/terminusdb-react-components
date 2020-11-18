@@ -11,7 +11,7 @@ import {BaseInputElement} from './BaseInputElement';
 export const BasePropertyComponent = (props)=> {
 
 		const currentNodeJson=props.currentNodeJson || {}
-		let title=`${currentNodeJson.label || ''}`
+		let title=currentNodeJson.label || currentNodeJson.id
 		const viewBaseSchema=props.viewBaseSchema===false ? false : true;
 		const showAllButton=props.showAllButton || {};
 		const leftIconClassName=GET_ICON_NAME[currentNodeJson.type] || "custom-img-string"

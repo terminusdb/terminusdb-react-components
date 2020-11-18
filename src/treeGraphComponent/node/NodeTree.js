@@ -48,6 +48,10 @@ export const NodeTree=(props)=> {
 		let lineSize=elemStyle.lineSize || 2;
 		let lineColor=elemStyle.lineColor || '#1eadfb';	
 
+		if(node.data.abstract===true){
+			fillColor=elemStyle.fillColor_ab
+		}
+
 		if(props.isSelected){
   			lineSize=4;
   			lineColor='#696969';
@@ -82,7 +86,29 @@ export const NodeTree=(props)=> {
 				        </title>				         
 				        </circle>)
 			case CLASS_TYPE_NAME.CHOICE_CLASS:
-				return (<circle 
+				return (<polygon 
+							points="0,-60  52,-30  52,30 0,60 -52, 30 -52,-30" 
+							fill={fillColor}
+					        stroke={lineColor}
+					        strokeWidth={lineSize}
+					        cursor={'pointer'}
+					        onClick={props.onClick}>
+				         <title>
+			        	{comment}
+				        </title>				         
+				        </polygon>
+
+					  )
+			default:
+			   return <ellipse rx="100" ry="50" fill={fillColor}
+						          stroke={lineColor}
+						          strokeWidth={lineSize}
+				  				  onClick={props.onClick}/>
+		}
+	}
+
+	/*
+	  <circle 
 				          markerEnd={props.isSelected ? 'url(#nodeTreeList)' : '' }
 				          r={width/2}		         
 				          fill={fillColor}
@@ -93,16 +119,7 @@ export const NodeTree=(props)=> {
 			             <title>
 			        	{comment}
 				        </title>				         
-				        </circle>)
-			default:
-			   return <ellipse rx="100" ry="50" fill={fillColor}
-						          stroke={lineColor}
-						          strokeWidth={lineSize}
-				  				  onClick={props.onClick}/>
-		}
-	}
-
-			
+				        </circle>*/		
 	const nodex=props.nodex
 	const nodey=props.nodey
 

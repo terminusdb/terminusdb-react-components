@@ -41,7 +41,7 @@ export const ObjectClassModelViewMode = (props) => {
 			<BaseSchemaElementViewMode  currentNodeJson={currentNodeJson}  />
 			{currentNodeJson.type===CLASS_TYPE_NAME.CHOICE_CLASS && 
 			  <Fragment>
-			  <span className="tdb__panel__title tdb__panel__title--parent">Choices List</span>
+			  <span className="tdb__panel__title tdb__panel__title--parent">Values</span>
 			  <div className="tdb__panel__box"> 
 			  	<ListComponent dataProvider={currentNodeJson.choices} />		 
 			  </div>

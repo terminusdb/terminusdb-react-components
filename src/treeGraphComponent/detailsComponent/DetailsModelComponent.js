@@ -30,15 +30,22 @@ export const DetailsModelComponent = (props)=>{
 	const getTabs=()=>{
 		const tabsArr=[]
 		tabsArr.push({title:title,
-	             getContent: () =><BaseElement elementId={nodeData.name} elementType={nodeData.type} removeElement={props.removeElement} showCardinality={false} hasConstraints={hasConstraints} nodeJsonData={nodeData} updateValue={props.updateValue}/>
-						 	 	,				    
-						    	key: 1,
-						    	tabClassName: 'tab',
-						    	panelClassName: 'tdb__panel'
+	             getContent: () =><BaseElement key={`base__${nodeData.name}`}
+	    							removeElement={props.removeElement} 
+	    							showCardinality={false} 
+	    							hasConstraints={hasConstraints} 
+	    							nodeJsonData={nodeData} 
+	    							updateValue={props.updateValue}/>
+							 	 	,				    
+							    	key: 1,
+							    	tabClassName: 'tab',
+							    	panelClassName: 'tdb__panel'
 							})
 		if(nodeData.type==='ChoiceClass'){
-			tabsArr.push({title:'Choices',
-	             getContent: () =><ChoiceList updateChoiseList={props.updateChoices} choices={nodeData.choices} />
+			tabsArr.push({title:'Values',
+	             getContent: () =><ChoiceList key={`choice__${nodeData.name}`}
+	             					updateChoiseList={props.updateChoices} 
+	             					choices={nodeData.choices} />
 	             				  ,				    
 						    	key: 2,
 						    	tabClassName: 'tab',
@@ -46,16 +53,16 @@ export const DetailsModelComponent = (props)=>{
 							})
 		}else if(nodeData.type!=='ChoiceClass'){
 			tabsArr.push({title:'Properties',
-	            getContent: () =><PropertiesComponent />,
-						    	key: 2,
-						    	tabClassName: 'tab',
-						    	panelClassName: 'tdb__panel'})
+	            getContent: () =><PropertiesComponent key={`properties__${nodeData.name}`}/>,
+							    	key: 2,
+							    	tabClassName: 'tab',
+							    	panelClassName: 'tdb__panel'})
 		}
 		tabsArr.push({title:'Relationships',
 	            getContent: () =><Fragment>
-	         						<ConstraintsComponent/>
+	         						<ConstraintsComponent key={`const__${nodeData.name}`}/>
 	         						{nodeData.type!=='ChoiceClass' &&
-	         							<ParentsFilter/>
+	         							<ParentsFilter key={`parent__${nodeData.name}`}/>
 	         				  		}
          				  		</Fragment>
          				  	,

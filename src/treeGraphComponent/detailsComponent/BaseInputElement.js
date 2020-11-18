@@ -9,7 +9,7 @@ export const BaseInputElement = (props) => {
 
 	useEffect(() => {
         if(props.defaultValue!==value){
-          	setInputValue(props.defaultValue)
+        	setInputValue(props.defaultValue)
         }
        
     },[props.defaultValue])

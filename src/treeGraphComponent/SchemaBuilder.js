@@ -92,7 +92,7 @@ export const SchemaBuilder = (props)=>{
 		        </SizeMe>
 		    </div>
 		    {showInfoComp && selectedNodeObject.type!==CLASS_TYPE_NAME.SCHEMA_GROUP &&
-		    	<InfoBoxComponent/>
+		    	<InfoBoxComponent dbName={props.dbName}/>
 		    }
 		    {showInfoComp && selectedNodeObject.type===CLASS_TYPE_NAME.SCHEMA_GROUP &&
 		    	<InfoObjectComponent panelType={selectedNodeObject.name}/>

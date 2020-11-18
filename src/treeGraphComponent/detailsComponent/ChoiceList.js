@@ -57,8 +57,8 @@ export const ChoiceList =(props)=> {
 		}
 	}
 
-	const title='Choices';
-	const choiceTitle='Add a choice'
+	const title='Values';
+	const choiceTitle='Add a value'
 	
 	return(<>
 		<div className="tdb__panel__box"> 
@@ -66,7 +66,7 @@ export const ChoiceList =(props)=> {
 		  <ListComponent dataProvider={choicesList} removeItem={removeChoice} />		 
 		</div>
 		<div className="tdb__panel__box" >		   
-	   		<span className="tdb__panel__subtitle">New Choice</span>		  		
+	   		<span className="tdb__panel__subtitle">New Value</span>		  		
   			<BaseInputElement help="choice_id" itemError={idReqError} title="ID" name="id"  onBlur={onBlur} defaultValue={idValue}/>
 	  		<BaseInputElement help="choice_label" title="Label" name="label"  onBlur={onBlur} defaultValue={labelValue}/>
 	  		<BaseInputElement help="choice_comment" title="Comment"  name="comment" onBlur={onBlur} defaultValue={commentValue}/>

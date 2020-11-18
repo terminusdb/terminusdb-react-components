@@ -10,13 +10,11 @@ export const BaseCheckboxElement = (props) => {
         	setInputValue(props.defaultValue)
         }
     },[props.defaultValue])
-	
-	const onBlur = (evt)=>{
-		if(typeof props.onBlur ==='function')props.onBlur(props.name,value);
-	}
 
 	const onChange = (evt) =>{
-		setInputValue(evt.currentTarget.checked)
+		const checked = evt.currentTarget.checked
+		setInputValue(checked)
+		if(typeof props.onBlur ==='function')props.onBlur(props.name,checked);
 	}
 
 	const disabled= props.disabled === true ? {disabled:true} : {}
@@ -25,7 +23,7 @@ export const BaseCheckboxElement = (props) => {
 			<div className={props.groupClassName}>
 			 	<div className="tdb__form__help">
 			 		 <span className="tdb__form__span">
-			 		 	<input  type="checkbox" onChange={onChange} checked={value || false}  onBlur={onBlur} {...disabled} onChange={onChange} name={props.name} className={props.inputClassName}></input>            
+			 		 	<input  type="checkbox" onChange={onChange} checked={value || false}  {...disabled} onChange={onChange} name={props.name} className={props.inputClassName}></input>            
 	                 	<label className={props.labelClassName} htmlFor={props.name}>{props.title}</label>
 	                 </span>
 	                 <HelpComponent text={props.help}/>

@@ -17,7 +17,7 @@ export const BaseElement = (props)=>{
 
     const changeElement=(name,value)=>{
         if(name==="id"){
-
+            value.trim();
             if(value.indexOf(" ")>-1){
                 setIndexError("Please remove all the white space");
                 return;
