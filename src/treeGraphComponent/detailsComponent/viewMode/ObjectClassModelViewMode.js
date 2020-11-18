@@ -31,7 +31,7 @@ export const ObjectClassModelViewMode = (props) => {
 	//const members=currentNodeJson.members || {};	
 	//const addRelationship = currentNodeJson.type==="Relationship" ? true : false;
 
-	return(<div className="RRT__container" >
+	return(<div className="RRT__container RRT__container--viewmode" >
 			<div className="tdb__panel__title">
 	  	 		<i className={`tdb__panel__title__icon ${imageType}`}>
 	  	 		</i>
