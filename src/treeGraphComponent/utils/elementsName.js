@@ -45,12 +45,12 @@ export const CLASS_TYPE_NAME={
 export const CLASS_TYPE_NAME_LABEL={
 	SCHEMA_ROOT:'Type Hierarchy',
 	SCHEMA_GROUP: 'Group',
-  	OBJECT_CLASS:'Object',
-  	CHOICE_CLASS:"Choice",
-  	DOCUMENT_CLASS:"Document",
-  	DOCUMENT_CLASSES:"Document Type",
-  	OBJECT_CLASSES:"Object Type",
-  	CHOICE_CLASSES:"Choice Type"
+  	OBJECT_CLASS:'Object Type',
+  	CHOICE_CLASS:"Choice Type",
+  	DOCUMENT_CLASS:"Document Type",
+  	DOCUMENT_CLASSES:"Document Types",
+  	OBJECT_CLASSES:"Object Types",
+  	CHOICE_CLASSES:"Choice Types"
 }
 
 export const getRootIndexObj=()=>{
@@ -66,21 +66,21 @@ export const getRootIndexObj=()=>{
 	_rootIndexObj[CLASS_TYPE_NAME.DOCUMENT_CLASSES]={name:CLASS_TYPE_NAME.DOCUMENT_CLASSES, 
 												parents:[],
 		                             			type:CLASS_TYPE_NAME.SCHEMA_GROUP,
-		                             			label:CLASS_TYPE_NAME_LABEL.DOCUMENT_CLASSES + "s",
+		                             			label:CLASS_TYPE_NAME_LABEL.DOCUMENT_CLASSES ,
 		                             			children:[],
 		                             			comment:CLASS_TYPE_NAME_LABEL.DOCUMENT_CLASSES}
 
 	_rootIndexObj[CLASS_TYPE_NAME.OBJECT_CLASSES]={name:CLASS_TYPE_NAME.OBJECT_CLASSES, 
 												parents:[],
 		                             			type:CLASS_TYPE_NAME.SCHEMA_GROUP,
-		                             			label:CLASS_TYPE_NAME_LABEL.OBJECT_CLASSES + "s",
+		                             			label:CLASS_TYPE_NAME_LABEL.OBJECT_CLASSES,
 		                             			children:[],
 		                             			comment:CLASS_TYPE_NAME_LABEL.OBJECT_CLASSES}
 	
 	_rootIndexObj[CLASS_TYPE_NAME.CHOICE_CLASSES]={name:CLASS_TYPE_NAME.CHOICE_CLASSES, 
 												parents:[],
 		                             			type:CLASS_TYPE_NAME.SCHEMA_GROUP,
-		                             			label:CLASS_TYPE_NAME_LABEL.CHOICE_CLASSES + "s",
+		                             			label:CLASS_TYPE_NAME_LABEL.CHOICE_CLASSES ,
 		                             			children:[],
 		                             			comment:CLASS_TYPE_NAME_LABEL.CHOICE_CLASSES}	
 	return _rootIndexObj	                             			  

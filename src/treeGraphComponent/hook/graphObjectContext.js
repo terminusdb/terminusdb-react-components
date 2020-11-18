@@ -1,5 +1,6 @@
 import React, {useState,useEffect,useContext} from "react";
 import {MainGraphObject} from "../MainGraphObject"
+import {CLASS_TYPE_NAME} from "../utils/elementsName"
 
 export const GraphContext = React.createContext()
 export const GraphContextObj = () => useContext(GraphContext)
@@ -86,8 +87,9 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 	
 	const removeElement=(elementId,elementType)=>{
 		switch(elementType){
-			case 'Document':
-			case 'Class':
+			case CLASS_TYPE_NAME.OBJECT_CLASS:
+			case CLASS_TYPE_NAME.DOCUMENT_CLASS:
+			case CLASS_TYPE_NAME.CHOICE_CLASS:
 				mainGraphObj.removeElementInMainGraph(selectedNodeObject.name);
 				resetSelection()
 				break;

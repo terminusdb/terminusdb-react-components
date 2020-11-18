@@ -67,7 +67,8 @@ export const ConstraintsComponent =(props)=>{
 
 	return(<>
             <div className="tdb__panel__box">    
-                <RelationshipView />  
+                <RelationshipView
+                 />  
                 {message}
             </div>
         </>
