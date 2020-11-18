@@ -118,7 +118,9 @@ export const formatProperties=(dataProvider,restrDataProvider,_rootIndexObj)=>{
 	return [propertyByDomain,objectPropertyRange,propertiesList];
 }
 
-
+/*
+* to be review of don't get the label change
+*/
 export const addObjectPropertyRangeItem=(objectPropertyRange,propertyElement,classDomain,previewRange=undefined)=>{
 	/*
 	* remove the relation
@@ -135,11 +137,8 @@ export const addObjectPropertyRangeItem=(objectPropertyRange,propertyElement,cla
 	if(!objectPropertyRange[propertyElement.range]){
 		 objectPropertyRange[propertyElement.range]=[]
 	}
-	objectPropertyRange[propertyElement.range].push({classDomainType:classDomain.type, 
-											classDomainLabel:classDomain.label,
-											label:propertyElement.label, 
-											name:propertyElement.name,
-											type:propertyElement.type})
+	objectPropertyRange[propertyElement.range].push(propertyElement)
+											
 }
 
 export const formatData =(dataProvider)=>{
@@ -191,10 +190,10 @@ export const formatDataForTreeChart =(rootElement)=>{
        		//node.y=node.y/1.5;
        }*/
        if(!descendantsNode.has(node.data.name)){
-	       if(node.data.type==='Document'){
+	       if(node.data.type===CLASS_TYPE_NAME.DOCUMENT_CLASS){
 	       		documentTypeList.push(node.data.name);
 	      		objectPropertyList.push({type:node.data.type,value:node.data.name,name:node.data.name,label:node.data.label})
-	       }else if (node.data.type==='Class'){
+	       }else if (node.data.type===CLASS_TYPE_NAME.OBJECT_CLASS){
 	       		objectTypeList.push(node.data.name);
 	       		objectPropertyList.push({type:node.data.type,value:node.data.name,name:node.data.name,label:node.data.label})
 	       }else if (node.data.type===CLASS_TYPE_NAME.CHOICE_CLASS){
@@ -259,7 +258,6 @@ const checkOrdinaryClassType=(classElement,item,_rootIndexObj)=>{
 }
 
 	
-//_rootIndexObj.OrdinaryClasses,_rootIndexObj.DocumentClasses
 const addElements=( _rootIndexObj, dataProvider=[])=>{
 
 	//const _rootIndexObj={}
@@ -278,7 +276,6 @@ const addElements=( _rootIndexObj, dataProvider=[])=>{
 			_rootIndexObj[classId]['children']=[];
 			_rootIndexObj[classId]['parents']=[];
 			_rootIndexObj[classId]['name']=classId;
-			_rootIndexObj[classId]['hasConstraints']=false;
 			_rootIndexObj[classId]['id']=getId(classId);	
 		}
 
@@ -315,7 +312,7 @@ const addElements=( _rootIndexObj, dataProvider=[])=>{
 						if(!_rootIndexObj[classId]['type']){
 							_rootIndexObj[classId]['type']=_rootIndexObj[parentId].type;
 						}
-						if(_rootIndexObj[parentId].type==='Class'){
+						if(_rootIndexObj[parentId].type===CLASS_TYPE_NAME.OBJECT_CLASS){
 							isObjectParent=true;
 						}
 					}
@@ -347,8 +344,8 @@ const addElements=( _rootIndexObj, dataProvider=[])=>{
 						/*
 						* if exist I remove it from document group
 						*/
-						if(_rootIndexObj[childId].type==='Document' && _rootIndexObj[classId].type==='Document'){
-							removeElementToArr(_rootIndexObj['DocumentClasses'].children,childId);						 
+						if(_rootIndexObj[childId].type===CLASS_TYPE_NAME.DOCUMENT_CLASS && _rootIndexObj[classId].type===CLASS_TYPE_NAME.DOCUMENT_CLASS){
+							removeElementToArr(_rootIndexObj[CLASS_TYPE_NAME.DOCUMENT_CLASSES].children,childId);						 
 						}
 						
 						/*
@@ -356,7 +353,7 @@ const addElements=( _rootIndexObj, dataProvider=[])=>{
 						* if child_type id undefined or object type
 						*/
 					
-						if(_rootIndexObj[classId].type && _rootIndexObj[childId].type!=='Document'){
+						if(_rootIndexObj[classId].type && _rootIndexObj[childId].type!==CLASS_TYPE_NAME.DOCUMENT_CLASS){
 							_rootIndexObj[childId]['type']=_rootIndexObj[classId].type;
 							
 							/*
@@ -391,24 +388,28 @@ function checkChildrenType(childrenElements,parentType){
 *Document Class type can inherit from Ordinary Classes and Entity Classes
 */
 
-export const availableParentsList = (classObj,classesMap,documentMap,_rootIndexObj)=>{
+export const availableParentsList = (classObj,objectTypeList,documentTypeList,_rootIndexObj)=>{
 	const resultListObject={};
 	resultListObject['documentClassArr']=[]	
-	resultListObject['objectClassArr']=removeRelatedElements(classObj,classesMap,_rootIndexObj);
-	if(classObj.type==="Document")
-		resultListObject['documentClassArr']=removeRelatedElements(classObj,documentMap,_rootIndexObj);
+	resultListObject['objectClassArr']=removeRelatedElements(classObj,objectTypeList,_rootIndexObj);
+	if(classObj.type===CLASS_TYPE_NAME.DOCUMENT_CLASS)
+		resultListObject['documentClassArr']=removeRelatedElements(classObj,documentTypeList,_rootIndexObj);
 	return resultListObject;
 }
 
 const removeRelatedElements=(classObj,classesMap,_rootIndexObj)=>{
-	if(classesMap.size===0)return [];
+	if(classesMap.length===0)return [];
 
 	const objectClassMap=classesMap.slice()
 
 	removeElementToArr(objectClassMap,classObj.name);
 	
-	removeRelatedChildren(classObj.children,objectClassMap);
-	removeRelatedParent(classObj.parents,objectClassMap,_rootIndexObj)
+	if(classObj.children && classObj.children.length>0){
+		removeRelatedChildren(classObj.children,objectClassMap);
+	}
+	
+	if(classObj.parents && classObj.parents.length>0)
+		removeRelatedParent(classObj.parents,objectClassMap,_rootIndexObj)
 
 	const classList=[]
 
@@ -451,8 +452,3 @@ const removeRelatedChildren=(childrenList,classList)=>{
 		removeRelatedChildren(childObj.children,classList)
 	})
 }
-
-
-export const rootObjectName={ROOT:true,
-	                  OrdinaryClassesGroup:true,
-	                  DocumentClasses:true}

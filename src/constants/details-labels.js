@@ -100,7 +100,7 @@ export const CLASS_PROPERTIES_LIST=[{label:'Choice Property', id:'ChoiceProperty
 		    					   {label:'String Property', id:'StringProperty',defaultRange:'xsd:string'},
 		    					   {label:'Geo Property', id:'GeoProperty',defaultRange:'xsd:string'},
 		    					   {label:'Temporal Property', id:'TemporalProperty',defaultRange:'xsd:dateTime'},
-		    					   {label:'Object Property', id:'ObjectProperty',defaultRange:''}]
+		    					   {label:'Link Property', id:'LinkProperty',defaultRange:''}]
 
 
 export const GET_ICON_NAME={StringProperty:'custom-img-string',
@@ -108,7 +108,7 @@ export const GET_ICON_NAME={StringProperty:'custom-img-string',
 							ChoiceProperty:'custom-img-choice',
 							GeoProperty:'custom-img_map',
 							TemporalProperty:'custom-img-temporal',
-							ObjectProperty:'custom-img-classes'}
+							LinkProperty:'custom-img-classes'}
 
 
 export const UNITS_ELEMENT_ID='units';
@@ -210,14 +210,16 @@ export const mainGraphDescriptionText=`Shows the type inheritance hierarchy of t
 
 export const ELEMENT_ICONS ={
 	'Document':'custom-img-entities',
-	'Class':'custom-img-classes',
+	'DocumentClasses':'custom-img-entities',
+	'Object':'custom-img-classes',
+	'ObjectClasses':'custom-img-classes',
 	'ChoiceClass':'custom-img-choice',
-	'Relationship':'custom-img-relationship'
+	'ChoiceClasses':'custom-img-choice'
 }
 
 export const ELEMENT_DESCRIPTIONS ={
 	'Document':'Document types are top level objects which are only ever linked to',
-	'Class':'Object types are structure types that can appear inside documents',
+	'Object':'Object types are structure types that can appear inside documents',
     'ChoiceClass':'Choice Types or Enumerated Types are sets of possible choices',
     'Properties':'Objects have properties with values to represent their state'
 }

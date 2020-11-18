@@ -4,29 +4,53 @@ export const PROPERTY_TYPE_NAME={
 	CHOICE_PROPERTY:'ChoiceProperty',
 	GEO_PROPERTY:'GeoProperty',
 	TEMPORAL_PROPERTY:'TemporalProperty',
-	OBJECT_PROPERTY:'ObjectProperty'
+	OBJECT_PROPERTY:'LinkProperty'
+}
+
+export const getLabelByName=(elementName)=>{
+	switch(elementName){
+		case CLASS_TYPE_NAME.DOCUMENT_CLASS:
+			return CLASS_TYPE_NAME_LABEL.DOCUMENT_CLASS
+		case CLASS_TYPE_NAME.OBJECT_CLASS:
+			return CLASS_TYPE_NAME_LABEL.OBJECT_CLASS
+		case CLASS_TYPE_NAME.CHOICE_CLASS:
+			return CLASS_TYPE_NAME_LABEL.CHOICE_CLASS
+		case CLASS_TYPE_NAME.OBJECT_CLASSES:
+			return CLASS_TYPE_NAME_LABEL.OBJECT_CLASSES
+		case CLASS_TYPE_NAME.DOCUMENT_CLASSES:
+			return CLASS_TYPE_NAME_LABEL.DOCUMENT_CLASSES
+	}
+}
+
+export const PROPERTY_TYPE_LABEL={
+	STRING_PROPERTY:'String Property',
+	NUMERIC_PROPERTY:'Numeric Property',
+	CHOICE_PROPERTY:'Choice Property',
+	GEO_PROPERTY:'Geo Property',
+	TEMPORAL_PROPERTY:'Temporal Property',
+	OBJECT_PROPERTY:'Link Property'
 }
 
 export const CLASS_TYPE_NAME={
 	SCHEMA_ROOT: 'ROOT',
 	SCHEMA_GROUP: 'Group',
-  	OBJECT_CLASS:'Class',
+  	OBJECT_CLASS:'Object',
   	CHOICE_CLASS:"ChoiceClass",
   	DOCUMENT_CLASS:"Document",
   	DOCUMENT_CLASSES:"DocumentClasses",
-  	OBJECT_CLASSES:"OrdinaryClasses",
+  	OBJECT_CLASSES:"ObjectClasses",
   	CHOICE_CLASSES:"ChoiceClasses"
 }
 
 export const CLASS_TYPE_NAME_LABEL={
 	SCHEMA_ROOT:'Type Hierarchy',
 	SCHEMA_GROUP: 'Group',
-  	OBJECT_CLASS:'Object',
-  	CHOICE_CLASS:"Choice",
-  	DOCUMENT_CLASS:"Document",
-  	DOCUMENT_CLASSES:"Document Type",
-  	OBJECT_CLASSES:"Object Type",
-  	CHOICE_CLASSES:"Choice Type"
+  	OBJECT_CLASS:'Object Type',
+  	CHOICE_CLASS:"Choice Type",
+  	DOCUMENT_CLASS:"Document Type",
+  	DOCUMENT_CLASSES:"Document Types",
+  	OBJECT_CLASSES:"Object Types",
+  	CHOICE_CLASSES:"Choice Types"
 }
 
 export const getRootIndexObj=()=>{
@@ -42,21 +66,21 @@ export const getRootIndexObj=()=>{
 	_rootIndexObj[CLASS_TYPE_NAME.DOCUMENT_CLASSES]={name:CLASS_TYPE_NAME.DOCUMENT_CLASSES, 
 												parents:[],
 		                             			type:CLASS_TYPE_NAME.SCHEMA_GROUP,
-		                             			label:CLASS_TYPE_NAME_LABEL.DOCUMENT_CLASSES + "s",
+		                             			label:CLASS_TYPE_NAME_LABEL.DOCUMENT_CLASSES ,
 		                             			children:[],
 		                             			comment:CLASS_TYPE_NAME_LABEL.DOCUMENT_CLASSES}
 
 	_rootIndexObj[CLASS_TYPE_NAME.OBJECT_CLASSES]={name:CLASS_TYPE_NAME.OBJECT_CLASSES, 
 												parents:[],
 		                             			type:CLASS_TYPE_NAME.SCHEMA_GROUP,
-		                             			label:CLASS_TYPE_NAME_LABEL.OBJECT_CLASSES + "s",
+		                             			label:CLASS_TYPE_NAME_LABEL.OBJECT_CLASSES,
 		                             			children:[],
 		                             			comment:CLASS_TYPE_NAME_LABEL.OBJECT_CLASSES}
 	
 	_rootIndexObj[CLASS_TYPE_NAME.CHOICE_CLASSES]={name:CLASS_TYPE_NAME.CHOICE_CLASSES, 
 												parents:[],
 		                             			type:CLASS_TYPE_NAME.SCHEMA_GROUP,
-		                             			label:CLASS_TYPE_NAME_LABEL.CHOICE_CLASSES + "s",
+		                             			label:CLASS_TYPE_NAME_LABEL.CHOICE_CLASSES ,
 		                             			children:[],
 		                             			comment:CLASS_TYPE_NAME_LABEL.CHOICE_CLASSES}	
 	return _rootIndexObj	                             			  

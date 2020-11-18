@@ -49,10 +49,19 @@
       font-size: 1.4em;
   }
 
+   &__label{
+      padding:10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 200px;
+    }
+
   &__bar{
-    background: #eee;
+    background: #f4f4f4;
     justify-content: flex-end;
-    display:flex;
+    display: flex;
+    border-bottom: 1px solid #ddd;
   }
 
   &__box{
@@ -77,6 +86,7 @@
     font-size: 22px;
     background: transparent;
     border: 0px;
+    padding:10px;
     margin-left: auto;
     color: #565656;
 
@@ -93,6 +103,10 @@
 
     &--green{
        color:#00C08B;
+    }
+
+    &--orange{
+      color:#ff8000;
     }
 
     &--selected{
@@ -142,6 +156,7 @@
     
   }
 
+
   &__icon__trash{
     padding: 5px; 
     font-size: 2em;
@@ -186,6 +201,10 @@
 
     &__label{
       padding:10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 200px;
     }
 
     &__body{

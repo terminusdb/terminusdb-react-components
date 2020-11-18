@@ -9,6 +9,7 @@ import {ParentsFilter} from './ParentsFilter';
 import {PropertiesComponent} from './PropertiesComponent';
 import {ELEMENT_ICONS} from '../../constants/details-labels';
 import {ChoiceList} from './ChoiceList';
+import {getLabelByName} from '../utils/elementsName'
 
 export const DetailsModelComponent = (props)=>{
 	
@@ -19,6 +20,8 @@ export const DetailsModelComponent = (props)=>{
 	const childrenArr = nodeData.children || []
 	const hasConstraints = (childrenArr.length>0 || objPropsRelatedToClass.length >0) ? true : false; 
 	const imageType=ELEMENT_ICONS[nodeData.type]
+	const title=getLabelByName(nodeData.type);
+
 
 	useEffect(() => {
         setTabKey(1)
@@ -26,7 +29,7 @@ export const DetailsModelComponent = (props)=>{
 
 	const getTabs=()=>{
 		const tabsArr=[]
-		tabsArr.push({title:'Class',
+		tabsArr.push({title:title,
 	             getContent: () =><BaseElement elementId={nodeData.name} elementType={nodeData.type} removeElement={props.removeElement} showCardinality={false} hasConstraints={hasConstraints} nodeJsonData={nodeData} updateValue={props.updateValue}/>
 						 	 	,				    
 						    	key: 1,
@@ -48,9 +51,9 @@ export const DetailsModelComponent = (props)=>{
 						    	tabClassName: 'tab',
 						    	panelClassName: 'tdb__panel'})
 		}
-		tabsArr.push({title:'Relationship',
+		tabsArr.push({title:'Relationships',
 	            getContent: () =><Fragment>
-	         						<ConstraintsComponent objectPropertyList={props.objectPropertyList} nodeJsonData={nodeData} objPropsRelatedToClass={props.objPropsRelatedToClass}/>
+	         						<ConstraintsComponent/>
 	         						{nodeData.type!=='ChoiceClass' &&
 	         							<ParentsFilter/>
 	         				  		}
@@ -72,12 +75,12 @@ export const DetailsModelComponent = (props)=>{
 			setTabKey(key)
 		}
 	}
-
+	const label=nodeData.label || nodeData.id
 	return(
 		<div className="tdb__sidebar" >
 			<div className="tdb__panel__title">
 	  	 		<i className={`tdb__panel__title__icon ${imageType}`}></i>
-	  	 		{nodeData.label || nodeData.id}
+	  	 		<p className="tdb__panel__label" title={label}> {label}</p>
 	  	 	</div>
 			<Tabs items={getTabs()} transform={false} onChange={setTabKey} selectedTabKey={tabKey}/>
 		</div>

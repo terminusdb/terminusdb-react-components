@@ -1,20 +1,22 @@
 import React, {useState,useEffect,useContext} from "react";
 import {MainGraphObject} from "../MainGraphObject"
+import {CLASS_TYPE_NAME} from "../utils/elementsName"
 
 export const GraphContext = React.createContext()
 export const GraphContextObj = () => useContext(GraphContext)
 
 export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 
-	const [graphDataProvider, setGraphDataProvider] = useState([]);
+	const [graphDataProvider, setGraphDataProvider] = useState(null);
 	const [selectedNodeObject, setSelectedNodeObject] = useState({});
-	const [classPropertiesList, setClassPropertiesList] = useState([]);
-
+	const [nodePropertiesList, setNodePropertiesList] = useState([]);
+//NodePropertiesList
 	const [isFocusOnNode, setFocusOnNode] = useState(false);
-
+	const [objectPropertyToRange,setObjectPropertyToRange]=useState({})
 
 	const [objectChoicesList, setObjectChoicesList] = useState([]);
 	const [objectPropertyList, setObjectPropertyList] = useState([]);
+
 	const [objPropsRelatedToClass,setObjPropsRelatedToClass]=useState([]);
 
 	const [mainGraphObj, setMainGraphObj] = useState(null);
@@ -41,6 +43,7 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 			setGraphDataProvider(mainGraphObject.getDescendantsNode())
 			setObjectPropertyList(mainGraphObject.getObjectProperties())
 			setObjectChoicesList(mainGraphObject.getObjectChoices())
+			setObjectPropertyToRange(mainGraphObject.objectPropertyToRange())
 			resetSelection()
 			/*
 			to be review
@@ -52,7 +55,7 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 
 	const resetSelection=()=>{
 		setSelectedNodeObject({})
-		setClassPropertiesList([])
+		setNodePropertiesList([])
 		setObjPropsRelatedToClass([])
 		setAvailableParentsList({})
 	}
@@ -61,11 +64,11 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 		setFocusOnNode(focusOnNode);
 		if(nodeId===null){
 			setSelectedNodeObject({})
-			setClassPropertiesList([])
+			setNodePropertiesList([])
 			setObjPropsRelatedToClass([])
 		}else if(mainGraphObj && mainGraphObj.getElement(nodeId)){
 			setSelectedNodeObject(mainGraphObj.getElement(nodeId));
-			setClassPropertiesList(mainGraphObj.getPropertyListByDomain(nodeId));
+			setNodePropertiesList(mainGraphObj.getPropertyListByDomain(nodeId));
 			setObjPropsRelatedToClass(mainGraphObj.getObjPropsRelatedToClass(nodeId))
 			setAvailableParentsList(mainGraphObj.getAvailableParentsList(nodeId))
 		}
@@ -79,19 +82,20 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 
 	const addNewProperty=(propertyType,propertyRange)=>{
 		const propertiesList=mainGraphObj.addNewPropertyToClass(selectedNodeObject.name,propertyType,propertyRange);
-		setClassPropertiesList(propertiesList)
+		setNodePropertiesList(propertiesList)
 	}
 	
 	const removeElement=(elementId,elementType)=>{
 		switch(elementType){
-			case 'Document':
-			case 'Class':
+			case CLASS_TYPE_NAME.OBJECT_CLASS:
+			case CLASS_TYPE_NAME.DOCUMENT_CLASS:
+			case CLASS_TYPE_NAME.CHOICE_CLASS:
 				mainGraphObj.removeElementInMainGraph(selectedNodeObject.name);
 				resetSelection()
 				break;
 			default:
 				const propertiesList=mainGraphObj.removePropertyToClass(selectedNodeObject.name,elementId);
-				setClassPropertiesList(propertiesList);
+				setNodePropertiesList(propertiesList);
 		}
 		
 	}
@@ -120,9 +124,11 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 	return (
 		<GraphContext.Provider
             value={{
+            mainGraphObj,
+            objectPropertyToRange,
 	        graphDataProvider,
 	        selectedNodeObject,
-	        classPropertiesList,
+	        nodePropertiesList,
 	        graphUpdateLabel,
 	        changeCurrentNode,
 	        setNodeAction,

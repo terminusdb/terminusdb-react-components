@@ -225,6 +225,26 @@ export const ModelTreeComponent = (props)=>{
                 >
 
               <svg width={width} height={height}>
+                <defs>
+                  <marker
+                    className="marker-small"
+                    id="markerArrowEnd"
+                    viewBox="0 -5 10 10"
+                    refX="5"
+                    refY="5"
+                    markerWidth={4}
+                    markerHeight={4}
+                    orient="auto"
+                    fill={'green'}
+                >
+                  <path d="M0,-5L10,0L0,5" fill="green" />
+                </marker>
+               <marker id="markerArrowStart" viewBox="0 0 10 10" refX="5" refY="5"
+                    markerWidth="4" markerHeight="4"
+                    orient="auto-start-reverse">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="green" />
+                </marker>
+                 </defs>
                 <g id={'treeGraphContainer'} ref={treeGraphContainer}>               
                   <rect 
                     opacity={0}
@@ -233,6 +253,7 @@ export const ModelTreeComponent = (props)=>{
                     fill="#ffffff"
                   />
                   <Tree id={'treeGraph'}
+                    objectPropertyToRange={props.objectPropertyToRange}
                     isEditMode={props.isEditMode}
                     needRefresh={needRefresh}
                     nodes={[...props.graphDataProvider.values()]}

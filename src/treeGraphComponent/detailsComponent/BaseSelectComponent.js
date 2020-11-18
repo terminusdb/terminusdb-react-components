@@ -42,7 +42,7 @@ export const BaseSelectComponent = (props) => {
 	return(
 		<div className={props.groupClassName}>
 			<div className="tdb__form__help">
-            	{props.showLabel && <label className={props.labelClassName} for={comboId}>{title}</label>}
+            	<label className={props.labelClassName} for={comboId}>{title}</label>
 	        	{props.addHelpComponent && <HelpComponent text={props.help}/> }
 	        </div>
 	        <div className="hideEmpty">

@@ -10,9 +10,10 @@ import {BaseCheckboxElement} from './BaseCheckboxElement';
 * I change the value in the dataprovider but don't render
 */
 
-export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassId,isNodeObject,hasConstraints})=>{	
+export const BaseElement = (props)=>{	
 
     const [indexError,setIndexError]=useState(false);
+    const nodeJsonData=props.nodeJsonData || {}
 
     const changeElement=(name,value)=>{
         if(name==="id"){
@@ -27,19 +28,23 @@ export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassI
             }
             setIndexError(false);
         }
-        if(updateValue){
-            updateValue(name,value,nodeJsonData);
+        if(props.updateValue){
+            props.updateValue(name,value,nodeJsonData);
         }
     }
 
+    useEffect(() => {
+        setIndexError(false);
+    },[nodeJsonData])
+
     return(
-   	    <div key={nodeJsonData.name} className="tdb__panel__box">
+   	    <div className="tdb__panel__box">
             <RemoveElementComponent 
-                hasConstraints={hasConstraints} 
+                hasConstraints={props.hasConstraints} 
                 elementId={nodeJsonData.name}
                 elementType={nodeJsonData.type}
-                removeElement={removeElement}/>
-       	    	{isNodeObject && nodeJsonData.type!=='ChoiceClass' && 
+                removeElement={props.removeElement}/>
+       	    	{props.isNodeObject && nodeJsonData.type!=='ChoiceClass' && 
                     <BaseCheckboxElement title={'Abstract'} help={"abstract"} name='abstract' defaultValue={nodeJsonData.abstract || false} onBlur={changeElement} />
                 }
                 <BaseInputElement
@@ -48,6 +53,7 @@ export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassI
                     title={`${ELEMENT_BASE_CONST.ID_TEXT} *` }
                     placeholder={ELEMENT_BASE_CONST.ID_PLACEHOLDER}
                     name='id'
+                    panelName={nodeJsonData.name}
                     help={"class_id"}
                     onBlur={changeElement}
                     defaultValue={nodeJsonData.id || ''}
@@ -61,6 +67,7 @@ export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassI
                     onBlur={changeElement}
                     defaultValue={nodeJsonData.label || ''}
                     />
+                {props.children}
 	            <BaseTextareaElement
                     placeholder={ELEMENT_BASE_CONST.DESCRIPTION_PLACEHOLDER} 
                     title={ELEMENT_BASE_CONST.DESCRIPTION_TEXT}

@@ -5,33 +5,10 @@ import {CLASS_TYPE_NAME_LABEL} from "../utils/elementsName";
 
 export const InfoBoxComponent =(props)=> {
 
-	const [classType,setClassType]=useState()
-
 	const {elementsNumber} = GraphContextObj();
-
-	const filterList=(evt)=>{
-		if(evt.currentTarget.value){
-			setClassType(evt.currentTarget.value)
-		}
-	}
-
-	const getClassDataProvider=()=>{
-		let dataProvider=[];
-		switch(this.state.classType){
-			case 'EntityClass':
-		        dataProvider=props.entitiesListArr;//.concat(props.ordinaryClassDataP)
-				break;
-		    case 'OrdinaryClass':
-		    	  dataProvider=props.classesListArr;
-		    	  break;
-		}
-
-		return dataProvider;
-	}
 
 	const propertiesNum=elementsNumber.properties || 0;
 	const entitiesNum=elementsNumber.entities || 0;
-	//const relationshipsNum=elementsNumber.relationships || 0;
 	const ordinaryClassesNum=elementsNumber.classes || 0;
 	const choiceClassesNum=elementsNumber.choiceClasses || 0
 	return(

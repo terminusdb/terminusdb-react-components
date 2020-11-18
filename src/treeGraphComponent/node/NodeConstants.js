@@ -21,7 +21,7 @@ export const elementsStyle=getElementsStyle()
 export const groupMenuList={'ROOT':[{id:NODE_ACTION_NAME.ADD_NEW_ENTITY, label: "Add Document Type"},
 					  				{id:NODE_ACTION_NAME.ADD_NEW_CLASS, label: "Add Object Type"},
 					  				{id:NODE_ACTION_NAME.ADD_NEW_CHOICE_CLASS, label: "Add Choice Type"}],
-					  'OrdinaryClasses':[{id:NODE_ACTION_NAME.ADD_NEW_CLASS, label: "Add Object Type"}],
+					  'ObjectClasses':[{id:NODE_ACTION_NAME.ADD_NEW_CLASS, label: "Add Object Type"}],
 					  'ChoiceClasses':  [{id:NODE_ACTION_NAME.ADD_NEW_CHOICE_CLASS, label: "Add Choice Type"}],
 					  'DocumentClasses':[{id:NODE_ACTION_NAME.ADD_NEW_ENTITY, label: "Add Document Type"}]}
 
