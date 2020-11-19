@@ -13,23 +13,16 @@ export const ObjectClassModelViewMode = (props) => {
 
 	const {selectedNodeObject,
 		   nodePropertiesList,
-		   changeCurrentNode,
-		   objPropsRelatedToClass} = GraphContextObj();
+		   changeCurrentNode} = GraphContextObj();
 
 	let currentNodeJson = selectedNodeObject || {};
 	const imageType=ELEMENT_ICONS[currentNodeJson.type]
 
-	const childrenArr=currentNodeJson.children || []
-
-	//const hasConstraints = (childrenArr.length>0 || objPropsRelatedToClass.length >0) ? true : false; 
-	
+	const childrenArr=currentNodeJson.children || []	
 
 	let id =currentNodeJson.id;
 	let label =currentNodeJson.label || currentNodeJson.id;
-	const propertiesDataProvider=[];//this.getPropertiesDataProvider(id) || [];
-
-	//const members=currentNodeJson.members || {};	
-	//const addRelationship = currentNodeJson.type==="Relationship" ? true : false;
+	const propertiesDataProvider=[];
 
 	return(<div className="RRT__container RRT__container--viewmode" >
 			<div className="tdb__panel__title">
