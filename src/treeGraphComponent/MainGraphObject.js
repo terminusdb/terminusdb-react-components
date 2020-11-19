@@ -13,7 +13,7 @@ import {formatData,
 import {graphUpdateObject} from './utils/graphUpdateObject';
 import {CLASS_TYPE_NAME} from './utils/elementsName' 
 
-export const MainGraphObject = (mainGraphDataProvider)=>{
+export const MainGraphObject = (mainGraphDataProvider,dbName)=>{
 
 	let _objectTypeList=[];
 
@@ -107,9 +107,9 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 	}
 
 	
-	const createNewMainGraph=(mainGraphDataProvider)=>{
+	const createNewMainGraph=()=>{
 		_mainGraphElementsJson=mainGraphDataProvider;
-		_rootIndexObj=formatData(mainGraphDataProvider.classesResult);		
+		_rootIndexObj=formatData(mainGraphDataProvider.classesResult,dbName);		
 		const[propertyByDomain,objectPropertyRange,propertiesList]=formatProperties(mainGraphDataProvider.propsResult,mainGraphDataProvider.restResult,_rootIndexObj);		
 		_domainToProperties=propertyByDomain;
 		_objectPropertyToRange=objectPropertyRange;
@@ -117,7 +117,7 @@ export const MainGraphObject = (mainGraphDataProvider)=>{
 		formatDataForTree()
 	}
 
-	createNewMainGraph(mainGraphDataProvider);
+	createNewMainGraph();
 	
 	const getAvailableParentsList=(nodeId)=>{
 		const nodeObject=getElement(nodeId);

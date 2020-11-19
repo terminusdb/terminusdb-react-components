@@ -38,28 +38,28 @@ export const PropertiesComponent = (props)=> {
 		   			baseObj['comboDataProvider']=objectChoicesList || [];
 		   			baseObj['title']='Choice Type *'
 		   			baseObj['placeholder']='Select Choice Type'
-		   			return <ObjectProperty  {...baseObj} key={`${PROPERTY_TYPE_NAME.CHOICE_PROPERTY}__${index}`}/>;
+		   			return <ObjectProperty  {...baseObj} key={propertyItem.name}/>;
 		   		
 		   		case PROPERTY_TYPE_NAME.NUMERIC_PROPERTY:
 		   			baseObj['selectDataProvider']=NUMBER_PROPERTY_PRECISION_DATAPROVIDER;	
-		   			return <BasePropertyComponent {...baseObj} key={`${PROPERTY_TYPE_NAME.NUMERIC_PROPERTY}__${index}`}/>
+		   			return <BasePropertyComponent {...baseObj} key={propertyItem.name}/>
 
 		   		case PROPERTY_TYPE_NAME.STRING_PROPERTY:
 		   			baseObj['selectDataProvider']=STRING_TYPE_DATAPROVIDER;			   				   			
-		   			return <BasePropertyComponent {...baseObj} key={`${PROPERTY_TYPE_NAME.STRING_PROPERTY}__${index}`}/>
+		   			return <BasePropertyComponent {...baseObj} key={propertyItem.name}/>
 
 		   		case PROPERTY_TYPE_NAME.GEO_PROPERTY:
 		   			baseObj['selectDataProvider']=GEOMETRY_PROPS_DATAPROVIDER;	
-		   			return <BasePropertyComponent {...baseObj} key={`${PROPERTY_TYPE_NAME.GEO_PROPERTY}__${index}`}/>
+		   			return <BasePropertyComponent {...baseObj} key={propertyItem.name}/>
 		   		case PROPERTY_TYPE_NAME.TEMPORAL_PROPERTY:
 
 		   			baseObj['selectDataProvider']=TEMPORAL_PROPERTY_DATAPROVIDER;
-		   			return <BasePropertyComponent {...baseObj}  key={`${PROPERTY_TYPE_NAME.TEMPORAL_PROPERTY}__${index}`}/>
+		   			return <BasePropertyComponent {...baseObj}  key={propertyItem.name}/>
 		   		case PROPERTY_TYPE_NAME.OBJECT_PROPERTY:
 		   			baseObj['title']='Links To Type *'
 		   			baseObj['placeholder']='Select Type'
 		   			baseObj['comboDataProvider']=objectPropertyList || [];
-		   			return <ObjectProperty  {...baseObj} key={`${PROPERTY_TYPE_NAME.OBJECT_PROPERTY}__${index}`}/>;
+		   			return <ObjectProperty  {...baseObj} key={propertyItem.name}/>;
 		   			default:
 		   				return '';
 				}

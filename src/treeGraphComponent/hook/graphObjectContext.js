@@ -5,12 +5,12 @@ import {CLASS_TYPE_NAME} from "../utils/elementsName"
 export const GraphContext = React.createContext()
 export const GraphContextObj = () => useContext(GraphContext)
 
-export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
+export const GraphObjectProvider = ({mainGraphDataProvider,children,dbName}) => {
 
 	const [graphDataProvider, setGraphDataProvider] = useState(null);
 	const [selectedNodeObject, setSelectedNodeObject] = useState({});
 	const [nodePropertiesList, setNodePropertiesList] = useState([]);
-//NodePropertiesList
+
 	const [isFocusOnNode, setFocusOnNode] = useState(false);
 	const [objectPropertyToRange,setObjectPropertyToRange]=useState({})
 
@@ -26,9 +26,9 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 	const [classesListArr, setClassesListArr] = useState(null);
 	const [entitiesListArr, setEntitiesListArr] = useState(null);
 	const [availableParentsList, setAvailableParentsList] = useState({})
-	const [elementsNumber, setElementNumbers] = useState({})
 
 	const [needToSave, setNeedToSave] = useState(false)
+	const [resetGraph, setResetGraph] = useState()
 	//let mainGraphObj;
 
 	/*
@@ -37,7 +37,7 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 	useEffect(() => {
 
 		if(mainGraphDataProvider){
-			const mainGraphObject= new MainGraphObject(mainGraphDataProvider);
+			const mainGraphObject= new MainGraphObject(mainGraphDataProvider,dbName);
 
 			setMainGraphObj(mainGraphObject)
 			setGraphDataProvider(mainGraphObject.getDescendantsNode())
@@ -45,13 +45,9 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 			setObjectChoicesList(mainGraphObject.getObjectChoices())
 			setObjectPropertyToRange(mainGraphObject.objectPropertyToRange())
 			resetSelection()
-			/*
-			to be review
-			*/
-			setElementNumbers(mainGraphObject.getElementsNumber())
 		}
 
-	}, [mainGraphDataProvider])
+	}, [mainGraphDataProvider,resetGraph])
 
 	const resetSelection=()=>{
 		setSelectedNodeObject({})
@@ -102,7 +98,7 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 
 	const updateValue = (propName,propValue,elementDataObject)=>{
 		mainGraphObj.changeElementDataValue(propName,propValue,elementDataObject)
-		if(propName==='label' && elementDataObject.type!=='Property'){
+		if(elementDataObject.type!=='Property' && (propName==='label' || propName==='abstract')){
 			setGraphUpdateLabel(Date.now())
 		}
 	}
@@ -121,9 +117,14 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 		return mainGraphObj.savedObjectToWOQL()
 	}
 
+	const resetTreeModel=()=>{
+		setResetGraph(Date.now())
+	}
+
 	return (
 		<GraphContext.Provider
             value={{
+            resetTreeModel,
             mainGraphObj,
             objectPropertyToRange,
 	        graphDataProvider,
@@ -140,7 +141,6 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 	        savedObjectToWOQL,
 	        updateParentsList,
 	        availableParentsList,
-	        elementsNumber,
 	        mainGraphObj,
 	        objectChoicesList,
 	        updateChoices,

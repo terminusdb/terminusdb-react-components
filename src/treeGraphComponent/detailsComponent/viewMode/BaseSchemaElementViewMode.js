@@ -24,20 +24,16 @@ export const BaseSchemaElementViewMode = (props)=>{
 		return rangeStr;
 	}
 
-	if(props.idLink===true){
-		onClickEvent={onClick:selectNode}
-	}
-			
+	const onClickId = props.idLink===true ? {onClick:selectNode} : {}			
 	const rangeValue=currentNodeJson.range ? filterRangeValue() : ''
-
-
+	
 	return(
 		<div className="tdb__panel__box tdb__panel__box--hideEmpty">		 
 			{currentNodeJson.abstract && <div className="tdb__panel__row">
 				<BiBorderNone className="tdb__panel__title__icon" title="Abstract Class"/>
 			</div>}
 			
-			{currentNodeJson.id && <BaseLabelsElementViewMode name={currentNodeJson.name} {...onClickEvent} label={ELEMENT_BASE_CONST.ID_TEXT} value={`scm:${currentNodeJson.id}`} />}
+			{currentNodeJson.id && <BaseLabelsElementViewMode name={currentNodeJson.name} {...onClickId} label={ELEMENT_BASE_CONST.ID_TEXT} value={`scm:${currentNodeJson.id}`} />}
 
 			{currentNodeJson.comment && <BaseLabelsElementViewMode label={ELEMENT_BASE_CONST.DESCRIPTION_TEXT} value={currentNodeJson.comment} />}			
 			{currentNodeJson.min && <BaseLabelsElementViewMode label={CARDINALITY_MIN_TITLE} value={currentNodeJson.min} />}

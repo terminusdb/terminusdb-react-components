@@ -25,7 +25,7 @@ export const getLabelByName=(elementName)=>{
 export const PROPERTY_TYPE_LABEL={
 	STRING_PROPERTY:'String Property',
 	NUMERIC_PROPERTY:'Numeric Property',
-	CHOICE_PROPERTY:'Choice Property',
+	CHOICE_PROPERTY:'Enum Property',
 	GEO_PROPERTY:'Geo Property',
 	TEMPORAL_PROPERTY:'Temporal Property',
 	OBJECT_PROPERTY:'Link Property'
@@ -43,33 +43,27 @@ export const CLASS_TYPE_NAME={
 }
 
 export const CLASS_TYPE_NAME_LABEL={
-	SCHEMA_ROOT:'Type Hierarchy',
+	SCHEMA_ROOT:'Schema',
 	SCHEMA_GROUP: 'Group',
-  	OBJECT_CLASS:'Object Type',
-  	CHOICE_CLASS:"Choice Type",
-  	DOCUMENT_CLASS:"Document Type",
-  	DOCUMENT_CLASSES:"Document Types",
-  	OBJECT_CLASSES:"Object Types",
-  	CHOICE_CLASSES:"Choice Types"
+  	OBJECT_CLASS:'Object',
+  	CHOICE_CLASS:"Enum",
+  	DOCUMENT_CLASS:"Document",
+  	DOCUMENT_CLASSES:"Documents",
+  	OBJECT_CLASSES:"Objects ",
+  	CHOICE_CLASSES:"Enums"
 }
 
-export const getRootIndexObj=()=>{
+export const getRootIndexObj=(dbName)=>{
 
 	let _rootIndexObj= []
 
 	_rootIndexObj[CLASS_TYPE_NAME.SCHEMA_ROOT]={name: CLASS_TYPE_NAME.SCHEMA_ROOT, 
 												type: CLASS_TYPE_NAME.SCHEMA_ROOT, 
-												label:CLASS_TYPE_NAME_LABEL.SCHEMA_ROOT, 
+												label:`${dbName} ${CLASS_TYPE_NAME_LABEL.SCHEMA_ROOT}`, 
 												children:[],
 												comment:CLASS_TYPE_NAME_LABEL.SCHEMA_ROOT}
 
-	_rootIndexObj[CLASS_TYPE_NAME.DOCUMENT_CLASSES]={name:CLASS_TYPE_NAME.DOCUMENT_CLASSES, 
-												parents:[],
-		                             			type:CLASS_TYPE_NAME.SCHEMA_GROUP,
-		                             			label:CLASS_TYPE_NAME_LABEL.DOCUMENT_CLASSES ,
-		                             			children:[],
-		                             			comment:CLASS_TYPE_NAME_LABEL.DOCUMENT_CLASSES}
-
+	
 	_rootIndexObj[CLASS_TYPE_NAME.OBJECT_CLASSES]={name:CLASS_TYPE_NAME.OBJECT_CLASSES, 
 												parents:[],
 		                             			type:CLASS_TYPE_NAME.SCHEMA_GROUP,
@@ -77,6 +71,14 @@ export const getRootIndexObj=()=>{
 		                             			children:[],
 		                             			comment:CLASS_TYPE_NAME_LABEL.OBJECT_CLASSES}
 	
+    _rootIndexObj[CLASS_TYPE_NAME.DOCUMENT_CLASSES]={name:CLASS_TYPE_NAME.DOCUMENT_CLASSES, 
+												parents:[],
+		                             			type:CLASS_TYPE_NAME.SCHEMA_GROUP,
+		                             			label:CLASS_TYPE_NAME_LABEL.DOCUMENT_CLASSES ,
+		                             			children:[],
+		                             			comment:CLASS_TYPE_NAME_LABEL.DOCUMENT_CLASSES}
+		                             			
+
 	_rootIndexObj[CLASS_TYPE_NAME.CHOICE_CLASSES]={name:CLASS_TYPE_NAME.CHOICE_CLASSES, 
 												parents:[],
 		                             			type:CLASS_TYPE_NAME.SCHEMA_GROUP,

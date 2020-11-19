@@ -5,7 +5,9 @@ import {CLASS_TYPE_NAME_LABEL} from "../utils/elementsName";
 
 export const InfoBoxComponent =(props)=> {
 
-	const {elementsNumber} = GraphContextObj();
+	const {mainGraphObj} = GraphContextObj();
+
+	const elementsNumber=mainGraphObj ? mainGraphObj.getElementsNumber() : {}
 
 	const propertiesNum=elementsNumber.properties || 0;
 	const entitiesNum=elementsNumber.entities || 0;
@@ -14,7 +16,7 @@ export const InfoBoxComponent =(props)=> {
 	return(
 			<div className="tdb__panel">
 				 <div className="tdb__panel__title">
-				 	Schema - Type Hierarchy
+				 	{props.dbName} - Schema
 				 </div>
 				 <div className="tdb__panel__box">
 				 {mainGraphDescriptionText}

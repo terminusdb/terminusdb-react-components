@@ -7,9 +7,10 @@ import {GraphContextObj} from '../hook/graphObjectContext';
 
 export const ModelMainHeaderComponent =(props)=>{
 
-	const {setNodeAction} = GraphContextObj();
+	const {setNodeAction,resetTreeModel} = GraphContextObj();
 
 	const viewEdit=props.isEditMode===true ? true : false;
+
 
 	let style={style:{visibility:'hidden'}}
 		if(viewEdit){
@@ -68,9 +69,14 @@ export const ModelMainHeaderComponent =(props)=>{
 				 </div>
 		   	   </div>
 		   	   <div className="tdb__model__hright" {...style}>
-			   	   {/*<div className="icon-header">
-				   		<i className="fa fa-sync" title={TOOLBAR_LABELS.ResetButtonTooltip} onClick={props.resetTreeModel}></i>
-				   </div>*/}
+			   	   <div className="icon-header">
+				   		<i className="fa fa-sync" 
+				   		title={TOOLBAR_LABELS.ResetButtonTooltip} 
+				   		onClick={e =>
+          					window.confirm("If you continue, you'll lose the schema's changes") &&
+          					resetTreeModel()
+        				}></i>
+				   </div>
 				   <div className="icon-header" >
 				   		<ToogleButton baseTooltip={TOOLBAR_LABELS.SaveButtonTooltip} 
 				   					  baseIcon="fa fa-save"
