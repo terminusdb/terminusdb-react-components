@@ -28,7 +28,11 @@ export const graphUpdateObject=()=>{
 				newNode.parent=[]
 				newNode.parents=[]
 				let nodeType=CLASS_TYPE_NAME.OBJECT_CLASS
-				if(isChoiceClass)nodeType=CLASS_TYPE_NAME.CHOICE_CLASS
+				if(isChoiceClass){
+					nodeType=CLASS_TYPE_NAME.CHOICE_CLASS
+					newNode.choices
+					=[]
+				}
 				newNode.type=nodeType
 			}
 		}else{
@@ -80,7 +84,6 @@ export const graphUpdateObject=()=>{
 						 id: "",
 			             label:"NEW NODE",
 			             comment:"",
-			             hasConstraints:false,
 			             newElement:true,
 			             children:[],
 			             abstract:false
