@@ -1,18 +1,46 @@
 import React from 'react';
 import {BaseLabelsElementViewMode} from './BaseLabelsElementViewMode'
-import {GET_ICON_NAME,CARDINALITY_MIN_TITLE,CARDINALITY_MAX_TITLE} from '../../../constants/details-labels';
+import {GET_ICON_NAME,CARDINALITY_MIN_TITLE,CARDINALITY_MAX_TITLE,ELEMENT_BASE_CONST} from '../../../constants/details-labels';
+import { BiBorderNone } from 'react-icons/bi';
 
 export const BaseSchemaElementViewMode = (props)=>{
+
+	let onClickEvent={}
+
+	const currentNodeJson = props.currentNodeJson || {}
+
+	const selectNode=(elementName)=>{
+		props.changeCurrentNode(elementName,true)
+	}
+
+	const filterRangeValue=()=>{		
+		let rangeStr=currentNodeJson.range;
+		if(currentNodeJson.range.startsWith("terminusdb:///schema#")){
+			const rangeArr=currentNodeJson.range.split('#');
+			rangeStr=rangeArr[1];
+			onClickEvent={onClick:selectNode}
+		}
+
+		return rangeStr;
+	}
+
+	const onClickId = props.idLink===true ? {onClick:selectNode} : {}			
+	const rangeValue=currentNodeJson.range ? filterRangeValue() : ''
+	
 	return(
 		<div className="tdb__panel__box tdb__panel__box--hideEmpty">		 
-			{props.currentNodeJson.abstract && <div className="tdb__panel__row">
-				<i className="tdb__panel__title__icon custom-img-history" title="Abstract Class"></i>
+			{currentNodeJson.abstract && <div className="tdb__panel__row">
+				<BiBorderNone className="tdb__panel__title__icon" title="Abstract Class"/>
 			</div>}
+			
+			{currentNodeJson.id && <BaseLabelsElementViewMode name={currentNodeJson.name} {...onClickId} label={ELEMENT_BASE_CONST.ID_TEXT} value={`scm:${currentNodeJson.id}`} />}
 
-			{props.currentNodeJson.comment && <BaseLabelsElementViewMode value={props.currentNodeJson.comment} />}			
-			{props.currentNodeJson.min && <BaseLabelsElementViewMode label={CARDINALITY_MIN_TITLE} value={props.currentNodeJson.min} />}
-			{props.currentNodeJson.max && <BaseLabelsElementViewMode label={CARDINALITY_MAX_TITLE} value={props.currentNodeJson.max} />}
-			{props.currentNodeJson.range && <BaseLabelsElementViewMode label="Range Type" value={props.currentNodeJson.range} />}				
+			{currentNodeJson.comment && <BaseLabelsElementViewMode label={ELEMENT_BASE_CONST.DESCRIPTION_TEXT} value={currentNodeJson.comment} />}			
+			{currentNodeJson.min && <BaseLabelsElementViewMode label={CARDINALITY_MIN_TITLE} value={currentNodeJson.min} />}
+			{currentNodeJson.max && <BaseLabelsElementViewMode label={CARDINALITY_MAX_TITLE} value={currentNodeJson.max} />}
+			{currentNodeJson.range && 
+				<BaseLabelsElementViewMode {...onClickEvent} name={currentNodeJson.range} label="Range Type" value={rangeValue} />
+			}				
 		</div>		
 	)
 }

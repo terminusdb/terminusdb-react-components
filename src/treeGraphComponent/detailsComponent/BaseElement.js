@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import {ELEMENT_BASE_CONST}  from '../../constants/details-labels.js';
+import {ELEMENT_BASE_CONST, ELEMENT_HELP}  from '../../constants/details-labels.js';
 import {RemoveElementComponent} from './RemoveElementComponent';
 import PropTypes from "prop-types";
 import {HelpComponent} from "./HelpComponent";
@@ -10,62 +10,72 @@ import {BaseCheckboxElement} from './BaseCheckboxElement';
 * I change the value in the dataprovider but don't render
 */
 
-export const BaseElement = ({nodeJsonData,updateValue,removeElement,parentClassId,isNodeObject,hasConstraints})=>{	
+export const BaseElement = (props)=>{	
+
+    const [indexError,setIndexError]=useState(false);
+    const nodeJsonData=props.nodeJsonData || {}
 
     const changeElement=(name,value)=>{
-        if(updateValue){
-            updateValue(name,value,nodeJsonData);
+        if(name==="id"){
+            value.trim();
+            if(value.indexOf(" ")>-1){
+                setIndexError("Please remove all the white space");
+                return;
+            }
+            if(value.trim()===""){
+                setIndexError("Please enter a valid ID");
+                return;
+            }
+            setIndexError(false);
+        }
+        if(props.updateValue){
+            props.updateValue(name,value,nodeJsonData);
         }
     }
 
+    useEffect(() => {
+        setIndexError(false);
+    },[nodeJsonData])
+
     return(
-   	    <div key={nodeJsonData.name} className="tdb__panel__box">
+   	    <div className="tdb__panel__box">
             <RemoveElementComponent 
-                hasConstraints={hasConstraints} 
+                hasConstraints={props.hasConstraints} 
                 elementId={nodeJsonData.name}
                 elementType={nodeJsonData.type}
-                removeElement={removeElement}/>
-       	    	{isNodeObject && nodeJsonData.type!=='ChoiceClass' && 
-                    <BaseCheckboxElement title={'Abstract'}  name='abstract' defaultValue={nodeJsonData.abstract || false} onBlur={changeElement} />
+                removeElement={props.removeElement}/>
+       	    	{props.isNodeObject && nodeJsonData.type!=='ChoiceClass' && 
+                    <BaseCheckboxElement title={'Abstract'} help={"abstract"} name='abstract' defaultValue={nodeJsonData.abstract || false} onBlur={changeElement} />
                 }
-                <BaseInputElement 
+                <BaseInputElement
+                    autoFocus={true} 
                     disabled={!nodeJsonData.newElement}
-                    title={ELEMENT_BASE_CONST.ID_TEXT}
+                    title={`${ELEMENT_BASE_CONST.ID_TEXT} *` }
+                    placeholder={ELEMENT_BASE_CONST.ID_PLACEHOLDER}
                     name='id'
+                    panelName={nodeJsonData.name}
+                    help={"class_id"}
                     onBlur={changeElement}
                     defaultValue={nodeJsonData.id || ''}
+                    itemError={indexError}
                     />
                 <BaseInputElement 
                     title={ELEMENT_BASE_CONST.LABEL_TEXT}
                     name='label'
+                    placeholder={ELEMENT_BASE_CONST.LABEL_PLACEHOLDER}
+                    help={"class_label"}
                     onBlur={changeElement}
                     defaultValue={nodeJsonData.label || ''}
                     />
-            {/*<div className="tdb__form__group" >
-	    		<input
-	    			{...disabled}
-	                name="id"
-	                placeholder= {ELEMENT_BASE_CONST.ID_TEXT}
-	                className = "tdb__form__element"
-	                onChange={changeValue}
-	                onBlur={saveValue}
-	                value={values.id || ''}
-	            />
-	        </div>*/}
-	         <BaseTextareaElement 
+                {props.children}
+	            <BaseTextareaElement
+                    placeholder={ELEMENT_BASE_CONST.DESCRIPTION_PLACEHOLDER} 
                     title={ELEMENT_BASE_CONST.DESCRIPTION_TEXT}
                     name='comment'
+                    help={"class_comment"}
                     onBlur={changeElement}
                     defaultValue={nodeJsonData.comment || ''}
             />
-            {/*<textarea 
-                name="comment"
-                placeholder= {ELEMENT_BASE_CONST.DESCRIPTION_TEXT}
-                className = "tdb__form__element"
-                onChange={changeValue}
-                onBlur={saveValue}
-                value={values.comment || ''}
-            />*/}
     	</div>
     )
 }

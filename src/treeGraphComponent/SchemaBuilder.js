@@ -1,6 +1,7 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import { SizeMe } from 'react-sizeme' 
 import SplitPane from "react-split-pane";
+import {CLASS_TYPE_NAME} from "./utils/elementsName";
 import {ModelTreeComponent} from './ModelTreeComponent';
 import {DetailsModelComponent} from './detailsComponent/DetailsModelComponent';
 import {ADD_NEW_ENTITY,ADD_NEW_CLASS,ADD_PARENT,ADD_CHILD} from './node/NodeConstants';
@@ -9,7 +10,7 @@ import {TERMINUS_FONT_BASE} from '../constants/details-labels';
 import {ModelMainHeaderComponent} from './detailsComponent/ModelMainHeaderComponent';
 import {InfoBoxComponent} from './detailsComponent/InfoBoxComponent'
 import {ObjectClassModelViewMode} from './detailsComponent/viewMode/ObjectClassModelViewMode'
-
+import {InfoObjectComponent} from './detailsComponent/InfoObjectComponent'
 export const SchemaBuilder = (props)=>{
 
 	const {graphDataProvider, 
@@ -17,47 +18,66 @@ export const SchemaBuilder = (props)=>{
 		  graphUpdateLabel,
 		  selectedNodeObject,
 		  changeCurrentNode,
+		  nodePropertiesList,
+		  objectPropertyToRange,
 		  updateValue,
-		  classPropertiesList,
 		  addNewProperty,
 		  removeElement,
 		  objectPropertyList,
 		  objPropsRelatedToClass,
-		  savedObjectToWOQL,updateChoices
+		  savedObjectToWOQL,updateChoices,isFocusOnNode
 		  //updateParentsList,availableParentsList
 		  //entitiesListArr,classesListArr
 		  } = GraphContextObj();
 
 	const [isEditMode,setIsEditMode]=useState(false)
+	const [panelIsOpen,setOpenClosePanel]=useState(true)
+	const [zoomEvent,setZoomEvent]=useState(undefined)
+
 	const saveData=()=>{
 		const query = savedObjectToWOQL();
 		if(props.saveGraph)props.saveGraph(query)
 	}
+
+	/*
+	* Edit mode when model is empty, so it has only the group type
+	*/
+	useEffect(() => {
+         //startDataProsition();      
+        if(graphDataProvider && graphDataProvider.size===4){
+			setIsEditMode(true);
+		}
+    }, [graphDataProvider])
 	
-	const panelIsOpen=props.panelIsOpen || true;
+	//const panelIsOpen=props.panelIsOpen || true;
 
 	const mainPanelSize=panelIsOpen ? "calc(100% - 450px)" : "100%";
 	const treeMainGraphObj=props.treeMainGraphObj;
 
 	let showInfoComp=false
-	if(!selectedNodeObject || !selectedNodeObject.name || selectedNodeObject.type==='Root' ||
-		 selectedNodeObject.type==='Group'){
-
+	if(!selectedNodeObject || !selectedNodeObject.name || 
+		selectedNodeObject.type===CLASS_TYPE_NAME.SCHEMA_ROOT || 
+		 selectedNodeObject.type===CLASS_TYPE_NAME.SCHEMA_GROUP){
 		showInfoComp=true;
-
 	}
 
 	return (	
 		<>
 		<div className="tdb__model__header">
-			<ModelMainHeaderComponent saveData={saveData} changeMode={setIsEditMode} isEditMode={isEditMode}/>
+			<ModelMainHeaderComponent
+				panelIsOpen={panelIsOpen}
+				openClosePanel={setOpenClosePanel}
+				setNodeAction={setNodeAction} 
+				extraTools={props.extraTools} setZoomEvent={setZoomEvent} saveData={saveData} changeMode={setIsEditMode} isEditMode={isEditMode}/>
 		</div>
-		<SplitPane className="colWindow" split="vertical" minSize={400} size={mainPanelSize}>							   							
+		<SplitPane className="tdb_panel_split" split="vertical" minSize={400} size={mainPanelSize}>							   							
 			<div>
 				<SizeMe monitorHeight={true}>{({ size }) =>
 		            <div style={{ minHeight:"400px", height: "calc(100vh - 10px)"}}>
 		              {graphDataProvider && 
 		              	<ModelTreeComponent
+		              		objectPropertyToRange={objectPropertyToRange}
+		              		zoomEvent={zoomEvent}
 		              		isEditMode={isEditMode}
 		              		setNodeAction={setNodeAction} 
 		              		selectedNodeObject={selectedNodeObject} 
@@ -65,18 +85,20 @@ export const SchemaBuilder = (props)=>{
 		              		width={size.width} height={size.height} 
 		              		addedNewNode={selectedNodeObject.newNode}
 		              		graphUpdateLabel={graphUpdateLabel}
-		              		graphDataProvider={graphDataProvider}/>}
+		              		graphDataProvider={graphDataProvider}
+		              		isFocusOnNode={isFocusOnNode}/>}
 		              </div>
 		              }
 		        </SizeMe>
 		    </div>
-		    {showInfoComp &&
-		    	<InfoBoxComponent/>
+		    {showInfoComp && selectedNodeObject.type!==CLASS_TYPE_NAME.SCHEMA_GROUP &&
+		    	<InfoBoxComponent dbName={props.dbName}/>
+		    }
+		    {showInfoComp && selectedNodeObject.type===CLASS_TYPE_NAME.SCHEMA_GROUP &&
+		    	<InfoObjectComponent panelType={selectedNodeObject.name}/>
 		    }
 		    {!showInfoComp && isEditMode===false && 
-		    	<ObjectClassModelViewMode 
-		    		currentNodeJson={selectedNodeObject}
-		    		classPropertyList={classPropertiesList} />}
+		    	<ObjectClassModelViewMode />}
 	        {!showInfoComp &&
 	        	<DetailsModelComponent
 	        		updateChoices={updateChoices}
@@ -84,7 +106,7 @@ export const SchemaBuilder = (props)=>{
 		        	objectPropertyList={objectPropertyList} 
 		        	removeElement={removeElement} 
 		        	addNewProperty={addNewProperty} 
-		        	classPropertyList={classPropertiesList} 
+		        	nodePropertiesList={nodePropertiesList} 
 		        	currentNodeJson={selectedNodeObject} 
 		        	updateValue={updateValue}/>	}   
 	    </SplitPane>

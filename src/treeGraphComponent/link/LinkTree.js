@@ -11,8 +11,8 @@ export const LinkTree = (props)=>  {
 
 	//render(){
 
-	const strokeWidth=props.isSelected ?  4 : 3;
-	const stroke=props.isSelected ? '#696969' : "#dddddd";
+	const strokeWidth=props.isSelected===true ?  4 : 3;
+	const stroke=props.isSelected===true ? '#696969' : "#dddddd";
 	const link = props.link;
 
 	const pathData={source:[link.source.x,link.source.y],
@@ -26,27 +26,11 @@ export const LinkTree = (props)=>  {
 			    stroke={stroke}
 			    strokeWidth={strokeWidth}
 			    strokeOpacity={1}
+			    //markerEnd= 'url(#markerSquare)'
 			    fill="none"
-		    />
+		    >
+		    </path>
 	)
-	//}
 }
 
-/*const mapStateToProps = (state, ownProps) => {
-	let isSelected=false;
-	const {lastTreeNodeClicked}=state
-
-	const {target, source}=ownProps.link || {target:{data:{}}, source:{data:{}}}
-
-	if(lastTreeNodeClicked.nodeId && (lastTreeNodeClicked.nodeId===target.data.name || lastTreeNodeClicked.nodeId===source.data.name)){
-
-    	isSelected=lastTreeNodeClicked.toBeSelected;
-	}
-
-	return {isSelected};
-}*/
-
-/*export default connect(
-  mapStateToProps
-)(LinkTree)*/
 

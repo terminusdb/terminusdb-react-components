@@ -27,8 +27,8 @@ export const Dropdown = ({className, children, title, isOpen, toggle, mouseOverA
 
     return(<OutsideClickHandler onOutsideClick={onOutsideClick} >  
                 <div className="tdb__dropdown" {...mouseOver} >
-                    <button className={`tdb__dropdown__button tdb__dropdown__button--top ${className}`}  >
-                        <span onClick={onClick} className="tdb__dropdown__title">{title}</span><i className="fa fa-caret-down"></i>
+                    <button onClick={onClick} className={`tdb__dropdown__button tdb__dropdown__button--top ${className}`}  >
+                        <span  className="tdb__dropdown__title">{title}</span><i className="fa fa-caret-down"></i>
                     </button>
                     
                     <div className={dropdownContent}>

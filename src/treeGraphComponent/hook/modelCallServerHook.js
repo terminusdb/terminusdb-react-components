@@ -2,37 +2,16 @@ import React, {useState,useEffect} from "react";
 import MainGraphObject from "../MainGraphObject"
 import TerminusClient from '@terminusdb/terminusdb-client'
 
-/*and(
-     opt().triple("doc:test", "label", "v:label").delete_triple("doc:test", "label", "v:label"),
-     add_triple("doc:test", "label", "New label")
-)
- //appearance
-   15  /*
-   16: add_quad("MyClass", "subClassOf", "Parent", "schema/main")
-   17: delete_quad("MyClass", "subClassOf", "Parent", "schema/main")
-   18  
-*/
-
 export const modelCallServerHook = (woqlClient,branch,ref) => {
 
 	const [mainGraphDataProvider, setResultMainGraph] = useState({classesResult:{},
 																  propsResult:{},
 																  restResult:{}});
-	//const [resultProperties, setResultProperties] = useState({});
-
-	//const [resultResctiction, setResultRestriction] = useState([]);
-
 	const [reloadGraph, setReloadGraph] = useState(null);
 
 	const [callServerLoading, setLoading] = useState(false);
 
-	const [callServerError, setError] = useState(false);
-
-	//const [reloadGraph, setReloadGraph] = useState(null);
-
-
-	
-
+	const [reportMessage, setReport] = useState(false);
 
 
 	/*
@@ -58,8 +37,9 @@ export const modelCallServerHook = (woqlClient,branch,ref) => {
 
 			Promise.all([woqlClient.query(classQuery), woqlClient.query(propsQuery), woqlClient.query(restictions)]).then((results)=>{
 				setResultMainGraph({classesResult:results[0],propsResult:results[1],restResult:results[2]})
-			}).catch(err=>{setError(err.message)})
-			.finally(()=>{setLoading(false)})
+			}).catch(err=>{
+				//setReport(err.message)
+			}).finally(()=>{setLoading(false)})
 			
     		
     	}
@@ -71,23 +51,46 @@ export const modelCallServerHook = (woqlClient,branch,ref) => {
 	
 	const saveGraphChanges=(query)=>{
 		if(query!==undefined){
+			let ts = Date.now()
 			setLoading(true)
-			woqlClient.query(query).then(result=>{
-				setReloadGraph(Date.now())
+			woqlClient.query(query).then(result=>{				
+				let msg = `Successfully updated schema graph`
+	            setReport({
+	                status: 'success',
+	                message:  msg,
+	                time: Date.now() - ts,
+	            })
+	            setReloadGraph(Date.now())
 			}).catch(err=>{
-				setError(err.message)
+				//setError(err.message)
+				let rep = {status: 'error', error: err}
+                let failureMessage = `Failed to load schema graph`
+                //setReport({failure: failureMessage, report: rep})
+
+
+                setReport({
+	                status: "error",
+	                message: `Failed to update schema graph`,
+	                error: err,
+	                time: Date.now() - ts,
+            	})
 			}).finally(()=>{
 				setLoading(false)
 			})
 		}
 	}
 
+	const resetReport=()=>{
+		setReport(false)
+	}
+
 	
 	return {
         mainGraphDataProvider,
         saveGraphChanges,
-        callServerError,
-        callServerLoading
+        reportMessage,
+        callServerLoading,
+        resetReport
     }
 }	
 

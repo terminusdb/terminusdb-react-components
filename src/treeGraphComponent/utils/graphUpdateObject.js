@@ -1,6 +1,6 @@
 import {ADD_PARENT, REMOVE_PARENT} from './actionType';  
 import TerminusClient from '@terminusdb/terminusdb-client';
-import {PROPERTY_TYPE_NAME,CLASS_TYPE_NAME} from '../../constants/details-labels'
+import {PROPERTY_TYPE_NAME,CLASS_TYPE_NAME} from '../utils/elementsName'
 
 export const graphUpdateObject=()=>{
 	const newNodesList = new Map()
@@ -19,21 +19,25 @@ export const graphUpdateObject=()=>{
 	const changeParentList=new Map()
 
 	const addParent=(currentNode,newNode,isChoiceClass)=>{
-		if(currentNode.type==='Group' ){
-			if(currentNode.name==="DocumentClasses"){
+		if(currentNode.type===CLASS_TYPE_NAME.SCHEMA_GROUP ){
+			if(currentNode.name===CLASS_TYPE_NAME.DOCUMENT_CLASSES){
 				newNode.parent=['Document']
 				newNode.parents=[]
-				newNode.type='Document'
+				newNode.type=CLASS_TYPE_NAME.DOCUMENT_CLASS
 			}else{
 				newNode.parent=[]
 				newNode.parents=[]
-				let nodeType='Class'
-				if(isChoiceClass)nodeType=CLASS_TYPE_NAME.CHOICE_CLASS
+				let nodeType=CLASS_TYPE_NAME.OBJECT_CLASS
+				if(isChoiceClass){
+					nodeType=CLASS_TYPE_NAME.CHOICE_CLASS
+					newNode.choices
+					=[]
+				}
 				newNode.type=nodeType
 			}
 		}else{
 			newNode.parent=[currentNode.id]
-			newNode.parents=[{name:currentNode.name,label:currentNode.label,type:currentNode.type}]
+			newNode.parents=[currentNode.name]
 			newNode.type=currentNode.type
 		}
 
@@ -69,26 +73,32 @@ export const graphUpdateObject=()=>{
 	}
   
 
-
-	const addNodeToTree=(currentNode,addParentToNode=null,isChoiceClass=false)=>{
+	/*
+	* newNodeParent : parent of the new node 
+	* newNodeChild  : child of the new node
+	*/
+	const addNodeToTree=(newNodeParent,newNodeChild=null,isChoiceClass=false)=>{
 		const newName=`CLASS_${(new Date()).getTime()}`;
 		let elementModel={
 						 name:newName,
-						 id: "NEW NODE",
+						 id: "",
 			             label:"NEW NODE",
 			             comment:"",
-			             hasConstraints:false,
 			             newElement:true,
 			             children:[],
 			             abstract:false
 		          		}
 
-		addParent(currentNode,elementModel,isChoiceClass)
+		addParent(newNodeParent,elementModel,isChoiceClass)
 		
 		newNodesList.set(newName,elementModel);
 
-		if(addParentToNode){
-			changeNodeParent(addParentToNode.name,newName,ADD_PARENT)
+		if(newNodeChild){
+			/*
+			* add the parent relationship to the child node
+			*/
+			changeNodeParent(newNodeChild.name,newName,ADD_PARENT)
+			newNodeChild.parents.push(newName)
 		}
 
 		return elementModel;
@@ -123,7 +133,7 @@ export const graphUpdateObject=()=>{
 		const newName=`PROPERTY_${(new Date()).getTime()}`;
 		let elementModel={
 							name:newName,
-							id: "NEW PROPERTY ID",
+							id: "",
 				            label:"NEW PROPERTY",
 				            comment:"",
 				            type:propertyType,
@@ -186,6 +196,10 @@ export const graphUpdateObject=()=>{
 		let WOQL = TerminusClient.WOQL
 		const andValues = []
 		newNodesList.forEach((node,key) =>{
+			/*if(node.id===undefined){
+				alert(`The node ${node.name}`)
+			}*/
+
 			if(node.type!==CLASS_TYPE_NAME.CHOICE_CLASS){
 				const newNode={id:node.id,
 							   label:node.label,
@@ -227,7 +241,12 @@ export const graphUpdateObject=()=>{
 				if(['min','max','cardinality'].indexOf(vname)>-1){
 					andValues.push(updateCardinality(WOQL,subjectId,vname,valuesObject[vname],valuesObject['domain']))
 				}else{
- 					andValues.push(WOQL.update_quad(subjectId,vname,valuesObject[vname],'schema/main')) 					
+					if(vname==='abstract'){
+						andValues.push(updateAbstract(WOQL,subjectId,valuesObject[vname]))
+					}else{
+						andValues.push(WOQL.update_quad(subjectId,vname,valuesObject[vname],'schema/main'))
+					}
+ 					 					
  				}
 			}			
 		})
@@ -252,6 +271,17 @@ export const graphUpdateObject=()=>{
 		if(andValues.length===0)return undefined;
 		const query = WOQL.and(...andValues);
 		return query
+	}
+
+	const updateAbstract=(WOQL,subjectId,value)=>{
+		if(value===true){
+			return WOQL.update_quad(subjectId,'system:tag','system:abstract','schema/main')
+		}
+		
+		return WOQL.opt(
+	          WOQL.quad(subjectId, 'system:tag', "system:abstract", "schema/main")
+	          .delete_quad(subjectId, 'system:tag', "system:abstract", "schema/main")
+	    )
 	}
 
 	/*

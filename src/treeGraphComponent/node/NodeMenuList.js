@@ -7,6 +7,14 @@ export const NodeMenuList = (props)=> {
 		if(props.setNodeAction)props.setNodeAction(action_name);
 	}
 
+	const checkDisabledItem = (itemId)=>{
+		if(props.disabledItemsList){
+			const index = props.disabledList.findIndex((item)=>{return item===itemId})
+			if(index>-1)return true;
+		}
+		return false
+	}
+
 	const addMenuItems= () =>{
 	   const menuList=props.menuList || [];
 
@@ -16,7 +24,12 @@ export const NodeMenuList = (props)=> {
 	   let startstep=40;
 
 	   return menuList.map((menuItem,index)=>{
-	   		return  <g key={`item__${index}`} transform={`translate(0,${startstep * index})`} id={menuItem.id} onClick={onClick}>
+	   		let onClickEvent = {onClick:onClick}
+	   		if(checkDisabledItem(menuItem.id)){
+	   			onClickEvent={disabled:true}
+	   		}	
+
+	   		return  <g key={`item__${index}`} transform={`translate(0,${startstep * index})`} id={menuItem.id} {...onClickEvent}>
 	   					<rect fill={'#ffffff'} x={1} y={0} width="165" height="39" />
 	   					<text dx={10} dy={22} fontSize={fontSize}  fill={fontColor} > {menuItem.label} </text> 
 	   				</g>

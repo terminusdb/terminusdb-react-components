@@ -6,7 +6,7 @@ import {GraphContextObj} from '../../hook/graphObjectContext';
 
 export const ParentsElementViewMode =(props)=> {
 
-	const {graphDataProvider,selectedNodeObject} = GraphContextObj()
+	const {graphDataProvider,selectedNodeObject,changeCurrentNode} = GraphContextObj()
 
 	const getParentElement=()=>{
 		const parentElementArr=selectedNodeObject.parents;
@@ -16,37 +16,22 @@ export const ParentsElementViewMode =(props)=> {
 		const displayAll=props.displayAll===false ? false : true;
 
 		if(parentElementArr){
-			parents=parentElementArr.map((parentObj,index)=>{
-
-				const elementObj=graphDataProvider.get(parentObj.name);
+			parents=parentElementArr.map((parentName,index)=>{
+				const elementObj=graphDataProvider.get(parentName);
 				const elementData=elementObj.data;
-					//const currentNodeJson = props.currentNodeJson || {};
-
-				//const parentsElements=this.getParentElement(elementData.parentsObjAsArray(),'Parent');
-				//const schemaElementBowView = parentsElements.length===0 ? true : false;
-
 				return ( <Accordion titleClassName="tdb__accordion__head--green"
 									leftIconClassName = "custom-img-inherit-line"
 									title={elementData.label}  
 									tooltip={elementData.comment}>
-					    	<BaseSchemaElementViewMode currentNodeJson={elementData} />					     	
+					    	<BaseSchemaElementViewMode changeCurrentNode={changeCurrentNode} idLink={true} currentNodeJson={elementData} />					     	
 					     </Accordion>)
 			})
 		}
 		return parents;
 	}
-//{displayAll && parentsElements}
 
-	//render(){
 	let parentsElementArr=props.parentsElementArr || [];
 	const parentsElements=getParentElement(parentsElementArr);
 
 	return (<div>{parentsElements}</div>)
-	//}
-
 }
-
-/*
-{elementData.propertyArray.length>0 && displayAll && 
-					    		<PropertiesComponentViewMode dataProvider={elementData.propertyArray} id="test"/> }
-			  	*/

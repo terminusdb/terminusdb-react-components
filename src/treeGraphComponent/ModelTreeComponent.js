@@ -14,15 +14,18 @@ export const ModelTreeComponent = (props)=>{
      * {@link https://github.com/d3/d3-zoom#zoom}
      * @returns {undefined}
      */
+
     const selectedNode=props.selectedNodeObject && props.selectedNodeObject.name ? props.selectedNodeObject.name : null;
     const treeGraphWrapper = useRef(null);
     const treeGraphContainer = useRef(null);
       
     const [upadateGraph,setTick]=useState(null)
 
-    const [transform, setTransform]=useState();
+    const [graphTransform, setTransform]=useState();
 
     const zoomElement=d3Zoom().scaleExtent([0.1, 8]).on('zoom', function(){_zoomed()});
+
+    const [zoomFactor,setZoomFactor]=useState(1);
 
     const changeSelectedNode = (nodeId)=>{
         if(selectedNode===nodeId)return
@@ -38,15 +41,11 @@ export const ModelTreeComponent = (props)=>{
             props.graphDataProvider.set(nodeId,nodeElement);
             //_tick();
         }
-     }
-
-    const linkWithD3=true;
-    //focusOnNode=focusOnNode.bind(this);
-    
+     }  
 
     const focusOnNode=(nodeId) =>{
 
-        let node=graphData.get(nodeId);
+        let node=props.graphDataProvider.get(nodeId);
 
         if(node){         
             let height=props.height || 500;
@@ -96,9 +95,26 @@ export const ModelTreeComponent = (props)=>{
 
     useEffect(() => {
       //if(selectedNode && props.addedNewNode===true){
-         _linkObjectToD3Action();
+      _linkObjectToD3Action();
+      if(props.isFocusOnNode)focusOnNode(selectedNode);
       //}
     },[selectedNode,props.graphDataProvider])
+
+    useEffect(()=>{
+      if(props.zoomEvent){
+        switch(props.zoomEvent.type){
+          case "ZOOM_IN":
+            zoomIn()
+            break;
+          case "ZOOM_OUT":
+            zoomOut()
+            break;
+          case "RESET_ZOOM":
+            resetZoom()
+            break;
+        }
+      }
+    },[props.zoomEvent])
 
     /**
      * Handles d3 'drag' event.
@@ -132,33 +148,59 @@ export const ModelTreeComponent = (props)=>{
         setTick(Date.now());
     }
 
+//d3Zoom
 
-   
+      const zoomIn=()=>{
+         let height=props.height || 500;
+         let width=props.width || 1000
+
+         const newZoom=graphTransform.k + 0.2;
+
+         //const step= ((graphTransform.x/graphTransform.k)*0.2)/2
+         //??
+         //const xOffset=graphTransform.x-step;
+         //const yOffset=graphTransform.y*newZoom;
+
+         d3Select(treeGraphWrapper.current)
+         .call(zoomElement.transform, d3ZoomIdentity
+         .translate(graphTransform.x,graphTransform.y)
+         .scale(newZoom))
+      }
+
+      const zoomOut=()=>{
+         d3Select(treeGraphWrapper.current)
+         .call(zoomElement.transform, d3ZoomIdentity
+         .translate(graphTransform.x,graphTransform.y)
+         .scale(graphTransform.k - 0.2))
+      }
+
+      const resetZoom=()=>{
+         //d3Select(domElement).call(zoomElement.transform, 
+           // d3ZoomIdentity.translate(props.width/2,50).scale(0.8))
+         d3Select(treeGraphWrapper.current)
+         .call(zoomElement.transform, d3ZoomIdentity
+         .translate(props.width/2,50,50)
+         .scale(0.8))
+      }
 
      /**
        * Handler for 'zoom' event within zoom config.
        * @returns {Object} returns the transformed elements within the svg graph area.
        */
-    const _zoomed = () => {
+      const _zoomed = () => {
           const transform = d3Event.transform;
-        //  transform = d3.event.transform;
-
           d3SelectAll('#treeGraphContainer').attr('transform', transform);
-
-          setTransform(transform.k)
-
-          //setState({ transform: transform.k });
+          setTransform(transform)
       };
 
-      const _zoomConfig = (domElement) => {
-        if(props.width)d3Select(domElement).call(zoomElement.transform, d3ZoomIdentity.translate(props.width/2,50).scale(0.8))
-        d3Select(domElement).call(zoomElement);  
-    }
+      const _zoomConfig = () => {
+        if(props.width)resetZoom()
+        d3Select(treeGraphWrapper.current).call(zoomElement);  
+      }    
 
-
-    const _onDragStart = () =>{
-        var test;
-    }
+      const _onDragStart = () =>{
+          var test;
+      }
 
       const onDrop = (e, complete) =>{
 
@@ -183,6 +225,26 @@ export const ModelTreeComponent = (props)=>{
                 >
 
               <svg width={width} height={height}>
+                <defs>
+                  <marker
+                    className="marker-small"
+                    id="markerArrowEnd"
+                    viewBox="0 -5 10 10"
+                    refX="5"
+                    refY="5"
+                    markerWidth={4}
+                    markerHeight={4}
+                    orient="auto"
+                    fill={'green'}
+                >
+                  <path d="M0,-5L10,0L0,5" fill="green" />
+                </marker>
+               <marker id="markerArrowStart" viewBox="0 0 10 10" refX="5" refY="5"
+                    markerWidth="4" markerHeight="4"
+                    orient="auto-start-reverse">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="green" />
+                </marker>
+                 </defs>
                 <g id={'treeGraphContainer'} ref={treeGraphContainer}>               
                   <rect 
                     opacity={0}
@@ -191,6 +253,7 @@ export const ModelTreeComponent = (props)=>{
                     fill="#ffffff"
                   />
                   <Tree id={'treeGraph'}
+                    objectPropertyToRange={props.objectPropertyToRange}
                     isEditMode={props.isEditMode}
                     needRefresh={needRefresh}
                     nodes={[...props.graphDataProvider.values()]}

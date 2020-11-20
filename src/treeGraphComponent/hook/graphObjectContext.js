@@ -1,18 +1,22 @@
 import React, {useState,useEffect,useContext} from "react";
 import {MainGraphObject} from "../MainGraphObject"
+import {CLASS_TYPE_NAME} from "../utils/elementsName"
 
 export const GraphContext = React.createContext()
 export const GraphContextObj = () => useContext(GraphContext)
 
-export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
+export const GraphObjectProvider = ({mainGraphDataProvider,children,dbName}) => {
 
-	const [graphDataProvider, setGraphDataProvider] = useState([]);
+	const [graphDataProvider, setGraphDataProvider] = useState(null);
 	const [selectedNodeObject, setSelectedNodeObject] = useState({});
-	const [classPropertiesList, setClassPropertiesList] = useState([]);
+	const [nodePropertiesList, setNodePropertiesList] = useState([]);
 
+	const [isFocusOnNode, setFocusOnNode] = useState(false);
+	const [objectPropertyToRange,setObjectPropertyToRange]=useState({})
 
 	const [objectChoicesList, setObjectChoicesList] = useState([]);
 	const [objectPropertyList, setObjectPropertyList] = useState([]);
+
 	const [objPropsRelatedToClass,setObjPropsRelatedToClass]=useState([]);
 
 	const [mainGraphObj, setMainGraphObj] = useState(null);
@@ -22,7 +26,9 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 	const [classesListArr, setClassesListArr] = useState(null);
 	const [entitiesListArr, setEntitiesListArr] = useState(null);
 	const [availableParentsList, setAvailableParentsList] = useState({})
-	const [elementsNumber, setElementNumbers] = useState({})
+
+	const [needToSave, setNeedToSave] = useState(false)
+	const [resetGraph, setResetGraph] = useState()
 	//let mainGraphObj;
 
 	/*
@@ -31,68 +37,74 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 	useEffect(() => {
 
 		if(mainGraphDataProvider){
-			const mainGraphObject= new MainGraphObject(mainGraphDataProvider);
+			const mainGraphObject= new MainGraphObject(mainGraphDataProvider,dbName);
 
 			setMainGraphObj(mainGraphObject)
 			setGraphDataProvider(mainGraphObject.getDescendantsNode())
 			setObjectPropertyList(mainGraphObject.getObjectProperties())
 			setObjectChoicesList(mainGraphObject.getObjectChoices())
+			setObjectPropertyToRange(mainGraphObject.objectPropertyToRange())
 			resetSelection()
-			/*
-			to be review
-			*/
-			setElementNumbers(mainGraphObject.getElementsNumber())
 		}
 
-	}, [mainGraphDataProvider])
+	}, [mainGraphDataProvider,resetGraph])
 
 	const resetSelection=()=>{
 		setSelectedNodeObject({})
-		setClassPropertiesList([])
+		setNodePropertiesList([])
 		setObjPropsRelatedToClass([])
 		setAvailableParentsList({})
 	}
 
-	const changeCurrentNode=(nodeId)=>{
+	const changeCurrentNode=(nodeId,focusOnNode=false)=>{
+		if(selectedNodeObject.type===CLASS_TYPE_NAME.CHOICE_CLASS && 
+			selectedNodeObject.choices && selectedNodeObject.choices.length===0){
+			
+			alert(`Please add at least one value at the node ${selectedNodeObject.label || selectedNodeObject.id}`)
+			return
+		}
+		setFocusOnNode(focusOnNode);
 		if(nodeId===null){
 			setSelectedNodeObject({})
-			setClassPropertiesList([])
+			setNodePropertiesList([])
 			setObjPropsRelatedToClass([])
 		}else if(mainGraphObj && mainGraphObj.getElement(nodeId)){
 			setSelectedNodeObject(mainGraphObj.getElement(nodeId));
-			setClassPropertiesList(mainGraphObj.getPropertyListByDomain(nodeId));
+			setNodePropertiesList(mainGraphObj.getPropertyListByDomain(nodeId));
 			setObjPropsRelatedToClass(mainGraphObj.getObjPropsRelatedToClass(nodeId))
 			setAvailableParentsList(mainGraphObj.getAvailableParentsList(nodeId))
 		}
 	}
 
-	const setNodeAction=(actionName)=>{
-		const nodeObject=mainGraphObj.nodeApplyAction(selectedNodeObject.name,actionName);
-		changeCurrentNode(nodeObject.name);
+	const setNodeAction=(actionName,nodeName=null,focusOnNode=false)=>{
+		const node_name=nodeName || selectedNodeObject.name;
+		const nodeObject=mainGraphObj.nodeApplyAction(actionName,node_name);
+		changeCurrentNode(nodeObject.name,focusOnNode);
 	}
 
 	const addNewProperty=(propertyType,propertyRange)=>{
 		const propertiesList=mainGraphObj.addNewPropertyToClass(selectedNodeObject.name,propertyType,propertyRange);
-		setClassPropertiesList(propertiesList)
+		setNodePropertiesList(propertiesList)
 	}
 	
 	const removeElement=(elementId,elementType)=>{
 		switch(elementType){
-			case 'Document':
-			case 'Class':
+			case CLASS_TYPE_NAME.OBJECT_CLASS:
+			case CLASS_TYPE_NAME.DOCUMENT_CLASS:
+			case CLASS_TYPE_NAME.CHOICE_CLASS:
 				mainGraphObj.removeElementInMainGraph(selectedNodeObject.name);
 				resetSelection()
 				break;
 			default:
 				const propertiesList=mainGraphObj.removePropertyToClass(selectedNodeObject.name,elementId);
-				setClassPropertiesList(propertiesList);
+				setNodePropertiesList(propertiesList);
 		}
 		
 	}
 
 	const updateValue = (propName,propValue,elementDataObject)=>{
 		mainGraphObj.changeElementDataValue(propName,propValue,elementDataObject)
-		if(propName==='label' && elementDataObject.type!=='Property'){
+		if(elementDataObject.type!=='Property' && (propName==='label' || propName==='abstract')){
 			setGraphUpdateLabel(Date.now())
 		}
 	}
@@ -111,27 +123,35 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children}) => {
 		return mainGraphObj.savedObjectToWOQL()
 	}
 
+	const resetTreeModel=()=>{
+		setResetGraph(Date.now())
+	}
+
 	return (
 		<GraphContext.Provider
             value={{
+            resetTreeModel,
+            mainGraphObj,
+            objectPropertyToRange,
 	        graphDataProvider,
 	        selectedNodeObject,
-	        classPropertiesList,
+	        nodePropertiesList,
 	        graphUpdateLabel,
 	        changeCurrentNode,
 	        setNodeAction,
 	        updateValue,
-	        addNewProperty ,
+	        addNewProperty,
 	        removeElement,
 	        objectPropertyList,
 	        objPropsRelatedToClass,
 	        savedObjectToWOQL,
 	        updateParentsList,
 	        availableParentsList,
-	        elementsNumber,
 	        mainGraphObj,
 	        objectChoicesList,
-	        updateChoices
+	        updateChoices,
+	        isFocusOnNode,
+	        needToSave
 	    	}}>
 	     {children}
         </GraphContext.Provider>

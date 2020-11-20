@@ -3,47 +3,28 @@ import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { tree } from 'd3-hierarchy';
 import  {LinkTree} from '../link/LinkTree';
+import  {LinkProperty} from '../link/LinkProperty';
 import  {NodeTree} from '../node/NodeTree';
-
+import {CLASS_TYPE_NAME} from '../utils/elementsName'
 //import {ENTITIES_BUTTON, RELATIONSHIP_BUTTON,CLASSES_BUTTON} from '../../../constants/ObjectsName'
 
 export const Tree = (props) =>{
-    
-
-    /*const checkAddNode = (node)=>{
-        switch(node.data.type){
-          case 'EntityClass':
-            return props[ENTITIES_BUTTON]===false ? false : true;
-          case 'Relationship':
-            return props[RELATIONSHIP_BUTTON]===false ? false : true;
-          case 'OrdinaryClass':
-            return props[CLASSES_BUTTON]===false ? false : true;
-          case 'ROOT':
-          case 'Group':
-            return true;
-          default:
-             return false;
-        }
-
-    }*/
-
-
-
-    //render(){
-    const links=props.links;
-    const nodes=props.nodes;
+    const links=props.links || [];
+    const nodes=props.nodes || [];
+    const objectPropertyToRange=props.objectPropertyToRange || {}
     
     const nodeIndex={};
-      //const that=this;
 
     let nodesChildren=nodes.map((node,i)=>{
 
         let isSelected=false
 
         if(props.selectedNode===node.data.name)isSelected=true;
-        //check multi parent
-            
-        //if(this.checkAddNode(node) && !nodeIndex[node.data.name]){
+          
+          if(node.data.type===CLASS_TYPE_NAME.SCHEMA_GROUP && node.data.children.length===0){
+            return '';
+          }
+
           if(!nodeIndex[node.data.name]){
              nodeIndex[node.data.name]=node;
              return <NodeTree setNodeAction={props.setNodeAction} nodeClick={props.nodeClick} isSelected={isSelected} id={node.data.name} node={node} nodex={node.x}  nodey={node.y} key={'node_'+i} isEditMode={props.isEditMode}/>
@@ -58,10 +39,9 @@ export const Tree = (props) =>{
       let linksChildren=[];
 
       for (let souceName in nodeIndex){
-         let isSelected=false;
-
          const source=nodeIndex[souceName];
          source.data.children.map((targetClass,i)=>{
+             let isSelected=false;
              if(nodeIndex[targetClass.name]){
                 if(targetClass.name===props.selectedNode || source.data.name===props.selectedNode){
                     isSelected=true;
@@ -71,26 +51,40 @@ export const Tree = (props) =>{
                 linkData['source']=source;
                 const linkId=`${souceName}_${targetClass.name}`
 
-                linksChildren.push( <g className="vx-group" transform="translate(0, 0)" key={linkId}>
+                linksChildren.push( 
+                      <g className="vx-group" transform="translate(0, 0)" key={linkId}>
                           <LinkTree link={linkData} isSelected={isSelected}/>
                       </g>)
              }
          })
       }
-      return(
-          <g className="vx-group vx-tree" transform="translate(0, 60)" id="treeGraph">
-            {linksChildren}
-            {nodesChildren}           
-          </g>
 
-        )
-   // }
+    /* let linksProperty=[];
+        for (let rangeName in objectPropertyToRange){
+            const target=nodeIndex[rangeName];
+            let linkData={};
+            //linkData['source']=source;
+
+            const linkPropArr=objectPropertyToRange[rangeName];
+
+            linkPropArr.forEach((property)=>{
+                const source=nodeIndex[property.domain];
+                linksProperty.push( 
+                      <g className="vx-group" transform="translate(0, 0)" >
+                          <LinkProperty label={property.label}  id={property.id} lineColor="#ff0000" source={source} target={target}/>
+                      </g>)
+            })
+      }  */
+
+    return(
+      <>
+        <g className="vx-group vx-tree" transform="translate(0, 60)" id="treeGraph">
+          {linksChildren}
+          {nodesChildren}
+          {/*linksProperty*/}         
+        </g>
+        </>
+      )
 }
 
-/*const mapStateToProps = (state,ownProps) => {
-  const { elementToggleIsChanged } = state
-  return  elementToggleIsChanged
-}
-
-export default connect(mapStateToProps)(Tree)*/
 

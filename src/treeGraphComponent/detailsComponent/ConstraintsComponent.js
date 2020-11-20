@@ -1,14 +1,19 @@
 import React, { useState } from 'react'
-//import AccordionItemComponent from '../layoutComponent/AccordionItemComponent';
-//import RelationshipBox from '../relationshipView/RelationshipBox'
-import {PROPERTY_TYPE_NAME} from '../../constants/details-labels'
+import {PROPERTY_TYPE_NAME,PROPERTY_TYPE_LABEL} from '../utils/elementsName'
+import {GraphContextObj} from '../hook/graphObjectContext'
+import {RelationshipView} from '../relationshipView/RelationshipView'
+
+ 
 const constraintMessage={childrenNum:'This node has',
 						inRelationship:'This node is in this Relationship',
 						relComplexProperty:'This node is a range of the ComplexProperty'}
 
 export const ConstraintsComponent =(props)=>{
     const [checked,setChecked] = useState({checked:false})
-    const nodeData = props.nodeJsonData ? props.nodeJsonData : {}
+
+    const {selectedNodeObject,graphDataProvider} = GraphContextObj();
+
+    const nodeData = selectedNodeObject ? selectedNodeObject : {}
     
     const change=(evt)=>{
        setChecked({checked:evt.target.checked});
@@ -28,37 +33,16 @@ export const ConstraintsComponent =(props)=>{
     						<div className="tdb__list__items">{childrenMessage}</div>
     					</div>)
     	}
-
-    	if(props.objPropsRelatedToClass && props.objPropsRelatedToClass.length>0){
-    		const complexMessage= props.objPropsRelatedToClass.map((complexPropertyObj,index)=>{
-                        return <div className="tdb__list__items"  key={'obj'+index} >This node is related to  
-                                    <b> Property {complexPropertyObj.label} </b> in 
-                                       the <b>{complexPropertyObj.classDomainType} {complexPropertyObj.classDomainLabel}</b>
-                                </div>
-            
-
-            })
-
-            message.push(<div className="tdb__list" key="object_property">
-                           <div className="tdb__list__title">Object Property</div>
-                           {complexMessage}
-                        </div>)
-    	}//*/
-
     	return message;
     }
-
 	
     const message=getConstraintsMessage();
 
 	return(<>
-            <div className="tdb__panel__box">
-			 	For removing a Node,
-			 	the Node doesn't be related with other nodes.
-			 	Here the list of contraints for the current node. 			 					
-			</div>
-            <div className="tdb__panel__box">
-                {message}   
+            <div className="tdb__panel__box">    
+                <RelationshipView
+                 />  
+                {message}
             </div>
         </>
 	)
