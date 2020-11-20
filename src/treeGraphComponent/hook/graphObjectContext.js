@@ -57,6 +57,12 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children,dbName}) => 
 	}
 
 	const changeCurrentNode=(nodeId,focusOnNode=false)=>{
+		if(selectedNodeObject.type===CLASS_TYPE_NAME.CHOICE_CLASS && 
+			selectedNodeObject.choices && selectedNodeObject.choices.length===0){
+			
+			alert(`Please add at least one value at the node ${selectedNodeObject.label || selectedNodeObject.id}`)
+			return
+		}
 		setFocusOnNode(focusOnNode);
 		if(nodeId===null){
 			setSelectedNodeObject({})
