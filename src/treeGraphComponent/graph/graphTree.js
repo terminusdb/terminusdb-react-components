@@ -59,7 +59,7 @@ export const Tree = (props) =>{
          })
       }
 
-    /*  let linksProperty=[];
+    /* let linksProperty=[];
         for (let rangeName in objectPropertyToRange){
             const target=nodeIndex[rangeName];
             let linkData={};
@@ -74,7 +74,7 @@ export const Tree = (props) =>{
                           <LinkProperty label={property.label}  id={property.id} lineColor="#ff0000" source={source} target={target}/>
                       </g>)
             })
-      }  */ 
+      }  */
 
     return(
       <>

@@ -12,6 +12,7 @@ const newNodeTemplate = {
 let index_newObj=1;
 
 export const removeElementToArr=(arrayList,elementName)=>{
+        if(!arrayList)return undefined
         const index=arrayList.findIndex(function(item){return item===elementName || item.name===elementName})
         if(index>-1){
             arrayList.splice(index,1);

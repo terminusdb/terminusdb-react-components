@@ -46,22 +46,23 @@ export const InfoObjectComponent =(props)=> {
 				return <BaseLabelsElementViewMode key={'element__'+index}  name={elementName}
 						onClick={selectNode} value={nodeElement.label || nodeElement.id} />
 			else return '';
-		})
-		
+		})		
 	}
 
 	return(
-			<div className="tdb__panel">
+			<div className="RRT__container RRT__container--viewmode">
 				<div className="tdb__panel__title">
 	  	 			<i className={`tdb__panel__title__icon ${imageType}`}></i>
 	  	 			{title}
 	  	 		</div>
-				 <div className="tdb__panel__box">
-				 {description}
-				</div>
-				<div className="tdb__panel__box">
-				 {getElementList()}
-				</div>						
+	  	 		<div className="tdb__panel">
+					 <div className="tdb__panel__box">
+					 {description}
+					</div>
+					<div className="tdb__panel__box">
+					 {getElementList()}
+					</div>
+				</div>					
 			</div>
 	)
 }

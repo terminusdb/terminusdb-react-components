@@ -6,6 +6,7 @@ export const TableRenderer = (frame, args) => {
         width: "100%",
     }
     let headerstyle = {
+        borderRadius: "6px 0 0 0",
         padding: "6px",
         backgroundColor: "#efefef",
         color: "#888"
@@ -13,6 +14,7 @@ export const TableRenderer = (frame, args) => {
     let labelstyle = {
         backgroundColor: "#efefef",
         fontWeight: 600,
+        borderRadius: "0 0 0 6px",
         textAlign: "right",
         padding: "6px",
         borderBottom: "1px solid white",

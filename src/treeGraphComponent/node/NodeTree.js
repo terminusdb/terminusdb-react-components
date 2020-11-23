@@ -75,7 +75,7 @@ export const NodeTree=(props)=> {
 			case CLASS_TYPE_NAME.OBJECT_CLASS:
 				return (<circle 
 				          markerEnd={props.isSelected ? 'url(#nodeTreeList)' : '' }
-				          r={width/2}		         
+				          r={(width/2)+3}		         
 				          fill={fillColor}
 				          stroke={lineColor}
 				          strokeWidth={lineSize}
@@ -87,6 +87,7 @@ export const NodeTree=(props)=> {
 				        </circle>)
 			case CLASS_TYPE_NAME.CHOICE_CLASS:
 				return (<polygon 
+							transform="rotate(90)"
 							points="0,-60  52,-30  52,30 0,60 -52, 30 -52,-30" 
 							fill={fillColor}
 					        stroke={lineColor}

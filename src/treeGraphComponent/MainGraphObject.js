@@ -22,10 +22,14 @@ export const MainGraphObject = (mainGraphDataProvider,dbName)=>{
 	let _objectChoiceList =[]
 
     /*
-    * all the propertyList ????
+    * the list of all the property
     */
 	let _propertiesList=new Map();
-
+	
+	/*
+	* properties organized by domain
+	* {domaidName:[{propertyObj001},{propertyObj002}]}
+	*/
 	let _domainToProperties={};
 
 	/*
@@ -34,10 +38,14 @@ export const MainGraphObject = (mainGraphDataProvider,dbName)=>{
 	let _objectPropertyList=[];
 
 	/*
-	* {range:[propertyId001,propertyId002...]}
+	* Link Properties/Enum Property organized by range
+	* {rangeidName:[{propertyObj001},{propertyObj002}]}
 	*/
 	let _objectPropertyToRange={};
 
+	/*
+	* all the node elements
+	*/
 	let _rootIndexObj={}
 
 	let _descendantsNode=new Map();
@@ -370,8 +378,9 @@ export const MainGraphObject = (mainGraphDataProvider,dbName)=>{
 	}
 
 	/*
-	*I can remove a node if it hasn't
-	*children and it is not in a relationship (target, source)
+	* I can remove a node if it hasn't
+	* children and it is not a target in a relationship 
+	* (this node can not be a range in a property link)
 	*/
 	const removeElementInMainGraph=(elementName)=>{
 		const listOfProperty=_domainToProperties[elementName] || [];
@@ -384,27 +393,26 @@ export const MainGraphObject = (mainGraphDataProvider,dbName)=>{
 		return _removeClassElement(elementName);
 	}
 
+
 	const removePropertyToClass=(domainClassName,propertyName)=>{
 		const propertyObject=_propertiesList.get(propertyName);
 
-		const listOfProperty=_domainToProperties[domainClassName] || [];
-
-		removeElementToArr(listOfProperty,propertyName)
+		const propertyByDomain=_domainToProperties[domainClassName] || [];	
+		
+		//remove by domain
+		removeElementToArr(propertyByDomain,propertyName)
+		
+		// remove by range
+		const propertyByRange=_objectPropertyToRange[propertyObject.range];
+		removeElementToArr(propertyByRange,propertyName);
+		
+		//remove from property list
 		_propertiesList.delete(propertyName);
 
 		_graphUpdateObject.removePropertyToClass(propertyObject);
 
-		return listOfProperty.slice();
+		return propertyByDomain.slice();
 	}
-
-	/*const removeElementToArr=(arrayList,elementName)=>{
-		const index=arrayList.findIndex(function(item){return item.name===elementName || item===elementName})
-		if(index>-1){
-			arrayList.splice(index,1);
-			return elementName;
-		}
-		return undefined;
-	}*/
 
 	/*
       *if I remove a parent 
@@ -517,14 +525,14 @@ export const MainGraphObject = (mainGraphDataProvider,dbName)=>{
 			default:
 			//objectPropertyRangeItem
 
-			const currentProperty=_propertiesList.get(elementDataObject.name);
-			const propRange=currentProperty.range;
-			currentProperty[propName]=propValue;
+				const currentProperty=_propertiesList.get(elementDataObject.name);
+				const propRange=currentProperty.range;
+				currentProperty[propName]=propValue;
 
-			if(propName==='range' && _rootIndexObj[propValue]!==undefined){
-				const classElement=_rootIndexObj[propValue]
-				addObjectPropertyRangeItem(_objectPropertyToRange,currentProperty,classElement,propRange)
-			}
+				if(propName==='range' && _rootIndexObj[propValue]!==undefined){
+					const classElement=_rootIndexObj[propValue]
+					addObjectPropertyRangeItem(_objectPropertyToRange,currentProperty,classElement,propRange)
+				}
 			
 		}
 	}
