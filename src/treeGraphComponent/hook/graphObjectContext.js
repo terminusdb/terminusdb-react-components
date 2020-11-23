@@ -65,9 +65,7 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children,dbName}) => 
 		}
 		setFocusOnNode(focusOnNode);
 		if(nodeId===null){
-			setSelectedNodeObject({})
-			setNodePropertiesList([])
-			setObjPropsRelatedToClass([])
+			resetSelection()
 		}else if(mainGraphObj && mainGraphObj.getElement(nodeId)){
 			setSelectedNodeObject(mainGraphObj.getElement(nodeId));
 			setNodePropertiesList(mainGraphObj.getPropertyListByDomain(nodeId));

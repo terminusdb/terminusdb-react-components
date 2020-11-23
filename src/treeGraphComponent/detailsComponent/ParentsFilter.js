@@ -10,7 +10,7 @@ import {CLASS_TYPE_NAME,CLASS_TYPE_NAME_LABEL,getLabelByName} from '../utils/ele
 
 export const ParentsFilter = (props) => {
 	const {selectedNodeObject,graphDataProvider,updateParentsList,availableParentsList} = GraphContextObj();
-
+	
 	const [classType,setClassType]=useState(CLASS_TYPE_NAME.OBJECT_CLASSES)
 	const [dataProvider,setDataProvider]=useState(null)
 	const [showAddParentsBox, setShowAddParentsBox]= useState(false)
@@ -21,7 +21,7 @@ export const ParentsFilter = (props) => {
 	const placeholder=`Add ${getLabelByName(classType)}  as Parent`
 
 	const getClassDataProvider=(classTypeName)=>{
-		let dataProvider=[];
+		let dataProvider=[];		
 		switch(classTypeName){
 			case CLASS_TYPE_NAME.DOCUMENT_CLASS:
 				 classTypeName=CLASS_TYPE_NAME.DOCUMENT_CLASSES;
@@ -52,10 +52,10 @@ export const ParentsFilter = (props) => {
 		if(!availableParentsList || (availableParentsList.objectClassArr.length===0 && 
 			availableParentsList.documentClassArr.length===0)){
 			setShowAddParentsBox(false);
-		}else{
+		}else{				
 			setShowAddParentsBox(true);
 			getClassDataProvider(selectedNodeObject.type)
-		}
+		}					 	
 	},[availableParentsList])
 
 

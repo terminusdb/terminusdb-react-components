@@ -199,8 +199,7 @@ export const formatDataForTreeChart =(rootElement)=>{
 	       		objectPropertyList.push({type:node.data.type,value:node.data.name,name:node.data.name,label:node.data.label})
 	       }else if (node.data.type===CLASS_TYPE_NAME.CHOICE_CLASS){
 	       		objectChoiceList.push({value:node.data.name,name:node.data.name,label:node.data.label});
-	       }	        	       
-	   	
+	       }	        	       	   	
 	   }
 	   descendantsNode.set(node.data.name,node);      
     }
