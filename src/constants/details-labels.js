@@ -99,7 +99,7 @@ export const STRING_TYPE_DATAPROVIDER={label: 'String Type',
 export const CLASS_PROPERTIES_LIST=[{label:'Enum Property', id:'ChoiceProperty',range:''},
 		    					   {label:'Numeric Property', id:'NumericProperty',defaultRange:'xsd:decimal'},
 		    					   {label:'String Property', id:'StringProperty',defaultRange:'xsd:string'},
-		    					   {label:'Geo Property', id:'GeoProperty',defaultRange:'xsd:string'},
+		    					   {label:'Geo Property', id:'GeoProperty',defaultRange:'xdd:coordinate'},
 		    					   {label:'Temporal Property', id:'TemporalProperty',defaultRange:'xsd:dateTime'},
 		    					   {label:'Link Property', id:'LinkProperty',defaultRange:''}]
 
