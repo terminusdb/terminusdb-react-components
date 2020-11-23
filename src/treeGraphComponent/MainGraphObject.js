@@ -362,7 +362,7 @@ export const MainGraphObject = (mainGraphDataProvider,dbName)=>{
 					removeElementToArr(_objectTypeList,elementName)
 					removeElementToArr(_objectPropertyList,elementName) //_classesList.delete(elementName);
 					break;
-			    case CLASS_TYPE_NAME.DOCUMENT_CLASSES:
+			    case CLASS_TYPE_NAME.DOCUMENT_CLASS:
 			    	removeElementToArr(_documentTypeList,elementName)
 			    	removeElementToArr(_objectPropertyList,elementName)
 			    	break;

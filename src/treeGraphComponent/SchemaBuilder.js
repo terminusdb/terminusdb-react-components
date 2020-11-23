@@ -26,8 +26,6 @@ export const SchemaBuilder = (props)=>{
 		  objectPropertyList,
 		  objPropsRelatedToClass,
 		  savedObjectToWOQL,updateChoices,isFocusOnNode
-		  //updateParentsList,availableParentsList
-		  //entitiesListArr,classesListArr
 		  } = GraphContextObj();
 
 	const [isEditMode,setIsEditMode]=useState(false)

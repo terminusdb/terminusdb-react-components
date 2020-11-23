@@ -6,7 +6,7 @@ import {GraphContextObj} from '../../hook/graphObjectContext';
 
 export const ParentsElementViewMode =(props)=> {
 
-	const {graphDataProvider,selectedNodeObject,changeCurrentNode} = GraphContextObj()
+	const {mainGraphObj,selectedNodeObject,changeCurrentNode} = GraphContextObj()
 
 	const getParentElement=()=>{
 		const parentElementArr=selectedNodeObject.parents;
@@ -17,12 +17,12 @@ export const ParentsElementViewMode =(props)=> {
 
 		if(parentElementArr){
 			parents=parentElementArr.map((parentName,index)=>{
-				const elementObj=graphDataProvider.get(parentName);
-				const elementData=elementObj.data;
+				const elementData=mainGraphObj.getElement(parentName);
 				return ( <Accordion titleClassName="tdb__accordion__head--green"
 									leftIconClassName = "custom-img-inherit-line"
 									title={elementData.label}  
-									tooltip={elementData.comment}>
+									tooltip={elementData.comment}
+									key={`parent__${parentName}`}>
 					    	<BaseSchemaElementViewMode changeCurrentNode={changeCurrentNode} idLink={true} currentNodeJson={elementData} />					     	
 					     </Accordion>)
 			})
