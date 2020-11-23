@@ -171,6 +171,7 @@ export const graphUpdateObject=()=>{
 		if(propertyObj.type===PROPERTY_TYPE_NAME.OBJECT_PROPERTY){
 			copyNode['range']=getRealId(copyNode.range);
 		}
+		copyNode.id=`scm:${propertyObj.id}`;
 		return copyNode
 	}
 
