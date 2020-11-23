@@ -2,7 +2,7 @@ import React, { useState,Fragment } from 'react'
 import {BasePropertyComponent} from './BasePropertyComponent'
 import {ObjectProperty} from './ObjectProperty'
 import {PropertyMenuList} from './PropertyMenuList'
-import {PROPERTY_TYPE_NAME} from '../utils/elementsName'
+import {PROPERTY_TYPE_NAME,CLASS_TYPE_NAME_LABEL} from '../utils/elementsName'
 import {STRING_TYPE_DATAPROVIDER,NUMBER_PROPERTY_PRECISION_DATAPROVIDER,
 		GEOMETRY_PROPS_DATAPROVIDER,TEMPORAL_PROPERTY_DATAPROVIDER} from '../../constants/details-labels';
 
@@ -36,8 +36,8 @@ export const PropertiesComponent = (props)=> {
 		   		case PROPERTY_TYPE_NAME.CHOICE_PROPERTY:
 		   			baseObj['showCardinality'] =false;
 		   			baseObj['comboDataProvider']=objectChoicesList || [];
-		   			baseObj['title']='Choice Type *'
-		   			baseObj['placeholder']='Select Choice Type'
+		   			baseObj['title']=`${CLASS_TYPE_NAME_LABEL.CHOICE_CLASS} Type *`
+		   			baseObj['placeholder']=`Select ${CLASS_TYPE_NAME_LABEL.CHOICE_CLASS} Type`
 		   			return <ObjectProperty  {...baseObj} key={propertyItem.name}/>;
 		   		
 		   		case PROPERTY_TYPE_NAME.NUMERIC_PROPERTY:
