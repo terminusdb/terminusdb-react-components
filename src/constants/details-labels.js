@@ -18,7 +18,8 @@ export const PROPERTY_STRING_BY_RANGE={'string':'xsd:string',
 										'json':'xdd:json',
 										'base64Binary':'xsd:base64Binary',
 										'html':'xdd:html',
-										'url':'xdd:url'};
+										'url':'xdd:url',
+										'email':'xdd:email'};
 
 export const PROPERTY_NUMBER_BY_RANGE={ 'integer':'xsd:integer', 
 										'decimal':'xsd:decimal',
