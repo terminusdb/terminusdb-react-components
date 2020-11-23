@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 //import {schemaElementSelectOption} from '../../actions/graphActions';
 //import {changeDataValueToMainGraph} from '../../actions/treeModelActions';
 import PropTypes from 'prop-types'; 
@@ -7,6 +7,13 @@ import {HelpComponent} from './HelpComponent'
 export const BaseSelectComponent = (props) => {
 
 	const [value,setValue]=useState(props.defaultValue)
+
+	useEffect(() => {
+      if(value!==props.defaultValue){
+        setValue(props.defaultValue)
+      }
+       
+    },[props.defaultValue])
 
 	const getDisabledOptions=(allowedValue,value)=>{
 		if(!allowedValue || allowedValue==="ALL" || value==="")return {}
