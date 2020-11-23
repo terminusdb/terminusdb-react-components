@@ -16,20 +16,21 @@ export const BaseElement = (props)=>{
     const nodeJsonData=props.nodeJsonData || {}
 
     const changeElement=(name,value)=>{
-        const trimValue=value.trim();
-        if(name==="id"){           
-            if(trimValue.indexOf(" ")>-1){
+        let val=value;
+        if(name==="id"){  
+            val = value.trim();       
+            if(val.indexOf(" ")>-1){
                 setIndexError("Please remove all the white space");
                 return;
             }
-            if(trimValue===""){
+            if(val===""){
                 setIndexError("Please enter a valid ID");
                 return;
             }
             setIndexError(false);
         }
         if(props.updateValue){
-            props.updateValue(name,trimValue,nodeJsonData);
+            props.updateValue(name,val,nodeJsonData);
         }
     }
 
