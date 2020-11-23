@@ -23,7 +23,7 @@ export const TableRenderer = (frame, args) => {
 
     let valuestyle = {
         padding: "0.5em"
-        
+
     }
 
     const renderValue = (frame) => {
@@ -31,22 +31,22 @@ export const TableRenderer = (frame, args) => {
             return frame.get()
 		}
 		else {
-			return TableRenderer(frame) 			
+			return TableRenderer(frame)
 		}
     }
 
     const renderProperty = (frame, p) => {
         let rows = []
-        let labpart = <td style={labelstyle} rowspan={frame.values.length}>{frame.getLabel()}</td>
+        let labpart = <td style={labelstyle} rowSpan={frame.values.length}>{frame.getLabel()}</td>
         for(var i = 0 ; i < frame.values.length; i++){
             if(i == 0){
-                rows.push(<tr>
+                rows.push(<tr key={i}>
                     {labpart}
                     <td style={valuestyle} >{renderValue(frame.values[i])}</td>
                 </tr>)
             }
             else {
-                rows.push(<tr>
+                rows.push(<tr key={i}>
                     <td style={valuestyle}>{renderValue(frame.values[i])}</td>
                 </tr>)
             }
@@ -67,7 +67,7 @@ export const TableRenderer = (frame, args) => {
     return (
         <table style={tabstyle}>
             <thead>
-                <tr><th colspan="2" style={headerstyle} title={frame.subject()}>{frame.subjectClass()}</th></tr>
+                <tr><th colSpan="2" style={headerstyle} title={frame.subject()}>{frame.subjectClass()}</th></tr>
             </thead>
             <tbody>
                 {renderProperties(frame)}

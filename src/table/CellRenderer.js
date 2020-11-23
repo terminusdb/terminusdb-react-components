@@ -242,19 +242,11 @@ export const StringRenderer = ({value, type, column, row, cell, view, args, pref
         setShowingFull(!showingFull)
     }
     return (<span>
-<<<<<<< HEAD
-        {showingFull &&
-            <span>{value} </span>
+        {showingFull && 
+            <span title={"String Type: " + type}>{value} </span>
         }
         {!showingFull &&
-            <span title={value}>{txt} </span>
-=======
-        {showingFull && 
-            <span title={"String Type: " + type}>{value} </span> 
-        }
-        {!showingFull && 
             <span title={"Type: " + type + ", Value: " + value}>{txt} </span>
->>>>>>> 6ffa47ae51b5f08ae3ff42a3098ae66edc3d62e7
         }
         {/*canTruncate &&
             <button onClick={toggleFull}> {(showingFull ? "less" : "more")} </button>
