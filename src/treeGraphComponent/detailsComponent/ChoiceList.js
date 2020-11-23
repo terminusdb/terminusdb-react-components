@@ -7,15 +7,13 @@ import {ListComponent} from './ListComponent';
 
 export const ChoiceList =(props)=> {
 	const [choicesList,setChoiceList] =useState(props.choices || [])
-	//const [itemData, setItemData] = useState({label:'',comment:'',id:''})
-	
+
 	const [labelValue,setLabel]=useState('')
 	const [commentValue,setComment]=useState('')
 	const [idValue,setId]=useState('')
 
 	const [idReqError,setIdReqError] =useState('')
 	
-	//const itemData={label:'',comment:'',id:''};
 
 	const addNewBox =()=>{
 		if(!idValue){
@@ -51,8 +49,17 @@ export const ChoiceList =(props)=> {
 				setLabel(value)
 				break;
 			case "id":
-				setId(value)
-				if(value!=='')setIdReqError('')
+				const idval=value.trim();
+				setId(idval)				
+	            if(idval.indexOf(" ")>-1){
+	                setIdReqError("Please remove all the white space");
+	                return;
+	            }
+	            if(idval===""){
+	                setIdReqError("Please enter a valid ID");
+	                return;
+	            }
+				if(idval!=='')setIdReqError('')
 				break
 		}
 	}
