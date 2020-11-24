@@ -54,6 +54,7 @@ export const ParentsFilter = (props) => {
 			setShowAddParentsBox(false);
 		}else{				
 			setShowAddParentsBox(true);
+			
 			getClassDataProvider(selectedNodeObject.type)
 		}					 	
 	},[availableParentsList])
