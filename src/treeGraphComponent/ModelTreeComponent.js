@@ -168,10 +168,11 @@ export const ModelTreeComponent = (props)=>{
       }
 
       const zoomOut=()=>{
+         const newZoom=Math.max((graphTransform.k - 0.2),0.1);               
          d3Select(treeGraphWrapper.current)
          .call(zoomElement.transform, d3ZoomIdentity
          .translate(graphTransform.x,graphTransform.y)
-         .scale(graphTransform.k - 0.2))
+         .scale(newZoom))
       }
 
       const resetZoom=()=>{
