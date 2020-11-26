@@ -4,9 +4,9 @@ import TerminusClient from '@terminusdb/terminusdb-client'
 
 export const modelCallServerHook = (woqlClient,branch,ref) => {
 
-	const [mainGraphDataProvider, setResultMainGraph] = useState({classesResult:{},
-																  propsResult:{},
-																  restResult:{}});
+	const [mainGraphDataProvider, setResultMainGraph] = useState({classesResult:null,
+																  propsResult:null,
+																  restResult:null});
 	const [reloadGraph, setReloadGraph] = useState(null);
 
 	const [callServerLoading, setLoading] = useState(false);

@@ -1,7 +1,7 @@
 import React ,{useState} from 'react';
 import {CLASS_PROPERTIES_LIST} from '../../constants/details-labels';
 import {Dropdown} from '../../form/Dropdown'; 
-
+import {PROPERTY_TYPE_NAME} from '../utils/elementsName'
 export const PropertyMenuList =(props)=>  {
 
     const propertyTypeList=Array.from(CLASS_PROPERTIES_LIST);
@@ -14,9 +14,14 @@ export const PropertyMenuList =(props)=>  {
         props.addNewProperty(propertyType,propertyRange)
     }
 
-    const entries = propertyTypeList.map((item, index) => 
-                <button onClick={function(){addNewProperty(item.id,item.defaultRange)}}
-                    className="tdb__dropdown__button" key={item.id} > {item.label}</button>)
+    const entries = propertyTypeList.map((item, index) =>{
+             let onClick={onClick:()=>{addNewProperty(item.id,item.defaultRange)}}
+
+             if(item.id===PROPERTY_TYPE_NAME.CHOICE_PROPERTY && props.enumDisabled===true){
+                onClick={disabled:true}
+             }
+             return <button {...onClick} className="tdb__dropdown__button" key={item.id} > {item.label}</button>
+        })
 
 	return(
 		<div className="tdb__panel__bar">

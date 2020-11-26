@@ -44,7 +44,9 @@ export const SchemaBuilder = (props)=>{
          //startDataProsition();      
         if(graphDataProvider && graphDataProvider.size===4){
 			setIsEditMode(true);
-		}
+		}//else{
+			//setIsEditMode(false);
+		//}
     }, [graphDataProvider])
 	
 	//const panelIsOpen=props.panelIsOpen || true;

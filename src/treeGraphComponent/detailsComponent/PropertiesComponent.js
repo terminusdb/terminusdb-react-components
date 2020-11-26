@@ -18,6 +18,8 @@ export const PropertiesComponent = (props)=> {
 		  objectChoicesList,
 		  selectedNodeObject} = GraphContextObj();
 
+	const enumDisabled=!objectChoicesList || objectChoicesList.length===0 ? true : false;
+
 	const getPropertiesPanels=()=>{
 		let showBody=true;
 		/*
@@ -68,7 +70,8 @@ export const PropertiesComponent = (props)=> {
 	const propertiesPanels=getPropertiesPanels(nodePropertiesList);
 	return(
 	    <Fragment>
-	    	<PropertyMenuList buttonIconClassName="menuWithLabel"
+	    	<PropertyMenuList enumDisabled={enumDisabled} 
+	    				  buttonIconClassName="menuWithLabel"
 						  iconClassName="fa fa-caret-down iconWithLabel" 
 		                  dropdownMenuClassName="dropdownMenuProperty rightPosition" 
 		                  addNewProperty={addNewProperty}/>				     
