@@ -36,9 +36,8 @@ export const GraphObjectProvider = ({mainGraphDataProvider,children,dbName}) => 
 	*/
 	useEffect(() => {
 
-		if(mainGraphDataProvider){
+		if(mainGraphDataProvider && mainGraphDataProvider.classesResult!==null){
 			const mainGraphObject= new MainGraphObject(mainGraphDataProvider,dbName);
-
 			setMainGraphObj(mainGraphObject)
 			setGraphDataProvider(mainGraphObject.getDescendantsNode())
 			setObjectPropertyList(mainGraphObject.getObjectProperties())
