@@ -37,8 +37,9 @@ export const ObjectRenderer = ({frame, mode, view}) => {
 
     if(!frame) return null
 
-    let showid = false
-    let showtype = false
+    let showid = (view && view.show_id && (frame.depth() == 0) ? view.show_id : false) 
+    let showtype = (view && view.show_type ? view.show_type : false)
+
 
     let headerstyle = {
         borderRadius: "6px 0 0 0",
@@ -94,18 +95,16 @@ export const ObjectRenderer = ({frame, mode, view}) => {
     return <>
             <thead>
                 <tr>
-                    {mode!="edit" &&
-                        <th colSpan="2" style={headerstyle} title={frame.subject()}>
-                            {frame.subjectClass()}
-                        </th>
-                    }
+                    <th colSpan="2" style={headerstyle} title={frame.subject()}>
+                        {frame.subjectClass()}
+                    </th>
                     {mode=="edit" &&
-                        <th colSpan="3" style={headerstyle}>
+                        <th style={headerstyle}>
                             <Row>
-                                <Col title={frame.subject()}>{frame.subjectClass()}</Col>
                                 <Col>
                                     {getMissingPropertySelector()}
                                 </Col>
+                                <Col></Col>
                             </Row>
                         </th>
                     }                                   </tr>
@@ -177,7 +176,20 @@ export const PropertyRenderer = ({frame, mode, view}) => {
     const [rvals, setRvals] = useState()
 
     let delstyle = {
-        padding: "4px"
+        padding: "2px",
+        width: "16px",
+        textAlign: "center"
+    }
+
+    let minusStyle = {
+        color: "red",
+        fontSize: "2em",
+        backgroundColor: "white"
+    }
+
+    let plusStyle = {
+        color: "green",
+        fontSize: "1.3em",
     }
 
     useEffect(() => setRvals(getPvals()), [frame, mode])
@@ -202,7 +214,7 @@ export const PropertyRenderer = ({frame, mode, view}) => {
     function getLabelPart(len){
         return <td key={frame.predicate + "_label"} style={labelstyle} rowSpan={len}>
             {mode == "edit" &&
-                <button onClick={addValue}>+</button>
+                <button style={plusStyle} onClick={addValue}>+</button>
             }
             {frame.getLabel()}
         </td>
@@ -242,7 +254,7 @@ export const PropertyRenderer = ({frame, mode, view}) => {
             rows.push(<tr key={frame.predicate  + "_" + i}>
                 {getLabelPart(rvals.length)}
                 {mode == "edit" &&
-                    <td style={delstyle}><button onClick={getDelVal(i, rvals[i])}>-</button> </td>
+                    <td style={delstyle}><button style={minusStyle} onClick={getDelVal(i, rvals[i])}>-</button> </td>
                 }
                 <td key={frame.predicate  + "_value_" + i} style={valuestyle} >
                     <ValueRenderer redraw={redraw} frame={rvals[i]} mode={mode} view={view}/>
@@ -252,7 +264,7 @@ export const PropertyRenderer = ({frame, mode, view}) => {
         else {
             rows.push(<tr key={frame.predicate + "_" + i}>
                 {mode == "edit" &&
-                    <td style={delstyle}><button onClick={getDelVal(i, rvals[i])}>-</button></td>
+                    <td style={delstyle}><button style={minusStyle} onClick={getDelVal(i, rvals[i])}>-</button></td>
                 }
                 <td style={valuestyle}>
                     <ValueRenderer redraw={redraw} frame={rvals[i]} mode={mode} view={view}/>
@@ -285,8 +297,7 @@ export const ValueRenderer = ({frame, mode, view, redraw}) => {
         return <DataRenderer val={v} type={frame.getType()} mode={mode} updateVal={updval} view={view} />
     }
     else {
-        alert("Frame has no known type")
-        console.log(frame)
+        console.log("Frame has no known type", frame)
     }
 }
 
