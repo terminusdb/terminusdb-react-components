@@ -8,10 +8,10 @@ export const WOQLTable = ({bindings, result, view, freewidth, query, start, limi
     if(view)  wt.loadJSON(view.table, view.rules)
     let woqt = new TerminusClient.WOQLTable(false, wt)
     let pagenum = (limit ? parseInt((start) / limit) : 1)
-    let pages = (limit ? parseInt(((totalRows-1)/limit)+1) : 1)  
+    let pages = (limit ? parseInt(((totalRows-1)/limit)+1) : 1)
     if(totalRows == 0) pages = 0
     let prefixes = (result && result.prefixes ? result.prefixes : (query ? query.getContext() : {}))
-    
+
     const [data, columns]  = useMemo(() => makeData(), [bindings, result])
 
     function makeData(){
@@ -41,26 +41,26 @@ export const WOQLTable = ({bindings, result, view, freewidth, query, start, limi
         }
         else {
             let rendargs = woqt.getRenderer(props.cell.column.id, props.cell.row.original)
-            if(typeof props.cell.value == "string" || typeof props.cell.value == "number" || 
-                Array.isArray(props.cell.value) || 
-                (typeof props.cell.value == "object" && (props.cell.value['@type'] || 
+            if(typeof props.cell.value == "string" || typeof props.cell.value == "number" ||
+                Array.isArray(props.cell.value) ||
+                (typeof props.cell.value == "object" && (props.cell.value['@type'] ||
                 typeof props.cell.value['@value'] != "undefined"))){
-                    return <CellRenderer 
-                        args={rendargs} 
+                    return <CellRenderer
+                        args={rendargs}
                         value={props.cell.value}
-                        column={props.cell.column.id} 
-                        row={props.cell.row.original} 
-                        view={woqt} 
+                        column={props.cell.column.id}
+                        row={props.cell.row.original}
+                        view={woqt}
                         cell={props.cell}
                         prefixes={prefixes}
-                    />                 
+                    />
             }
             if(typeof props.cell.value == "undefined"){
                 return ""
             }
             return props.cell.value
         }
-    }    
+    }
 
     function formatTableColumns(){
         let colids = woqt.getColumnsToRender()
@@ -86,18 +86,17 @@ export const WOQLTable = ({bindings, result, view, freewidth, query, start, limi
     }
     if(!data || !data.length) return null
     return(
-        <TableComponent 
-            data={data} 
-            columns={columns} 
+        <TableComponent
+            data={data}
+            columns={columns}
             freewidth={freewidth}
             view={woqt}
             orderBy={orderBy}
-            pages={pages} 
+            pages={pages}
             pageNumber={pagenum}
             rowCount={totalRows}
-            setLimits={setLimits} 
+            setLimits={setLimits}
             setOrder={setOrder}
         />
     )
 }
-
