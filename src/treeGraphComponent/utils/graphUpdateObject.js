@@ -253,11 +253,13 @@ export const graphUpdateObject=()=>{
 		})
 
 		deleteNodesList.forEach((nodeObj)=>{
-			andValues.push(WOQL.delete_class(nodeObj.name));
+			const varName=`v:${nodeObj.id}`
+			andValues.push(WOQL.delete_class(nodeObj.name,null,varName));
 		})
 
 		deletePropertiesList.forEach((proObj)=>{
-			andValues.push(WOQL.delete_property(proObj.name));
+			const varName=`v:${proObj.id}`
+			andValues.push(WOQL.delete_property(proObj.name,null,varName));
 		})
 
 		/*
