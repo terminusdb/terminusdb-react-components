@@ -383,7 +383,7 @@ export const MainGraphObject = (mainGraphDataProvider,dbName)=>{
 	* (this node can not be a range in a property link)
 	*/
 	const removeElementInMainGraph=(elementName)=>{
-		const listOfProperty=_domainToProperties[elementName] || [];
+		const listOfProperty=_domainToProperties[elementName] ? _domainToProperties[elementName].slice() : [];
 		if(listOfProperty.length>0){
 			listOfProperty.forEach((property,key)=>{
 				removePropertyToClass(elementName,property.name);
