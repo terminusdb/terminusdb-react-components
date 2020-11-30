@@ -569,7 +569,7 @@ GraphResultsViewer.prototype.setConfigOptions = function(config) {
 			radius: (config && config.node && config.node.radius ? config.node.radius : 16),//14),
 			charge: (config && config.node && config.node.charge ? config.node.charge : -60),
 			collisionRadius: (config && config.node && config.node.collisionRadius ? config.node.collisionRadius : 20),
-			color: (config && config.node && config.node.color ? config.node.color : [245, 114, 7]),//[245, 179, 66]),//[0,255,255]),
+			color: (config && config.node && config.node.color ? config.node.color : [255, 127, 14]),//[245, 114, 7]),//[245, 179, 66]),//[0,255,255]),
 			icon: {
 				weight: (config && config.node && config.node.icon && config.node.icon.weight ? config.node.icon.weight : 900),
 				color: (config && config.node && config.node.icon && config.node.icon.color ? config.node.icon.color : [255, 255, 255]),//[0,0,255]),

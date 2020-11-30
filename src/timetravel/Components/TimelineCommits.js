@@ -9,6 +9,9 @@ import { SizeMe } from 'react-sizeme'
 import useDimensions from "react-use-dimensions";
 import {useCommitsControl} from '../hook/useCommitsControl';
 
+/*
+* I have to fix the size start
+*/
 export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStartTime,currentCommit,headMessage,firstCommit,onChange}) =>{
     
     const [ref, { x, y, width }] = useDimensions();
