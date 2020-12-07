@@ -17,6 +17,8 @@
 
  /*WOQL Table*/
  export {WOQLTable} from './table/WOQLTable';
+ export {ControlledWOQLTable} from './table/ControlledTable';
+ export {ControlledQueryHook} from './table/ControlledQuery';
 
 /*WOQL Graph*/
  export {WOQLGraph} from './graph/GraphComponent';
