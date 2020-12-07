@@ -40,7 +40,9 @@ export const Tree = (props) =>{
 
       for (let souceName in nodeIndex){
          const source=nodeIndex[souceName];
-         source.data.children.map((targetClass,i)=>{
+         const children=source.data.allChildren || source.data.children || []
+         
+         children.map((targetClass,i)=>{
              let isSelected=false;
              if(nodeIndex[targetClass.name]){
                 if(targetClass.name===props.selectedNode || source.data.name===props.selectedNode){
