@@ -7,6 +7,7 @@ function GraphResultsViewer(config,result) {
 	// Individual links, nodes and text graphical elements
 	this.link_elements;
 	this.node_elements;
+	this.text_elements;
 	// DOM object that this this is directly drawn into
 	this.container = false;
 	// Map of ids to loaded nodes for ease
@@ -276,7 +277,10 @@ GraphResultsViewer.prototype.zoomed = function() {
 	if(this.node_elements)
 		this.node_elements.attr("transform", d3.event.transform);
     if(this.link_elements)
-    	this.link_elements.attr("transform", d3.event.transform);
+        this.link_elements.attr("transform", d3.event.transform);
+    if(this.edgepaths)
+        this.edgepaths.attr("transform",  d3.event.transform);    
+
 }
 
 /***
@@ -332,19 +336,60 @@ GraphResultsViewer.prototype.updateGraph = function(nodes, links) {
 	// remove old links
 	this.link_elements.exit().remove();
 	// enter and create new ones
-	var link_enter = this.link_elements.enter().append("line");
+    var link_enter = this.link_elements.enter().append("line")
 
-	// merge new and old links
+    	// merge new and old links
 	this.link_elements = link_enter.merge(this.link_elements)
 
 	this.styleLinkElements();
+
+    this.edgepaths = this.svg.selectAll(".edgepath").data(links)
+	this.edgepaths.exit().remove();
+	// enter and create new ones
+    var ep_enter = this.edgepaths
+        .enter()
+        .append('path')
+        .style("pointer-events", "none")
+        .attr('d', function(d) {return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y})
+        .attr('class', 'edgepath')
+        .attr('fill-opacity', 0)
+        .attr('stroke-opacity', 0)
+        .attr('fill', 'blue')
+        .attr('stroke', 'red')
+        .attr('id', function(d,i) {return 'edgepath'+i})
+    if(ep_enter) this.edgepaths = ep_enter.merge(this.edgepaths)
+
+
+    this.edgelabels = this.svg.selectAll(".edgelabel").data(links)
+	this.edgelabels.exit().remove();
+    var el_enter = this.edgelabels
+        .enter()
+        .append('text')
+        .attr('class', 'edgelabel')
+        .attr('dx', 40)
+        .attr('dy', 0)
+        .attr('font-size', function(link){ return self.getEdgeIconSize(link)})
+        .attr('fill', function(link){ return self.getEdgeIconColor(link)})
+        .attr('id', function(d,i) {return 'edgelabel'+i})
+    if(el_enter) this.edgelabels = el_enter.merge(this.edgelabels)
+    this.edgelabels.append('textPath')
+        .attr('xlink:href',function(d,i) {return '#edgepath'+i})
+        .style("pointer-events", "none")
+        .text(function(d,i){return self.getEdgeIconText(d)});
+
+
+    //this.styleTextElements();
 
 	//execute the current state of the pan-zoom transform
 	if(this.current_transform){
 		if(this.node_elements)
 			this.node_elements.attr("transform", this.current_transform);
 	    if(this.link_elements)
-	    	this.link_elements.attr("transform", this.current_transform);
+	    	this.link_elements.attr("transform", this.current_transform);    
+        if(this.edgelabels)
+	    	this.edgelabels.attr("transform", this.current_transform);    
+        if(this.edgepaths)
+	    	this.edgepaths.attr("transform", this.current_transform);    
 	}
 }
 
@@ -361,9 +406,12 @@ GraphResultsViewer.prototype.updateSimulation = function(mode) {
 		self.link_elements
 			.attr('x1', function(link){ return link.source.x})
 			.attr('y1', function(link){ return link.source.y})
-			.attr('x2', function(link){ return link.target.x})
-			.attr('y2', function(link){ return link.target.y});
-	}
+			.attr('x2', function(link){ return link.target.x })
+            .attr('y2', function(link){ return link.target.y});      
+        self.edgepaths
+            .attr('d', function(d) { var path='M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y;
+                        return path});                
+    }
 	if(this.show_force){
 		this.simulation.nodes(this.nodes).on('tick', ticker).force('link').links(this.links);
 	}
@@ -418,8 +466,9 @@ GraphResultsViewer.prototype.styleLinkElements = function() {
 	var self = this;
 	if(this.link_elements){
 		this.link_elements.each(function(link){
-			var sel = d3.select(this);
-			sel.select("title").remove();
+            var sel = d3.select(this);
+            sel.select("title").remove();
+            sel.text(self.getLinkText(link));
 			sel.attr("stroke-width", self.getLineWidth(link));
 			sel.attr("marker-end", self.getEdgeArrow(link));
 			sel.style("stroke", self.getEdgeColour(link));
@@ -430,11 +479,31 @@ GraphResultsViewer.prototype.styleLinkElements = function() {
 	}
 }
 
+GraphResultsViewer.prototype.styleTextElements = function() {
+	var self = this;
+	if(this.text_elements){
+		this.text_elements.each(function(link){
+            var sel = d3.select(this);
+            sel.attr("fill", "Black")
+                .style("font", "normal 12px Arial")
+                //.attr("dy", ".35em")
+                .attr("text-anchor", "middle")
+                .attr('dominant-baseline', 'central')
+				.style('font-family', "'" + self.fontfam + "'")
+				.style('font-weight', 20)
+				.style('font-size', 20)
+                .text("hello world")
+		});
+	}
+}
+
+
 GraphResultsViewer.prototype.getEdgeArrow = function(edge) {
 	if(edge){
-		var dir = this.getEdgeDirection(edge);
+        var dir = this.getEdgeDirection(edge);
+
 		//if(dir){
-			var col = this.getEdgeColour(edge);
+			var col = this.getArrowColour(edge);
 			var reference;
 			this.svg.append("svg:defs").selectAll("marker")
 				.data([reference])
@@ -540,7 +609,8 @@ GraphResultsViewer.prototype.recentre = function(graph_node) {
 	//zoom.translate([dcx,dcy]); If we do zooming we'll need to do something here
 	this.node_elements.attr("transform", "translate("+ this.dcx + "," + this.dcy  + ")");
 	this.link_elements.attr("transform", "translate("+ this.dcx + "," + this.dcy  + ")");
-	this.text_elements.attr("transform", "translate("+ this.dcx + "," + this.dcy  + ")");
+	this.edgepaths.attr("transform", "translate("+ this.dcx + "," + this.dcy  + ")");
+	//this.edgelabels.attr("transform", "translate("+ this.dcx + "," + this.dcy  + ")");
 }
 
 
@@ -558,11 +628,18 @@ GraphResultsViewer.prototype.setConfigOptions = function(config) {
 		edge: {
 			type: "edge",
 			distance: (config && config.edge && config.edge.distance ? config.edge.distance : 70),
-			arrow: (config && config.edge && config.edge.arrow ? config.edge.arrow : {width: 20, height: 10}),//{ width: 36, height: 16}),
+			arrow: (config && config.edge && config.edge.arrow ? config.edge.arrow : {width: 16, height: 24, color: [220, 218, 216]}),//{ width: 36, height: 16}),
 			symmetric: (config && config.edge && config.edge.symmetric ? config.edge.symmetric : true),
 			color: (config && config.edge && config.edge.color ? config.edge.color : [120, 118, 116]),//[150,150,255]),
 			weight: (config && config.edge && config.edge.weight ? config.edge.weight : 0.3),
-			size: (config && config.edge && config.edge.size ? config.edge.size : 2)//3)
+            size: (config && config.edge && config.edge.size ? config.edge.size : 2),//3)
+            icon: {
+				weight: (config && config.edge && config.edge.icon && config.edge.icon.weight ? config.edge.icon.weight : 500),
+				color: (config && config.edge && config.edge.icon && config.edge.icon.color ? config.edge.icon.color : [255, 255, 255]),//[0,0,255]),
+				unicode: (config && config.edge && config.edge.icon && config.edge.icon.unicode ? config.edge.icon.unicode : "\uf007"),///"\uf238"),////"\uf4fb"),
+				size: (config && config.edge && config.edge.icon && config.edge.icon.size ? config.edge.icon.size : 0.8),
+				faclass: (config && config.edge && config.edge.icon && config.edge.icon.faclass ? config.edge.icon.faclass : "fas fa-user")
+			},			
 		},
 		node: {
 			type: "node",
@@ -630,6 +707,33 @@ GraphResultsViewer.prototype.getLinkDistance = function(link) {
 	return x;
 }
 
+GraphResultsViewer.prototype.getEdgeIconSize = function(edge){
+	if(edge && edge.icon && edge.icon.size){
+		return edge.icon.size + "em";
+	}
+	return (this.getMultiplier(edge) + "em");
+}
+
+
+GraphResultsViewer.prototype.getEdgeIconColor = function(edge) {
+	var col = (edge && edge.icon && edge.icon.color ? edge.icon.color : this.defaults.edge.icon.color);
+    return "rgb("+col.join(",")+")";
+}
+
+
+GraphResultsViewer.prototype.getEdgeIconText= function(edge) {
+	if(edge && typeof edge.icon != "undefined"){
+		if(edge.icon.unicode){
+			return edge.icon.unicode;
+		}
+		if(edge.icon.label === true) return this.getLinkText(edge);
+		else if(edge.icon.label) return edge.icon.label;
+    }
+    return ""
+}
+
+
+
 GraphResultsViewer.prototype.getNodeIconSize = function(node) {
 	if(node && node.icon && node.icon.size){
 		return node.icon.size + "em";
@@ -684,16 +788,22 @@ GraphResultsViewer.prototype.getEdgeColour = function(edge) {
 	return "rgba("+nc.join(",")+")";
 }
 
+GraphResultsViewer.prototype.getArrowColour = function(edge) {
+    var col = (edge && edge.arrow && edge.arrow.color ? edge.arrow.color : 
+        (edge && edge.color ? edge.color : this.defaults.edge.arrow.color ))
+	return "rgb("+col.join(",")+")";
+}
+
+
 GraphResultsViewer.prototype.getEdgeDirection = function(edge) {
 	if(edge && edge.symmetric){
 		return "M10,-5 L0,0 L10,5";
 	}
 	return "M0,-5 L10,0 L0,5";
-	return false;
 }
 
 GraphResultsViewer.prototype.getLineWidth = function(link) {
-	var x = (link && link.size ? link.size : this.defaults.edge.size);
+    var x = (link && link.size ? link.size : this.defaults.edge.size);
 	return x;
 }
 
