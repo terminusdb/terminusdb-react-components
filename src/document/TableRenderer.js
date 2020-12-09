@@ -348,8 +348,8 @@ export const ChoiceRenderer = ({val, mode, frame, updateVal}) => {
         let lab = val
         frame.frame.elements.map((item) => {
             if(TerminusClient.UTILS.compareIDs(item.class, val)){
-                tit = val + " - " + item.comment["@value"]
-                lab = item.label["@value"]
+                tit = val + (item.comment ? " - " + item.comment["@value"] : "")
+                lab = (item.label ? item.label["@value"] : TerminusClient.UTILS.labelFromURL(item.class))
             }    
         })
         return <span title={tit}>{lab}</span>
