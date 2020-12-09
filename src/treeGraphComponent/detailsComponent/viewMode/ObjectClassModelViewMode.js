@@ -18,7 +18,7 @@ export const ObjectClassModelViewMode = (props) => {
 	let currentNodeJson = selectedNodeObject || {};
 	const imageType=ELEMENT_ICONS[currentNodeJson.type]
 
-	const childrenArr=currentNodeJson.children || []	
+	const childrenArr=currentNodeJson.allChildren || []	
 
 	let id =currentNodeJson.id;
 	let label =currentNodeJson.label || currentNodeJson.id;

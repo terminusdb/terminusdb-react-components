@@ -163,7 +163,7 @@ export const formatDataForTreeChart =(rootElement)=>{
 
    // treeModel.nodeSize([200,200]);
 
-    treeModel.nodeSize([150,400]);
+    treeModel.nodeSize([200,200]);
     //treeModel.size([5000, 1000])   
     const data=hierarchy(rootElement);
     const d3Data = treeModel(data);
