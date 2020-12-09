@@ -14,6 +14,7 @@ function ControlledQueryHook(woqlClient, query, results, queryLimit, queryStart,
 
     
     const docQuery = (q) => {
+        if(q.containsUpdate()) return q
         let wrapper = WOQL.query()
         if(limit) wrapper.limit(limit)
         if(start) wrapper.start(start)
@@ -46,19 +47,21 @@ function ControlledQueryHook(woqlClient, query, results, queryLimit, queryStart,
     }
 
     const executeQuery = () => {
-        setLoading(true)
-        let tstart = Date.now()
-        let q = docQuery(woql)
-        q.execute(woqlClient)
-        .then((response) => {
-            processSuccessfulResult(response, tstart) 
-        })
-        .catch((error) => {
-            processErrorResult(error, tstart)
-        })
-        .finally(() => {
-            setLoading(false)
-        })
+        if(woql){
+            setLoading(true)
+            let tstart = Date.now()
+            let q = docQuery(woql)
+            q.execute(woqlClient)
+            .then((response) => {
+                processSuccessfulResult(response, tstart) 
+            })
+            .catch((error) => {
+                processErrorResult(error, tstart)
+            })
+            .finally(() => {
+                setLoading(false)
+            })
+        }
     }
 
     const executeCountQuery = () => {
@@ -119,7 +122,7 @@ function ControlledQueryHook(woqlClient, query, results, queryLimit, queryStart,
             else {
                 executeQuery()
             }
-            executeCountQuery()
+            if(!woql.containsUpdate()) executeCountQuery()
         }
     }, [woql])
 

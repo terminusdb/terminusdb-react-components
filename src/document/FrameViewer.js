@@ -39,3 +39,6 @@ FrameViewer.prototype.extract = function(){
     return this.frame.document.extract() 
 }
 
+FrameViewer.prototype.setFrameErrors = function(edata){
+    return this.frame.document.extract() 
+}

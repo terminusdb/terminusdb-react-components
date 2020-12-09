@@ -1,9 +1,23 @@
 import React, {useState, useEffect} from 'react'
+import {Row, Col} from "reactstrap"
+import TerminusClient from '@terminusdb/terminusdb-client'
+import Select from 'react-select'; 
 
 let styles = {
     fancyPage: {},
     fancyPageHeader: {}
 }
+
+let headerstyle = {
+    borderRadius: "6px 0 0 0",
+    padding: "6px",
+    backgroundColor: "#efefef",
+    color: "#888"
+}
+
+let labelstyle = {}
+let valuestyle = {}
+
 
 export const FancyRenderer = (frame, mode, view) => {   
     return (
