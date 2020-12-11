@@ -45,9 +45,9 @@ export function FrameViewer({classframe, doc, type, view, mode, errors, extract,
     }*/
     if(!docobj) return null
     if(type == "fancy"){
-        return <FancyRenderer frame={docobj.document} mode={mode} view = {view} errors={errors} client={client}/> 
+        return <FancyRenderer frame={docobj} mode={mode} view = {view} errors={errors} client={client}/> 
     }
     else {
-        return <TableRenderer frame={docobj.document} mode={mode} view = {view} errors={errors} />
+        return <TableRenderer frame={docobj} mode={mode} view = {view} errors={errors} />
     }
 }

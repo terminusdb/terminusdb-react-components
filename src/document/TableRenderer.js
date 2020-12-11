@@ -21,16 +21,24 @@ let tabstyle = {
     width: "100%",
 }
 
-export const TableRenderer = ({frame, mode, view, ping}) => {
+export const TableRenderer = ({frame, mode, view, errors}) => {
+    const [ping, setPing] = useState(0)
+    useEffect(() => {
+        if(errors){
+            let frameconf = TerminusClient.View.document()
+            frame.setErrors(errors, frameconf)
+            setPing(ping+1)
+        }
+    },[errors])
 
     return (
         <table style={tabstyle}>
-            <ObjectRenderer frame={frame} mode={mode} view={view}/>
+            <ObjectRenderer frame={frame.document} mode={mode} view={view} ping={ping}/>
         </table>
     )
 }
 
-export const ObjectRenderer = ({frame, mode, view}) => {
+export const ObjectRenderer = ({frame, mode, view, ping}) => {
     if(!frame) return null
     const [redraw, setRedraw] = useState(1)
     const [oid, setOid] = useState(frame.subject())
@@ -87,7 +95,7 @@ export const ObjectRenderer = ({frame, mode, view}) => {
         for(var p in frame.properties){
             let pframe = frame.properties[p]
             //let nvframe = (Array.isArray(vframe) ? vframe[0] : vframe)
-            props = props.concat(<PropertyRenderer view={view} key={p + "_property"} frame={pframe} mode={mode}/>)
+            props = props.concat(<PropertyRenderer ping={ping} view={view} key={p + "_property"} frame={pframe} mode={mode}/>)
         }
         return props
     }
@@ -171,7 +179,7 @@ export const TypeRenderer = ({type, mode, view, update}) => {
 }
 
 
-export const PropertyRenderer = ({frame, mode, view}) => {
+export const PropertyRenderer = ({frame, mode, view, ping}) => {
     if(!frame) return null
     const [redraw, setRedraw] = useState(1)
     const [rvals, setRvals] = useState()
@@ -258,7 +266,7 @@ export const PropertyRenderer = ({frame, mode, view}) => {
                     <td style={delstyle}><button style={minusStyle} onClick={getDelVal(i, rvals[i])}>-</button> </td>
                 }
                 <td key={frame.predicate  + "_value_" + i} style={valuestyle} >
-                    <ValueRenderer redraw={redraw} frame={rvals[i]} mode={mode} view={view}/>
+                    <ValueRenderer redraw={redraw} frame={rvals[i]} mode={mode} view={view} ping={ping} />
                 </td>
             </tr>)
         }
@@ -270,7 +278,7 @@ export const PropertyRenderer = ({frame, mode, view}) => {
                     </td>
                 }
                 <td style={valuestyle}>
-                    <ValueRenderer redraw={redraw} frame={rvals[i]} mode={mode} view={view}/>
+                    <ValueRenderer redraw={redraw} frame={rvals[i]} mode={mode} view={view} ping={ping} />
                 </td>
             </tr>)
         }
@@ -278,14 +286,14 @@ export const PropertyRenderer = ({frame, mode, view}) => {
     return rows 
 }
 
-export const ValueRenderer = ({frame, mode, view, redraw}) => {
+export const ValueRenderer = ({frame, mode, view, redraw, ping}) => {
     let [v, setV] = useState("")
 
     useEffect(() => setV(frame.get()), [redraw, frame])
 
     const updval = (vv) => {
         setV(vv)
-        frame.set(vv)            
+        frame.set(vv)
     }
     if(!frame.isData()){
         return  <table style={tabstyle}>
@@ -299,7 +307,7 @@ export const ValueRenderer = ({frame, mode, view, redraw}) => {
         return <DocumentRenderer val={v} frame={frame} mode={mode} updateVal={updval} view={view} />
     }
     else if(frame.isData()){
-        return <DataRenderer val={v} type={frame.getType()} mode={mode} updateVal={updval} view={view} />
+        return <DataRenderer frame={frame} val={v} type={frame.getType()} mode={mode} updateVal={updval} view={view} />
     }
     else {
         console.log("Frame has no known type", frame)
@@ -308,7 +316,7 @@ export const ValueRenderer = ({frame, mode, view, redraw}) => {
 
 export const DocumentRenderer = ({val, mode, frame, updateVal, view}) => {
     if(mode == "edit"){
-        return <DataRenderer val={val} mode={mode} type={frame.getType()} updateVal={updateVal} />
+        return <DataRenderer frame={frame} val={val} mode={mode} type={frame.getType()} updateVal={updateVal} />
     }
     else {
         let ds = function(){
@@ -317,11 +325,28 @@ export const DocumentRenderer = ({val, mode, frame, updateVal, view}) => {
         let lstyle = {
             cursor: "pointer"
         }
+
+        if(val === "") val = TerminusClient.UTILS.shorten(frame.getType())
         return <Row><Col>
             <span style={lstyle} onClick={ds}>{val}</span>
         </Col><Col></Col></Row>
-
     }
+}
+
+export const FrameErrors = ({frame, view}) => {
+    if(!frame.errors){
+        return null
+    }
+    let fes = []
+    for(var i = 0; i<frame.errors.length; i++){
+        fes.push(<FrameError error={frame.errors[i]} />)
+    }
+    return <span>{fes}</span> 
+}
+
+export const FrameError = ({error}) => {
+    let msg = error && error['vio:message'] ? error['vio:message']["@value"] : error && error['api:message'] ? error['api:message'] : "Error with field" 
+    return <span style={{color:"#f84848"}}>{msg}</span> 
 }
 
 
@@ -345,7 +370,13 @@ export const ChoiceRenderer = ({val, mode, frame, updateVal}) => {
             onChange={onChange} 
             options={opts}  
             placeholder={lab}
-        /></Col><Col></Col></Row>
+        /></Col>
+         <Col>
+            {frame.errors &&
+                <FrameErrors frame={frame} />
+            }
+            </Col>
+        </Row>
 
     }
     else {
@@ -361,7 +392,7 @@ export const ChoiceRenderer = ({val, mode, frame, updateVal}) => {
     }
 }
 
-export const DataRenderer = ({val, mode, type, updateVal}) => {
+export const DataRenderer = ({val, mode, type, updateVal, frame}) => {
     
     if(mode == "edit"){
         let onc = function(e){
@@ -373,11 +404,18 @@ export const DataRenderer = ({val, mode, type, updateVal}) => {
                 <input type='text' value={mv} onChange={onc}/>
             </Col>
             <Col>
-                {TerminusClient.UTILS.shorten(type)}
+                {frame.errors &&
+                    <FrameErrors frame={frame} />
+                }
+                {!frame.errors && 
+                    <>{TerminusClient.UTILS.shorten(type)}</>
+                }
             </Col>
         </Row>
     }
     else {
-        return val
+        if(val !== "") return val
+        return TerminusClient.UTILS.shorten(type)
+
     }
 }

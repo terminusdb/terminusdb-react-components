@@ -67,6 +67,7 @@
     "react-sizeme": "^2.6.12",
     "react-split-pane": "^0.1.92",
     "react-table": "^7.3.2",
+    "react-textarea-autosize": "^8.3.0",
     "react-tooltip": "^4.2.10",
     "react-use-dimensions": "^1.2.1",
     "reactstrap": "^8.5.1",

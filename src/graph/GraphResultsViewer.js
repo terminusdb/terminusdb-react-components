@@ -535,7 +535,8 @@ GraphResultsViewer.prototype.nodeSelected = function(selected_node) {
 	else {
 		this.selection_grows = true;
 		this.selected_id = selected_node.id;
-		this.styleNodeElements();
+        this.styleNodeElements();
+        if(this.onClick) this.onClick(selected_node.id, selected_node)
 		//this.browser.nodeSelected(selected_node);
 		if(this.isFringe(selected_node)){
 			//this.browser.followNode(selected_node);
@@ -616,7 +617,8 @@ GraphResultsViewer.prototype.recentre = function(graph_node) {
 
 GraphResultsViewer.prototype.setConfigOptions = function(config) {
 	//configuration options for different types of behaviour
-	// Need to explicitly know font family name for unicode glyphs
+    // Need to explicitly know font family name for unicode glyphs
+    this.onClick = config.onClick
 	this.fontfam = (config && (config.fontfamily()) ? config.fontfamily() : "FontAwesome"),//'Font Awesome 5 Free');
 	this.selected_grows = (config && typeof config.selected_grows() != "undefined" ? config.selected_grows() : true);
 	this.show_force = (config && typeof config.show_force() != "undefined" ? config.show_force() : true);

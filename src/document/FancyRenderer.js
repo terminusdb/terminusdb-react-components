@@ -2,10 +2,16 @@ import React, {useState, useEffect} from 'react'
 import {Row, Col} from "reactstrap"
 import TerminusClient from '@terminusdb/terminusdb-client'
 import Select from 'react-select'; 
+import TextareaAutosize from 'react-textarea-autosize';
 
 let styles = {
     fancyPage: {},
-    fancyPageHeader: {}
+    fancyPageHeader: {
+        padding: "1em !important",
+        height: "auto !important",
+        border: "0 !important",
+        fontSize: "3em",
+    }
 }
 
 let headerstyle = {
@@ -19,25 +25,44 @@ let labelstyle = {}
 let valuestyle = {}
 
 
-export const FancyRenderer = (frame, mode, view) => {   
+export const FancyRenderer = ({frame, mode, view, errors}) => {   
+    if(!frame) return false
     return (
         <span style={styles.fancyPage}>
-            <FancyPageHeader frame={frame} mode={mode} view={view} />
-            <ObjectRenderer frame={frame} mode={mode} view={view}/>
+            <FancyPageHeader frame={frame.document} mode={mode} view={view} />
+            <ObjectRenderer frame={frame.document} mode={mode} view={view}/>
         </span>
     )
 }
 
 export const FancyPageHeader = ({frame, mode, view}) => {
-    return <span style={styles.fancyPageHeader}>Page Header</span>
+    let type = TerminusClient.UTILS.shorten(frame.subjectClass())
+    let lab = frame.first("rdfs:label")
+    let desc = frame.first("rdfs:comment")
+    let id = TerminusClient.UTILS.shorten(frame.subject())
+    //if(mode == "edit"){
+        return <span>
+            <TextareaAutosize className="wiki wiki-title" placeholder={"Enter " + type + "  name"} value={lab} />
+            <textarea className="wiki wiki-title" placeholder={"Enter " + type + "  name"} style={styles.fancyPageHeader}>{lab}</textarea>
+            <textarea className="wiki wiki-description" placeholder={"Enter " + type + " description"}>{desc}</textarea>
+        </span>
+    //}
+    //else {
+    //    return <span style={{}}>
+    //        <h1>{lab}</h1>
+    //        <h2>ID: {id}</h2>
+    //        <h3>Type: {type}</h3>
+    //        <h4>{desc}</h4>
+    //    </span>
+//    }
 }
 
 export const ObjectRenderer = ({frame, mode, view}) => {
+    if(!frame) return null
     const [redraw, setRedraw] = useState(1)
     const [oid, setOid] = useState(frame.subject())
     const [otype, setOtype] = useState(frame.subjectClass())
 
-    if(!frame) return null
 
     let showid = false
     let showtype = false
