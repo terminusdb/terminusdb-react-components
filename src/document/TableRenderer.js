@@ -17,11 +17,11 @@ let labelstyle = {
     width: "150px"
 }
 
+let tabstyle = {
+    width: "100%",
+}
 
-export const TableRenderer = (frame, mode, view) => {
-    let tabstyle = {
-        width: "100%",
-    }
+export const TableRenderer = ({frame, mode, view, ping}) => {
 
     return (
         <table style={tabstyle}>
@@ -31,11 +31,11 @@ export const TableRenderer = (frame, mode, view) => {
 }
 
 export const ObjectRenderer = ({frame, mode, view}) => {
+    if(!frame) return null
     const [redraw, setRedraw] = useState(1)
     const [oid, setOid] = useState(frame.subject())
     const [otype, setOtype] = useState(frame.subjectClass())
 
-    if(!frame) return null
 
     let showid = (view && view.show_id && (frame.depth() == 0) ? view.show_id : false) 
     let showtype = (view && view.show_type ? view.show_type : false)
@@ -85,9 +85,9 @@ export const ObjectRenderer = ({frame, mode, view}) => {
     const renderProperties = () => {
         let props = []
         for(var p in frame.properties){
-            let vframe = frame.properties[p]
-            if(Array.isArray(vframe)) vframe=vframe[0]
-            props = props.concat(<PropertyRenderer view={view} key={p + "_property"} frame={vframe} mode={mode}/>)
+            let pframe = frame.properties[p]
+            //let nvframe = (Array.isArray(vframe) ? vframe[0] : vframe)
+            props = props.concat(<PropertyRenderer view={view} key={p + "_property"} frame={pframe} mode={mode}/>)
         }
         return props
     }
@@ -107,7 +107,8 @@ export const ObjectRenderer = ({frame, mode, view}) => {
                                 <Col></Col>
                             </Row>
                         </th>
-                    }                                   </tr>
+                    }
+                </tr>
             </thead>
             <tbody>
                 {showid && 
@@ -264,7 +265,9 @@ export const PropertyRenderer = ({frame, mode, view}) => {
         else {
             rows.push(<tr key={frame.predicate + "_" + i}>
                 {mode == "edit" &&
-                    <td style={delstyle}><button style={minusStyle} onClick={getDelVal(i, rvals[i])}>-</button></td>
+                    <td style={delstyle}>
+                        <button style={minusStyle} onClick={getDelVal(i, rvals[i])}>-</button>
+                    </td>
                 }
                 <td style={valuestyle}>
                     <ValueRenderer redraw={redraw} frame={rvals[i]} mode={mode} view={view}/>
@@ -285,7 +288,9 @@ export const ValueRenderer = ({frame, mode, view, redraw}) => {
         frame.set(vv)            
     }
     if(!frame.isData()){
-        return TableRenderer(frame, mode) 			
+        return  <table style={tabstyle}>
+            <ObjectRenderer frame={frame} mode={mode} view={view}/>
+        </table>
     }
     else if(frame.isChoice()){  
         return <ChoiceRenderer val={v} frame={frame} mode={mode} updateVal={updval} view={view} />

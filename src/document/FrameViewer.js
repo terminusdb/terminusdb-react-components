@@ -3,42 +3,51 @@ import TerminusClient from '@terminusdb/terminusdb-client'
 import {TableRenderer} from "./TableRenderer"
 import {FancyRenderer} from "./FancyRenderer"
 
-export function FrameViewer(classframe, doc, view, edit, client){
-    this.frame = view.create(client)
-    this.mode = edit ? "edit" : "view"
-    if((classframe && classframe['system:properties'])) {
-        if(doc){
-            this.frame.load(classframe['system:properties'], doc)
+export function FrameViewer({classframe, doc, type, view, mode, errors, extract, onExtract, client}){
+    const [docobj, setDocObj] = useState()
+
+    useEffect(() => {
+        if(extract && onExtract && docobj ){
+            let ext = docobj.document.extract()
+            onExtract(ext)
         }
-        else {
-            this.frame.loadSchemaFrames(classframe['system:properties'])
-        }    
-    }
-    else {
-        alert("No frames")
-        console.log(classframe)
-    }
-    const getRenderer = (name, frame, args) => {
-        const f = () => {
-            if(name == "fancy"){
-                return FancyRenderer(frame, this.mode, view)
+    }, [extract])
+
+    useEffect(() => {
+        if(errors){
+            console.log("errors", errors)
+        }
+    }, [errors])
+
+
+    useEffect(() => {
+        if(classframe && view){
+            let docobj = view.create(client)
+            if((classframe && classframe['system:properties'])) {
+                if(doc){
+                    docobj.load(classframe['system:properties'], doc)
+                }
+                else {
+                    docobj.loadSchemaFrames(classframe['system:properties'])
+                }    
+                docobj.filterFrame()
             }
-            return TableRenderer(frame, this.mode, view)
+            setDocObj(docobj)
+        }
+    }, [doc, view, classframe])
+
+    /*const getRenderer = (name, frame, args) => {
+        if(name == "fancy"){
+            const f = () => {
+            return FancyRenderer(frame, this.mode, view, ping)
         }
         return f
-    }    
-    this.frame.filterFrame(getRenderer)
-    return this
-}
-
-FrameViewer.prototype.render = function(){
-    return this.frame.document.render() 
-}
-
-FrameViewer.prototype.extract = function(){
-    return this.frame.document.extract() 
-}
-
-FrameViewer.prototype.setFrameErrors = function(edata){
-    return this.frame.document.extract() 
+    }*/
+    if(!docobj) return null
+    if(type == "fancy"){
+        return <FancyRenderer frame={docobj.document} mode={mode} view = {view} errors={errors} client={client}/> 
+    }
+    else {
+        return <TableRenderer frame={docobj.document} mode={mode} view = {view} errors={errors} />
+    }
 }
