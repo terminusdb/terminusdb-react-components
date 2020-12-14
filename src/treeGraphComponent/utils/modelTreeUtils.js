@@ -1,32 +1,28 @@
 import {NODE_ACTION_NAME} from './actionType'
 
-const newNodeTemplate = {
-       data:{},
-       depth: null,
-       height: 0,
-       parent: null,
-       x:0,
-       y:0 
-}
-
-let index_newObj=1;
-
 export const removeElementToArr=(arrayList,elementName)=>{
-        if(!arrayList)return undefined
-        const index=arrayList.findIndex(function(item){return item===elementName || item.name===elementName})
-        if(index>-1){
-            arrayList.splice(index,1);
-            return elementName;
-        }
-        return undefined;
+    if(!arrayList)return undefined
+    const index=arrayList.findIndex(function(item){return item===elementName || item.name===elementName})
+    if(index>-1){
+        arrayList.splice(index,1);
+        return elementName;
+    }
+    return undefined;
 }
 
-function initializeNewNode(type){
-	const newObj = Object.assign({}, newNodeTemplate);
-	const newName='new_'+index_newObj++;
-	const indexNewObj={name: newName, "label": "NEW NODE", type:'node',type:type};
-	newObj.data=indexNewObj;
-
+export const getNewNodeTemplate=(name=null)=>{
+	const nodeName=name || `CLASS_${(new Date()).getTime()}`;
+    const newObj = {
+                     name:nodeName,
+                     id: "",
+                     label:"NEW NODE",
+                     comment:"",
+                     newElement:true,
+                     children:[],
+                     allChildren:[],
+                     abstract:false
+                    }
+    if(name!==null)newObj['newElement']=false;
 	return newObj;
 }
 

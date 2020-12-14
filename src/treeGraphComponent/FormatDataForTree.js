@@ -87,12 +87,12 @@ export const formatProperties=(dataProvider,restrDataProvider,_rootIndexObj)=>{
 		}
 
 		const newProperty={name:item['Property ID'],
-						  id: getId(item['Property ID']),
-				          label:item['Property Name']['@value'],
-				          comment:item['Property Description']['@value'],
-				          newElement:false,
-				          domain:classDomain
-						}
+						   id: getId(item['Property ID']),
+					       label:item['Property Name']['@value'],
+					       comment:item['Property Description']['@value'],
+					       newElement:false,
+					       domain:classDomain
+						 }
 
 		addTypeRange(item,newProperty,_rootIndexObj);
 
@@ -241,22 +241,27 @@ const getAbstractValue=(item)=>{
 }
 
 
-const checkOrdinaryClassType=(classElement,item,_rootIndexObj)=>{
+const checkOrdinaryClassType=(classElement,item,_rootIndexObj=null,parentObj=null)=>{
+	/*
+	* check if it is a enum node
+	*/
 	if(item["Choices"]!=="system:unknown" && Array.isArray(item["Choices"])){
 		const choicesList=[]
-		item["Choices"].forEach((choise)=>{
-			const  choiseId=getId(choise[0]);
-			const  choiseLabel=choise[1]['@value'];
-			const  choiseComment=choise[2]['@value'];
-			choicesList.push({id:choiseId,label:choiseLabel,comment:choiseComment})
+		item["Choices"].forEach((choice)=>{
+			const  choiceId=getId(choice[0]);
+			const  choiceLabel=choice[1]['@value'];
+			const  choiceComment=choice[2]['@value'];
+			choicesList.push({id:choiceId,label:choiceLabel,comment:choiceComment})
 
 		})
 		classElement['type']=CLASS_TYPE_NAME.CHOICE_CLASS;
 		classElement['choices']=choicesList;
-		_rootIndexObj[CLASS_TYPE_NAME.CHOICE_CLASSES].children.push(classElement)
+		if(_rootIndexObj)_rootIndexObj[CLASS_TYPE_NAME.CHOICE_CLASSES].children.push(classElement)
+		if(parentObj)parentObj.children.push(classElement)
 	}else{
 		classElement['type']=CLASS_TYPE_NAME.OBJECT_CLASS;
-		_rootIndexObj[CLASS_TYPE_NAME.OBJECT_CLASSES].children.push(classElement)
+		if(_rootIndexObj)_rootIndexObj[CLASS_TYPE_NAME.OBJECT_CLASSES].children.push(classElement)
+		if(parentObj)parentObj.children.push(classElement)
 	}
 }
 
@@ -294,7 +299,6 @@ const addElements=( _rootIndexObj, dataProvider=[])=>{
 				const parentNum=item['Parents'].length;
 				
 				let isChildOFDocument=false;
-				let isObjectParent=false;
 				
 				item['Parents'].forEach((parentId)=>{
 
@@ -315,18 +319,24 @@ const addElements=( _rootIndexObj, dataProvider=[])=>{
 
 						if(!_rootIndexObj[classId]['type']){
 							_rootIndexObj[classId]['type']=_rootIndexObj[parentId].type;
+
 						}
+						/*
+						* the children could be an object type or an enum type
+						*/
 						if(_rootIndexObj[parentId].type===CLASS_TYPE_NAME.OBJECT_CLASS){
-							isObjectParent=true;
+							checkOrdinaryClassType(_rootIndexObj[classId],item,null,_rootIndexObj[parentId]);
 						}
+						
 					}
 				})
 
 			}else{
 				/*
-				* if no parents can be or a first level Object class Type Or a Choice class type
-				* check if it is a choiseClass
-				* special class No properties no children
+				* if no parents can be a first level Object class or Enum class type
+				* check if it is a enumClass
+				* enumClass is an special class No properties no children but can have a Object Type
+				* as parent
 				*/
 			 	checkOrdinaryClassType(_rootIndexObj[classId],item,_rootIndexObj);
 			}
@@ -392,6 +402,7 @@ function checkChildrenType(childrenElements,parentType){
 *the list of available parents depends on the type of node
 *the list can not have the node currents parents or the currents children
 *Object Class type can inherit only from Ordinary Classes 
+*Enum Class Type can inherit only from Ordinary Classes 
 *Document Class type can inherit from Ordinary Classes and Entity Classes
 */
 
