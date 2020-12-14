@@ -36,37 +36,36 @@ export const FancyRenderer = ({frame, mode, view, errors}) => {
 }
 
 export const FancyPageHeader = ({frame, mode, view}) => {
+    const [active, setActive] = useState(false)
+
+    const toggleActive = () => setActive(!active) 
+
     let type = TerminusClient.UTILS.shorten(frame.subjectClass())
     let lab = frame.first("rdfs:label")
     let desc = frame.first("rdfs:comment")
     let id = TerminusClient.UTILS.shorten(frame.subject())
+
+
+
     //if(mode == "edit"){
-        return <span>
-            <TextareaAutosize className="wiki wiki-title" placeholder={"Enter " + type + "  name"} value={lab} />
-            <textarea className="wiki wiki-title" placeholder={"Enter " + type + "  name"} style={styles.fancyPageHeader}>{lab}</textarea>
-            <textarea className="wiki wiki-description" placeholder={"Enter " + type + " description"}>{desc}</textarea>
-        </span>
-    //}
-    //else {
-    //    return <span style={{}}>
-    //        <h1>{lab}</h1>
-    //        <h2>ID: {id}</h2>
-    //        <h3>Type: {type}</h3>
-    //        <h4>{desc}</h4>
-    //    </span>
-//    }
+        return <Row onMouseEnter={toggleActive} onMouseLeave={toggleActive}>
+            <Col md={1}>{active && 
+                <PageActions />
+            }
+            </Col>
+            <Col md={10}>
+                <TextareaAutosize minRows={1} className="wiki wiki-title" placeholder={"Enter " + type + "  name"} >{lab}</TextareaAutosize>
+                <TextareaAutosize minRows={1} className="wiki wiki-description" placeholder={"Enter " + type + " description"} >{desc}</TextareaAutosize>
+            </Col>
+            <Col md={1}>
+                {active && 
+                    <PageActions />
+                }
+            </Col>
+        </Row>
 }
 
-export const ObjectRenderer = ({frame, mode, view}) => {
-    if(!frame) return null
-    const [redraw, setRedraw] = useState(1)
-    const [oid, setOid] = useState(frame.subject())
-    const [otype, setOtype] = useState(frame.subjectClass())
-
-
-    let showid = false
-    let showtype = false
-
+export const PageActions = ({frame, mode, view}) => {
     const onAddProp = (e) => {
         frame.addProperty(e.value)
         setRedraw(redraw + 1)
@@ -84,6 +83,19 @@ export const ObjectRenderer = ({frame, mode, view}) => {
         return null
     }
 
+    return <button>+</button>
+}
+
+export const ObjectSummary = ({frame, mode, view}) => {
+    return <Row><Col>yo</Col></Row> 
+}
+
+export const ObjectHeader = ({frame, mode, view}) => {
+    const [oid, setOid] = useState(frame.subject())
+    const [otype, setOtype] = useState(frame.subjectClass())
+    let showid = false
+    let showtype = false
+
     const updateID = (nid) => {
         frame.subjid = nid
         setOid(nid)
@@ -93,46 +105,8 @@ export const ObjectRenderer = ({frame, mode, view}) => {
         frame.cls = ntype
         setOtype(ntype)
     } 
-
-    const renderProperties = () => {
-        let props = []
-        for(var p in frame.properties){
-            let vframe = frame.properties[p]
-            if(Array.isArray(vframe)) vframe=vframe[0]
-            props = props.concat(<PropertyRenderer view={view} key={p + "_property"} frame={vframe} mode={mode}/>)
-        }
-        return props
-    }
-
-    return <>
-            <thead>
-                <tr>
-                    {mode!="edit" &&
-                        <th colSpan="2" style={headerstyle} title={frame.subject()}>
-                            {frame.subjectClass()}
-                        </th>
-                    }
-                    {mode=="edit" &&
-                        <th colSpan="3" style={headerstyle}>
-                            <Row>
-                                <Col title={frame.subject()}>{frame.subjectClass()}</Col>
-                                <Col>
-                                    {getMissingPropertySelector()}
-                                </Col>
-                            </Row>
-                        </th>
-                    }                                   </tr>
-            </thead>
-            <tbody>
-                {showid && 
-                    <IDRenderer id={oid} mode={mode} view={view} update={updateID}/>
-                }
-                {showtype && 
-                    <TypeRenderer type={otype}  mode={mode} view={view} update={updateType}/>
-                }
-                {renderProperties()}
-            </tbody>
-        </>
+    return null
+    return <Row><Col>yo</Col></Row> 
 }
 
 export const IDRenderer = ({id, mode, view, update}) => {
@@ -183,6 +157,41 @@ export const TypeRenderer = ({type, mode, view, update}) => {
     </tr>    
 }
 
+
+export const ObjectRenderer = ({frame, mode, view}) => {
+    if(!frame) return null
+    const [redraw, setRedraw] = useState(1)
+
+
+    const initiallyExpanded = (frame) => {
+        if(frame.depth() == 0){
+            return true
+        }
+        return !frame.display_options.collapse
+    }
+
+    const [expanded, setExpanded] = useState(initiallyExpanded(frame))
+
+    const renderProperties = () => {
+        let props = []
+        for(var p in frame.properties){
+            let vframe = frame.properties[p]
+            if(Array.isArray(vframe)) vframe=vframe[0]
+            if(p != "rdfs:label" && p != "rdfs:comment"){
+                props = props.concat(<PropertyRenderer view={view} key={p + "_property"} frame={vframe} mode={mode}/>)
+            }
+        }
+        return props
+    }
+
+    if(!expanded){
+        return <ObjectSummary  view={view} frame={frame} mode={mode} />
+    }
+    else {
+        let props = renderProperties()
+        return <><ObjectHeader view={view} frame={frame} mode={mode} />{props}</>
+    }
+}
 
 export const PropertyRenderer = ({frame, mode, view}) => {
     if(!frame) return null
@@ -251,33 +260,40 @@ export const PropertyRenderer = ({frame, mode, view}) => {
     if(!rvals || !rvals.length) return null
     let rows = []
     for(var i = 0 ; i < rvals.length; i++){
-        if(i == 0){
-            rows.push(<tr key={frame.predicate  + "_" + i}>
-                {getLabelPart(rvals.length)}
-                {mode == "edit" &&
-                    <td style={delstyle}><button onClick={getDelVal(i, rvals[i])}>-</button> </td>
-                }
-                <td key={frame.predicate  + "_value_" + i} style={valuestyle} >
-                    <ValueRenderer redraw={redraw} frame={rvals[i]} mode={mode} view={view}/>
-                </td>
-            </tr>)
-        }
-        else {
-            rows.push(<tr key={frame.predicate + "_" + i}>
-                {mode == "edit" &&
-                    <td style={delstyle}><button onClick={getDelVal(i, rvals[i])}>-</button></td>
-                }
-                <td style={valuestyle}>
-                    <ValueRenderer redraw={redraw} frame={rvals[i]} mode={mode} view={view}/>
-                </td>
-            </tr>)
-        }
+            rows.push(
+                <ValueRenderer key={frame.predicate  + "_" + i} redraw={redraw} frame={rvals[i]} mode={mode} view={view}/>
+            )
     }
-    return rows 
+    return <><PropertyHeader frame={frame} mode={mode} view={view} />
+    {rows}</>
+}
+
+export const PropertyHeader = ({frame, mode, view, index}) => {
+    const [active, setActive] = useState(false)
+    const toggleActive = () => setActive(!active) 
+    const getHeaderTag = () => {
+        let l = frame.depth() + 2
+        let cname = "wiki-property-header wiki-propery-header-" + l 
+        return <div className={cname}>{frame.getLabel()}</div>
+    }
+    return <Row onMouseEnter={toggleActive} onMouseLeave={toggleActive}>
+    <Col md={1}>{active && 
+        <PageActions />
+    }
+    </Col>
+    <Col md={10}>
+        {getHeaderTag()}
+    </Col>
+    <Col md={1}>
+        {active && 
+            <PageActions />
+        }
+    </Col>
+</Row>
 }
 
 export const ValueRenderer = ({frame, mode, view, redraw}) => {
-    let [v, setV] = useState("")
+    let [v, setV] = useState(false)
 
     useEffect(() => setV(frame.get()), [redraw, frame])
 
@@ -285,8 +301,9 @@ export const ValueRenderer = ({frame, mode, view, redraw}) => {
         setV(vv)
         frame.set(vv)            
     }
+    if(v === false) return null
     if(!frame.isData()){
-        return TableRenderer(frame, mode) 			
+        return <ObjectRenderer frame={frame} view={view} mode={mode} /> 			
     }
     else if(frame.isChoice()){  
         return <ChoiceRenderer val={v} frame={frame} mode={mode} updateVal={updval} view={view} />
@@ -304,77 +321,70 @@ export const ValueRenderer = ({frame, mode, view, redraw}) => {
 }
 
 export const DocumentRenderer = ({val, mode, frame, updateVal, view}) => {
-    if(mode == "edit"){
-        return <DataRenderer val={val} mode={mode} type={frame.getType()} updateVal={updateVal} />
-    }
-    else {
-        let ds = function(){
-            if(view.selectDocument) view.selectDocument(val)
-        }
-        let lstyle = {
-            cursor: "pointer"
-        }
-        return <Row><Col>
-            <span style={lstyle} onClick={ds}>{val}</span>
-        </Col><Col></Col></Row>
-
-    }
+    const [active, setActive] = useState(false)
+    const toggleActive = () => setActive(!active) 
+    return <DataRenderer val={val} mode={mode} type={frame.getType()} updateVal={updateVal} />
 }
 
-
 export const ChoiceRenderer = ({val, mode, frame, updateVal}) => {
-    if(mode == "edit"){
-        let lab = val || "Select from choices"
-        let opts = frame.frame.elements.map((item) => {
-            if(TerminusClient.UTILS.compareIDs(item.class, val)){
-                lab = item.label["@value"]
-            }
-            return { value: TerminusClient.UTILS.shorten(item.class), label: item.label["@value"]}
-        })
-        
-        let onChange = function(e){
-            updateVal(e.value)
+    const [active, setActive] = useState(false)
+    const toggleActive = () => setActive(!active) 
+    let lab = val || "Select from choices"
+    let opts = frame.frame.elements.map((item) => {
+        if(TerminusClient.UTILS.compareIDs(item.class, val)){
+            lab = item.label["@value"]
         }
+        return { value: TerminusClient.UTILS.shorten(item.class), label: item.label["@value"]}
+    })
+    
+    let onChange = function(e){
+        updateVal(e.value)
+    }
 
-        return <Row><Col><Select  
+    return <Row onMouseEnter={toggleActive} onMouseLeave={toggleActive}>
+    <Col md={1}>{active && 
+        <PageActions />
+    }
+    </Col>
+    <Col md={10}>
+        <Select  
             defaultValue={val}
             isClearable={true}
             onChange={onChange} 
             options={opts}  
             placeholder={lab}
-        /></Col><Col></Col></Row>
-
-    }
-    else {
-        let tit = val
-        let lab = val
-        frame.frame.elements.map((item) => {
-            if(TerminusClient.UTILS.compareIDs(item.class, val)){
-                tit = val + " - " + item.comment["@value"]
-                lab = item.label["@value"]
-            }    
-        })
-        return <span title={tit}>{lab}</span>
-    }
+        />
+    </Col>
+    <Col md={1}>
+        {active && 
+            <PageActions />
+        }
+    </Col>
+</Row>
+   
 }
 
 export const DataRenderer = ({val, mode, type, updateVal}) => {    
-    if(mode == "edit"){
-        let onc = function(e){
-            updateVal(e.target.value)
-        }
-        let mv = (val ? "" + val : "")
-        return <Row>
-            <Col>
-                <input type='text' value={mv} onChange={onc}/>
+    const [active, setActive] = useState(false)
+    const toggleActive = () => setActive(!active) 
+    let onc = function(e){
+        updateVal(e.target.value)
+    }
+    let mv = (val ? "" + val : "")
+    return <Row onMouseEnter={toggleActive} onMouseLeave={toggleActive}>
+            <Col md={1}>{active && 
+                <PageActions />
+            }
             </Col>
-            <Col>
-                {TerminusClient.UTILS.shorten(type)}
+            <Col md={10}>
+                <TextareaAutosize minRows={1} className="wiki wiki-property" placeholder={"Enter " + type + "  name"} >{mv}</TextareaAutosize>
+            </Col>
+            <Col md={1}>
+                {active && 
+                    <PageActions />
+                }
             </Col>
         </Row>
-    }
-    else {
-        return val
-    }
 }
+  
 
