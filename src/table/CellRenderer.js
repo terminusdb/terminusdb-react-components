@@ -353,13 +353,21 @@ export const TimeRenderer = ({value, type, column, row, cell, view, args, prefix
         if(!isNaN(parseFloat(value))){
             d = new Date(parseFloat(value*1000))
          }
+         else {
+             return <span>{value}</span>
+         }
     }
     else {
         d = new Date(value)
     }
     if(args && args.format) fstr = args.format
     else fstr = (type == "xsd:date" ? "d MMM yy" : "MMM d, yyyy - HH:mm:ss")
-    return <span title={"Temporal Type: " + type}>{format(d, fstr)}</span>
+    if(d){
+        return <span title={"Temporal Type: " + type}>{format(d, fstr)}</span>
+    }
+    else {
+        return <span>{value}</span>
+    }
 }
 
 export const RangeRenderer = ({value, type, column, row, cell, view, args, prefixes})=>{
