@@ -375,6 +375,9 @@ export const ChoiceRenderer = ({val, mode, frame, updateVal}) => {
             {frame.errors &&
                 <FrameErrors frame={frame} />
             }
+            {!frame.errors && 
+                <>{TerminusClient.UTILS.shorten(frame.range)}</>
+            }
             </Col>
         </Row>
 
