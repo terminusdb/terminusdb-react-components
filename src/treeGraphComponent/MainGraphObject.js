@@ -194,7 +194,8 @@ export const MainGraphObject = (mainGraphDataProvider,dbName)=>{
 
         	 	rootParentNode.children.push(newNodeObj);
 
-        	 	newNodeObj.children.push(currentNode); 
+        	 	newNodeObj.children.push(currentNode);
+        	 	newNodeObj.allChildren.push(currentNode);  
 
 
         	 	/*
@@ -214,6 +215,7 @@ export const MainGraphObject = (mainGraphDataProvider,dbName)=>{
 	        		* currentNode is the parent node
 	        	 	*/
 	        	 	currentNode.children.push(newNodeObj);
+	        	 	currentNode.allChildren.push(newNodeObj);
 	        	}
         	 }
         	 _rootIndexObj[newNodeObj.name]=newNodeObj;
@@ -259,6 +261,9 @@ export const MainGraphObject = (mainGraphDataProvider,dbName)=>{
 	    		* remove child from parent
 	    		*/
 	    		removeElementToArr(parentOfParentObj.children,elementObjClass.name)
+	    		if(parentOfParentObj.allChildren){
+	    			removeElementToArr(parentOfParentObj.children,elementObjClass.name)
+	    		}
 				/*
 				* register to be save to schema
 				*/
@@ -286,10 +291,13 @@ export const MainGraphObject = (mainGraphDataProvider,dbName)=>{
 				
 			elementObjClass.parents.push(parentObjClass.name);
 			parentObjClass.children.push(elementObjClass);
+			parentObjClass.allChildren.push(elementObjClass);
 
 		}else{
 			removeElementToArr(elementObjClass.parents,parentName);
 			removeElementToArr(parentObjClass.children,elementName);
+			if(parentObjClass.allChildren)
+				removeElementToArr(parentObjClass.allChildren,elementName);
 
 			/*
 			* if the parents array is empty I move the node under the root group
@@ -348,6 +356,8 @@ export const MainGraphObject = (mainGraphDataProvider,dbName)=>{
 			classElement.parents.forEach((parentName)=>{
 				const parentObj=_rootIndexObj[parentName];
 				removeElementToArr(parentObj.children,elementName)
+				if(parentObj.allChildren)
+					removeElementToArr(parentObj.allChildren,elementName)
 			})
 
 			/*

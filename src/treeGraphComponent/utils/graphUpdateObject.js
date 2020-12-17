@@ -86,6 +86,7 @@ export const graphUpdateObject=()=>{
 			             comment:"",
 			             newElement:true,
 			             children:[],
+			             allChildren:[],
 			             abstract:false
 		          		}
 

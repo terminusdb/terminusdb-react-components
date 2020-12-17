@@ -23,8 +23,8 @@ export const ConstraintsComponent =(props)=>{
     const getConstraintsMessage=()=>{
     	let message=[]
 
-    	if(nodeData.children && nodeData.children.length>0){
-            const childrenNum=nodeData.children.length;
+    	if(nodeData.allChildren && nodeData.allChildren.length>0){
+            const childrenNum=nodeData.allChildren.length;
             
     		const cName=childrenNum===1 ? 'child' : 'children';
     		const childrenMessage=`${childrenNum} direct ${cName}`

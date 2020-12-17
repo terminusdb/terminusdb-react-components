@@ -17,7 +17,7 @@ export const DetailsModelComponent = (props)=>{
 
 	const nodeData = props.currentNodeJson ? props.currentNodeJson : {}
 	const objPropsRelatedToClass = props.objPropsRelatedToClass || []
-	const childrenArr = nodeData.children || []
+	const childrenArr = nodeData.allChildren || []
 	const hasConstraints = (childrenArr.length>0 || objPropsRelatedToClass.length >0) ? true : false; 
 	const imageType=ELEMENT_ICONS[nodeData.type]
 	const title=getLabelByName(nodeData.type);
