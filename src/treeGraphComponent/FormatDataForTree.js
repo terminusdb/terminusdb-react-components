@@ -161,8 +161,10 @@ export const formatDataForTreeChart =(rootElement)=>{
 	* When you set a nodeSize, the tree has to be dynamic so it resets the size of the tree.
 	*/
 
+   // treeModel.nodeSize([200,200]);
+
     treeModel.nodeSize([200,200]);
-         
+    //treeModel.size([5000, 1000])   
     const data=hierarchy(rootElement);
     const d3Data = treeModel(data);
      
@@ -276,6 +278,7 @@ const addElements=( _rootIndexObj, dataProvider=[])=>{
 			_rootIndexObj[classId]={}		
 			_rootIndexObj[classId]['children']=[];
 			_rootIndexObj[classId]['parents']=[];
+			_rootIndexObj[classId]['allChildren']=[];
 			_rootIndexObj[classId]['name']=classId;
 			_rootIndexObj[classId]['id']=getId(classId);	
 		}
@@ -339,6 +342,7 @@ const addElements=( _rootIndexObj, dataProvider=[])=>{
 						_rootIndexObj[childId]['name']=childId
 						_rootIndexObj[childId]['id']=getId(childId)
 						_rootIndexObj[childId]['children']=[]
+						_rootIndexObj[childId]['allChildren']=[]
 						_rootIndexObj[childId]['parents']=[]
 						_rootIndexObj[childId]['type']=_rootIndexObj[classId].type;
 					}else{
@@ -361,14 +365,16 @@ const addElements=( _rootIndexObj, dataProvider=[])=>{
 							* check the other levels of relationship  
 							*/						
 							checkChildrenType(_rootIndexObj[childId].children,_rootIndexObj[classId].type);
-						}				
-					}
+						}									
+					}				
 
+					//children property is for d3 hierarchy I add the node only at the first parent 
+					if(_rootIndexObj[childId]['parents'].length===0){
+						_rootIndexObj[classId]['children'].push(_rootIndexObj[childId])
+					}
+					// add child to the current node					
 					_rootIndexObj[childId]['parents'].push(classId);
-				
-					//_rootIndexObj[childId]['parents'].push({label:label,name:classId,type:_rootIndexObj[classId].type});
-					//add child to the current node
-					_rootIndexObj[classId]['children'].push(_rootIndexObj[childId])
+					_rootIndexObj[classId]['allChildren'].push(_rootIndexObj[childId])
 
 				})
 		//	}

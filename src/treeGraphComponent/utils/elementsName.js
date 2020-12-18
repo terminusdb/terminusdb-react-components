@@ -65,14 +65,14 @@ export const getRootIndexObj=(dbName)=>{
 
 	
 	_rootIndexObj[CLASS_TYPE_NAME.OBJECT_CLASSES]={name:CLASS_TYPE_NAME.OBJECT_CLASSES, 
-												parents:[],
+												parents:[],										
 		                             			type:CLASS_TYPE_NAME.SCHEMA_GROUP,
 		                             			label:CLASS_TYPE_NAME_LABEL.OBJECT_CLASSES,
 		                             			children:[],
 		                             			comment:CLASS_TYPE_NAME_LABEL.OBJECT_CLASSES}
 	
     _rootIndexObj[CLASS_TYPE_NAME.DOCUMENT_CLASSES]={name:CLASS_TYPE_NAME.DOCUMENT_CLASSES, 
-												parents:[],
+												parents:[],											
 		                             			type:CLASS_TYPE_NAME.SCHEMA_GROUP,
 		                             			label:CLASS_TYPE_NAME_LABEL.DOCUMENT_CLASSES ,
 		                             			children:[],
@@ -80,7 +80,7 @@ export const getRootIndexObj=(dbName)=>{
 		                             			
 
 	_rootIndexObj[CLASS_TYPE_NAME.CHOICE_CLASSES]={name:CLASS_TYPE_NAME.CHOICE_CLASSES, 
-												parents:[],
+												parents:[],											
 		                             			type:CLASS_TYPE_NAME.SCHEMA_GROUP,
 		                             			label:CLASS_TYPE_NAME_LABEL.CHOICE_CLASSES ,
 		                             			children:[],

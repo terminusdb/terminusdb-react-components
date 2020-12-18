@@ -1,6 +1,6 @@
 {
   "name": "@terminusdb/terminusdb-react-components",
-  "version": "4.0.1",
+  "version": "4.1.0",
   "description": "components tools for terminusdb",
   "main": "src/index",
   "module": "es6/index",
@@ -43,7 +43,7 @@
     "react-dom": "^16.0.0"
   },
   "dependencies": {
-    "@terminusdb/terminusdb-client": "^4.0.0",
+    "@terminusdb/terminusdb-client": "^4.1.0",
     "classnames": "^2.2.5",
     "codemirror": "^5.56.0",
     "core-js": "^3.4.2",
@@ -67,8 +67,10 @@
     "react-sizeme": "^2.6.12",
     "react-split-pane": "^0.1.92",
     "react-table": "^7.3.2",
+    "react-textarea-autosize": "^8.3.0",
     "react-tooltip": "^4.2.10",
     "react-use-dimensions": "^1.2.1",
+    "react-transition-group": "^4.4.1",
     "reactstrap": "^8.5.1",
     "recharts": "^1.8.5"
   },
