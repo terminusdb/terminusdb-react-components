@@ -352,8 +352,7 @@ export const TimeRenderer = ({value, type, column, row, cell, view, args, prefix
     if(typeof value == "number"){
         if(!isNaN(parseFloat(value))){
             d = new Date(parseFloat(value*1000))
-         }
-         else {
+         }else {
              return <span>{value}</span>
          }
     }
@@ -362,10 +361,10 @@ export const TimeRenderer = ({value, type, column, row, cell, view, args, prefix
     }
     if(args && args.format) fstr = args.format
     else fstr = (type == "xsd:date" ? "d MMM yy" : "MMM d, yyyy - HH:mm:ss")
-    if(d){
+
+    if(d instanceof Date && !isNaN(d)){
         return <span title={"Temporal Type: " + type}>{format(d, fstr)}</span>
-    }
-    else {
+    }else {
         return <span>{value}</span>
     }
 }
