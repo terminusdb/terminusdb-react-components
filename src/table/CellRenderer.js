@@ -355,8 +355,7 @@ export const TimeRenderer = ({value, type, column, row, cell, view, args, prefix
          }else {
              return <span>{value}</span>
          }
-    }
-    else {
+    }else {
         d = new Date(value)
     }
     if(args && args.format) fstr = args.format
