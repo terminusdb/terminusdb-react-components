@@ -2,6 +2,7 @@ import React from 'react';
 import {BaseLabelsElementViewMode} from './BaseLabelsElementViewMode'
 import {GET_ICON_NAME,CARDINALITY_MIN_TITLE,CARDINALITY_MAX_TITLE,ELEMENT_BASE_CONST} from '../../../constants/details-labels';
 import { BiBorderNone } from 'react-icons/bi';
+import {PROPERTY_TYPE_NAME} from '../../utils/elementsName';
 
 export const BaseSchemaElementViewMode = (props)=>{
 
@@ -15,9 +16,14 @@ export const BaseSchemaElementViewMode = (props)=>{
 
 	const filterRangeValue=()=>{		
 		let rangeStr=currentNodeJson.range;
-		if(currentNodeJson.range.startsWith("terminusdb:///schema#")){
-			const rangeArr=currentNodeJson.range.split('#');
-			rangeStr=rangeArr[1];
+		//I have to review this
+		if(currentNodeJson.type===PROPERTY_TYPE_NAME.CHOICE_PROPERTY || PROPERTY_TYPE_NAME.OBJECT_PROPERTY){			
+			if(props.mainGraphObj){
+				const node=props.mainGraphObj.getElement(currentNodeJson.range);
+				if(node){
+					rangeStr=node.id;
+				}
+			}
 			onClickEvent={onClick:selectNode}
 		}
 
@@ -33,7 +39,7 @@ export const BaseSchemaElementViewMode = (props)=>{
 				<BiBorderNone className="tdb__panel__title__icon" title="Abstract Class"/>
 			</div>}
 			
-			{currentNodeJson.id && <BaseLabelsElementViewMode name={currentNodeJson.name} {...onClickId} label={ELEMENT_BASE_CONST.ID_TEXT} value={`scm:${currentNodeJson.id}`} />}
+			{currentNodeJson.id && <BaseLabelsElementViewMode name={currentNodeJson.name} {...onClickId} label={ELEMENT_BASE_CONST.ID_TEXT} value={currentNodeJson.id} />}
 
 			{currentNodeJson.comment && <BaseLabelsElementViewMode label={ELEMENT_BASE_CONST.DESCRIPTION_TEXT} value={currentNodeJson.comment} />}			
 			{currentNodeJson.min && <BaseLabelsElementViewMode label={CARDINALITY_MIN_TITLE} value={currentNodeJson.min} />}

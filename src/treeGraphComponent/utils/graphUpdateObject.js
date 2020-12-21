@@ -2,6 +2,7 @@ import {ADD_PARENT, REMOVE_PARENT} from './actionType'
 import TerminusClient from '@terminusdb/terminusdb-client'
 import {PROPERTY_TYPE_NAME,CLASS_TYPE_NAME} from '../utils/elementsName'
 import {getNewNodeTemplate} from '../utils/modelTreeUtils'
+import {UTILS} from "@terminusdb/terminusdb-client"
 
 export const graphUpdateObject=()=>{
 	const newNodesList = new Map()
@@ -161,23 +162,35 @@ export const graphUpdateObject=()=>{
 		if(propertyObj.type===PROPERTY_TYPE_NAME.OBJECT_PROPERTY){
 			copyNode['range']=getRealId(copyNode.range);
 		}
-		copyNode.id=`scm:${propertyObj.id}`;
+		/*
+		* add the prefix for save the property
+		*/
+		copyNode.id=checkNewId(propertyObj.id);
 		return copyNode
 	}
 
-	const getRealId = (elementName)=>{//scm:bike_parent_003
+	/*
+	* the new node has not the prefix I have to add the prefix
+	*/
+	const getRealId = (elementName)=>{
 		if(newNodesList.has(elementName)){
-			return `scm:${newNodesList.get(elementName).id}`
+			return checkNewId(newNodesList.get(elementName).id)
 		}
-		return elementName;
-		//const arr = elementName.split("#")
-		//return `scm:${arr[1]}`	
+		return elementName;	
+	}
+
+	const checkNewId=(id)=>{
+		if(id.indexOf(":")===-1){
+			return `scm:${id}`
+		}
+		return id;
 	}
 
 	const formatChoiceListForWoql = (choicelist)=>{
 		const choices=[]
 		choicelist.forEach((item)=>{
-			const choiceArr=[`scm:${item.id}`,item.label,item.comment]
+			const id= checkNewId(item.id)
+			const choiceArr=[id,item.label,item.comment]
 			choices.push(choiceArr);
 		})
 		return choices;

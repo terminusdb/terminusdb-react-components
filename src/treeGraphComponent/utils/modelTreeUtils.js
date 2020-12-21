@@ -1,4 +1,5 @@
 import {NODE_ACTION_NAME} from './actionType'
+import {UTILS} from "@terminusdb/terminusdb-client"
 
 export const removeElementToArr=(arrayList,elementName)=>{
     if(!arrayList)return undefined
@@ -10,15 +11,18 @@ export const removeElementToArr=(arrayList,elementName)=>{
     return undefined;
 }
 
-export const getNewNodeTemplate=(name=null)=>{
-	const nodeName=name || `CLASS_${(new Date()).getTime()}`;
+export const getNewNodeTemplate=(name=null,type=null,label="NEW NODE",comment="",)=>{
+	const nodeId= name ?  UTILS.shorten(name) : ""
+    const nodeName= name || `CLASS_${(new Date()).getTime()}`;
     const newObj = {
                      name:nodeName,
-                     id: "",
-                     label:"NEW NODE",
-                     comment:"",
+                     id: nodeId,
+                     label:label,
+                     comment:comment,
+                     parents:[],
                      newElement:true,
                      children:[],
+                     type:type,
                      allChildren:[],
                      abstract:false
                     }
