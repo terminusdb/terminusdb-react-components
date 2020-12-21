@@ -13,7 +13,7 @@ export const ObjectClassModelViewMode = (props) => {
 
 	const {selectedNodeObject,
 		   nodePropertiesList,
-		   changeCurrentNode} = GraphContextObj();
+		   changeCurrentNode,mainGraphObj} = GraphContextObj();
 
 	let currentNodeJson = selectedNodeObject || {};
 	const imageType=ELEMENT_ICONS[currentNodeJson.type]
@@ -45,7 +45,7 @@ export const ObjectClassModelViewMode = (props) => {
 				    <div className="tdb__panel__title tdb__panel__title--prop">
 			  	 		Properties
 			  	 	</div>
-					<PropertiesComponentViewMode changeCurrentNode={changeCurrentNode} dataProvider={nodePropertiesList || []} />
+					<PropertiesComponentViewMode mainGraphObj={mainGraphObj} changeCurrentNode={changeCurrentNode} dataProvider={nodePropertiesList || []} />
 				</Fragment>
 			}
 			{currentNodeJson.parents && currentNodeJson.parents.length>0 && 

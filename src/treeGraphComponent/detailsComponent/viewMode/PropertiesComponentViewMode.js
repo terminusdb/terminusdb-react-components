@@ -5,6 +5,7 @@ import {Accordion} from '../../../form/Accordion';
 import {PROPERTY_TYPE_NAME} from '../../utils/elementsName'
 import {GET_ICON_NAME,CARDINALITY_MIN_TITLE,CARDINALITY_MAX_TITLE} from '../../../constants/details-labels';
 import {ListComponent} from '../ListComponent'
+
 export const PropertiesComponentViewMode =(props)=> {
 	
 	const getPropertiesPanels=()=>{
@@ -23,7 +24,7 @@ export const PropertiesComponentViewMode =(props)=> {
 					   tooltip={propertyItem.type || ''}
 					   key={`view__${propertyItem.id}`}>
 
-					  <BaseSchemaElementViewMode changeCurrentNode={props.changeCurrentNode} currentNodeJson={propertyItem} />
+					  <BaseSchemaElementViewMode mainGraphObj={props.mainGraphObj} changeCurrentNode={props.changeCurrentNode} currentNodeJson={propertyItem} />
 					</Accordion>)
 		});	
 	}

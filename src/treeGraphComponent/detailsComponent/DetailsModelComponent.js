@@ -61,9 +61,9 @@ export const DetailsModelComponent = (props)=>{
 		tabsArr.push({title:'Relationships',
 	            getContent: () =><Fragment>
 	         						<ConstraintsComponent key={`const__${nodeData.name}`}/>
-	         						{nodeData.type!=='ChoiceClass' &&
-	         							<ParentsFilter key={`parent__${nodeData.name}`}/>
-	         				  		}
+	         						
+	         						<ParentsFilter key={`parent__${nodeData.name}`}/>
+	   
          				  		</Fragment>
          				  	,
 
