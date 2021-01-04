@@ -261,7 +261,7 @@ const getClassType=(classId,item,_rootIndexObj)=>{
 	if(Array.isArray(item['Parents'])){		
 		item['Parents'].forEach((parentId)=>{
 			/*
-			* if I know the type and it is Document, the type can not change
+			* if I know the type and it is Document, the type can not change.
 			*/
 			if(_rootIndexObj[classId]['type']===CLASS_TYPE_NAME.DOCUMENT_CLASS){
 				return
