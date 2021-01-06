@@ -12,61 +12,66 @@ import { AiOutlineMenu, AiOutlinePlus, AiOutlineDown, AiOutlineRight, AiOutlineS
 export const DocumentRenderer = ({val, onDelete, mode, frame, expansion, index, view, types, docs, client, autosave}) => {
     if(!frame) return null
     const [highlighted, setHighlighted] = useState(false)
-    const [redraw, setRedraw] = useState(false)
+    const [redraw, setRedraw] = useState(1)
     const [compressed, setCompressed] = useState(expansion)
 
-    const onAddProp = (val) => {
-        frame.addProperty(val)
-        setRedraw(redraw + 1)
+    const flash = () => {
+        addFrameControl(frame, "addProperty", addFrameProperty)
+        setRedraw(redraw+1)
     }
 
-    const addFrameProperty = () => {
+    const addFrameProperty = (onChange) => {
+        const getAddProp = (val) => {
+            if(val){
+                if(onChange) onChange()                        
+                frame.addProperty(val)
+                console.log("added " + val)
+                setRedraw(redraw+1)                    
+            }
+            else {
+                console.log("empty property add")
+            }
+        }
         let txt = getDocLabel(frame, types, docs)
         txt = "Add property to " + txt
-        return getMissingPropertySelector(frame, onAddProp, txt)
+        return getMissingPropertySelector(frame, getAddProp, txt)
     }  
-
     addFrameControl(frame, "highlighted", highlighted)    
     addFrameControl(frame, "setHighlighted", setHighlighted)
     addFrameControl(frame, "compressed", compressed)    
     addFrameControl(frame, "setCompressed", setCompressed)
-    if(compressed == "block"){
-        addFrameControl(frame, "addProperty", addFrameProperty)
-        if(autosave && autosave.delete){
-            let deldoc = () => {
-                autosave.delete(frame, "Document deleted with wiki console")
-                .then((r) => {
-                    frame.status = "deleted"
-                    if(onDelete) onDelete()
-                })
-                .catch((e) => {
-                    tframe.status = "error"
-                    setStatus(tframe.status)
-                    alert("err"); console.log(e)
-                })
-            }
-            addFrameControl(frame, "delete", deldoc)    
+    addFrameControl(frame, "addProperty", addFrameProperty)
+    if(autosave && autosave.delete){
+        let deldoc = () => {
+            autosave.delete(frame, "Document deleted with wiki console")
+            .then((r) => {
+                frame.status = "deleted"
+                if(onDelete) onDelete()
+            })
+            .catch((e) => {
+                tframe.status = "error"
+                setStatus(tframe.status)
+                console.log("delete error", e)
+            })
         }
-        let docls = (highlighted ? " wiki-document-highlighted" : "")
-        return <div className={"wiki-document" + docls} >
-            <span className="wiki-document-errors">
-            </span>
+        addFrameControl(frame, "delete", deldoc)    
+    }
+
+    if(compressed=="tile") return <DocumentTile val={val} frame={frame} mode={mode} types={types} docs={docs} />
+    return <ObjectRenderer compressed={compressed} document={true} frame={frame} ping={redraw} mode={mode} types={types} docs={docs} autosave={autosave} />
+    let docls = (highlighted ? " wiki-document-highlighted" : "")
+    return <div className={"wiki-document" + docls} >
+        <span className="wiki-document-errors">
+        </span>
+        {compressed != "compressed" && 
             <span className="wiki-document-headers">
-                <DocumentTitle frame={frame} mode={mode} types={types} docs={docs} autosave={autosave}/>
-                <DocumentDescription frame={frame} mode={mode} types={types} docs={docs} autosave={autosave}/>
+                <DocumentTitle onUpdate={flash} frame={frame} mode={mode} types={types} docs={docs} autosave={autosave}/>
+                <DocumentDescription onUpdate={flash} frame={frame} mode={mode} types={types} docs={docs} autosave={autosave}/>
             </span>
-            <ObjectRenderer frame={frame} ping={redraw} mode={mode} types={types} docs={docs} autosave={autosave} />
-        </div>            
-    }
-    else {
-        if(frame.isObject()){
-            return <><ObjectTitle frame={frame} mode={mode} types={types} docs={docs} />
-                <ObjectSummary frame={frame} mode={mode} types={types} docs={docs}/>    
-            </>
         }
-        return <DocumentTile val={val} frame={frame} mode={mode} types={types} docs={docs} />
-    }
-}
+        <ObjectRenderer compressed={compressed} frame={frame} ping={redraw} mode={mode} types={types} docs={docs} autosave={autosave} />
+    </div>            
+} 
 
 export const DocumentTile = ({val, frame, mode, view, types, docs, autosave}) => {
     let lab = getDocIDLabel(val, docs)
@@ -74,14 +79,13 @@ export const DocumentTile = ({val, frame, mode, view, types, docs, autosave}) =>
 }
 
 
-export const DocumentTitle = ({frame, mode, view, types, docs, autosave}) => {
+export const DocumentTitle = ({frame, mode, adVal, types, docs, autosave}) => {
     if(!frame) return null
     const [active, setActive] = useState(false)
     const [status, setStatus] = useState(frame.status)
     const activate = () => setActive(true)
     const deactivate = () => setActive(false)
     const [titleProp, setTitleProp] = useState(getFrameTitleProp(frame, "label"))
-    
     useEffect(() => {
         if(titleProp){
             copyDocumentControls(titleProp, frame, adVal, updateTitle(titleProp), deleteTitle(titleProp))
@@ -117,7 +121,7 @@ export const DocumentTitle = ({frame, mode, view, types, docs, autosave}) => {
                 .catch((e) => {
                     tframe.status = "error"
                     setStatus(tframe.status)
-                    alert("err"); console.log(e)
+                    console.log("Update error", e)
                 })
             }
             else {
@@ -141,7 +145,7 @@ export const DocumentTitle = ({frame, mode, view, types, docs, autosave}) => {
                 .catch((e) => {
                     tframe.status = "error"
                     setStatus(tframe.status)
-                    alert("err"); console.log(e)
+                    console.log("Delete error", e)
                 })
             }
             else {
@@ -152,7 +156,7 @@ export const DocumentTitle = ({frame, mode, view, types, docs, autosave}) => {
 
     if(!titleProp) return null
 
-    const adVal = () => frame.addPropertyValue("rdfs:label")
+
     const getPlaceHolder = () => {
         let tstruct = getTypeStruct(frame.cls, types)
         return "Enter " + tstruct.label + " Title"
@@ -198,7 +202,7 @@ function copyDocumentControls(propframe, docframe, addValue, update, ddelete ){
     }
 }
 
-export const DocumentDescription = ({frame, mode, view, types, docs, autosave}) => {
+export const DocumentDescription = ({frame, mode, adVal, types, docs, autosave}) => {
     if(!frame) return null
     const [active, setActive] = useState(false)
     const [status, setStatus] = useState(frame.status)
@@ -236,7 +240,7 @@ export const DocumentDescription = ({frame, mode, view, types, docs, autosave}) 
                         }
                     }, 300);
                 })
-                .catch((e) => {alert("err"); console.log(e)})
+                .catch((e) => {console.log(e)})
             }
             else {
                 console.log("no autosave", tframe)
@@ -257,7 +261,7 @@ export const DocumentDescription = ({frame, mode, view, types, docs, autosave}) 
                 .catch((e) => {
                     tframe.status = "error"
                     setStatus(tframe.status)
-                    alert("err"); console.log(e)
+                    console.log("Delete Error", e)
                 })
             }
             else {
@@ -265,11 +269,6 @@ export const DocumentDescription = ({frame, mode, view, types, docs, autosave}) 
             }
         }
     }
-
-
-    const adVal = () => {
-        frame.addPropertyValue("rdfs:comment")
-    }    
     
     const getPlaceHolder = () => {
         let tlab = getDocLabel(frame, types, docs)
@@ -300,6 +299,7 @@ export const DocumentActions = ({frame, mode, type, status, types, docs, active}
 
     const toggleMenu = () => {
         if(status != "loading"){
+            window.global_popup_lock = !showMenu
             setShowMenu(!showMenu)
             if(hasControl(frame, "setHighlighted")) frame.controls.setHighlighted(!showMenu)
         }
@@ -311,12 +311,15 @@ export const DocumentActions = ({frame, mode, type, status, types, docs, active}
             frame.controls.addValue()
         }
     }
+
+    let see_actions = (active && frame && (mode == "edit") && !window.global_popup_lock)
     
     return <span className="wiki-left-contents">
+        <span className="wiki-dummy-icon"></span>
         {active &&  
             <StatusIndicator type="data" status={status} />
         }
-        {active && frame && (mode == "edit") && <>
+        {see_actions && <>
             <span className="wiki-left-icon" onClick={toggleMenu}><AiOutlineMenu /></span>
             <span className="wiki-left-icon" onClick={addEntry}><AiOutlinePlus /></span>
         </>}
@@ -330,16 +333,22 @@ export const DocumentActionMenu = ({frame, toggle, type, types, docs}) => {
     
     const what = frame.getLabel() || type
     const docname = getDocLabel(frame.parent.parent, types, docs)
-
+    const getAction = (which) => {
+        return function() {
+            hasControl(frame, which)()
+            toggle()
+        }
+    }
+    
     return <OutsideClickHandler onOutsideClick={toggle} >  
         <div className="wiki-menu">
             {hasControl(frame, 'deleteDocument') &&                    
-                <div className="wiki-menu-entry wiki-menu-delete" onClick={hasControl(frame, 'deleteDocument')}>
+                <div className="wiki-menu-entry wiki-menu-delete" onClick={getAction('deleteDocument')}>
                     <RiDeleteBin5Line className='wiki-menu-icon'/> Delete {docname}
                 </div>                  
             }
             {hasControl(frame, 'duplicateDocument') &&                    
-                <div className="wiki-menu-entry wiki-menu-delete" onClick={hasControl(frame, 'duplicateDocument')}>
+                <div className="wiki-menu-entry wiki-menu-delete" onClick={getAction('duplicateDocument')}>
                     <AiOutlineCopy className='wiki-menu-icon'/> Clone {docname}
                 </div>                  
             }
@@ -347,12 +356,12 @@ export const DocumentActionMenu = ({frame, toggle, type, types, docs}) => {
                 <div className="wiki-menu-spacer"></div>
             }
             {hasControl(frame, 'delete') &&                    
-                <div className="wiki-menu-entry wiki-menu-delete" onClick={hasControl(frame, 'delete')}>
+                <div className="wiki-menu-entry wiki-menu-delete" onClick={getAction('delete')}>
                     <RiDeleteBin5Line className='wiki-menu-icon'/> Delete {what}
                 </div>                  
             }
             {hasControl(frame, 'duplicate') &&                    
-                <div className="wiki-menu-entry wiki-menu-duplicate" onClick={hasControl(frame, 'duplicate')}>
+                <div className="wiki-menu-entry wiki-menu-duplicate" onClick={getAction('duplicate')}>
                     <AiOutlineCopy className='wiki-menu-icon'/> Clone {what}
                 </div>    
             }              
@@ -361,7 +370,7 @@ export const DocumentActionMenu = ({frame, toggle, type, types, docs}) => {
             }
             {hasControl(frame, 'addValue') && 
                 <>                    
-                    <div className="wiki-menu-entry wiki-menu-add" onClick={hasControl('addValue')}>
+                    <div className="wiki-menu-entry wiki-menu-add" onClick={getAction('addValue')}>
                         <AiOutlinePlus className='wiki-menu-icon'/> Add Alternative {what}
                     </div>                  
                     <div className="wiki-menu-spacer"></div>
@@ -377,7 +386,7 @@ export const DocumentActionMenu = ({frame, toggle, type, types, docs}) => {
             }
             {hasControl(frame, 'addProperty') &&                    
                 <div className="wiki-menu-selector wiki-menu-addparent">
-                        {hasControl(frame, 'addProperty')()}
+                        {getAction('addProperty')()}
                 </div>
             }
         </div>
@@ -410,6 +419,7 @@ export const DocumentNavigation = ({frame, mode, view, types, active}) => {
 
 function getFrameTitleProp(frame, which){
     let tag = (which == "label" ? "rdfs:label" : "rdfs:comment")
+    
     let prop = frame.properties[tag] || frame.properties[TerminusClient.UTILS.unshorten(tag)]
     if(!prop) prop = frame.addProperty(tag)
     let vprop = prop ? prop.values[0] : false

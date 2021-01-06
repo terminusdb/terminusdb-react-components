@@ -8,8 +8,14 @@ export const DatatypeFrameRenderer = ({frame, mode}) => {
     const [val, setV] = useState(frame.get())
     const [type, setT] = useState(frame.getType())
     const [lang, setL] = useState(frame.language || false)
-    const [options, setOptions] = useState(frame.display_options || {})
+    let opts = frame.display_options ? frame.display_options : {}
+    if(typeof opts.placeholder == "undefined"){
+        opts.placeholder = "Enter " + TerminusClient.UTILS.shorten(frame.getType()).split(":")[1]
+    }
+    if(frame.status == "new") opts.autofocus = true
+    const [options, setOptions] = useState(opts)
 
+    
     useEffect(() => {
         setV(frame.get())
         setT(frame.getType())
@@ -68,6 +74,10 @@ export const IRIInput = ({val, onChange, options}) => {
 function getRendererForSituation(val, type, lang, mode, options){
     if(options && options.dataviewer) return options.dataviewer
     if(mode == "edit") {
+        let longs = ['xdd:html', 'xdd:json', "xsd:string"]
+        if(longs.indexOf(TerminusClient.UTILS.shorten(type)) == -1){
+            options.singleline = true
+        }
         return "resizable_string"
     }
     return false
@@ -100,6 +110,7 @@ export const StringInput = ({val, onChange, options}) => {
 }
 
 export const ResizableStringInput = ({val, onChange, options}) => {
+    const ipRef = useRef();
     const mv = (val ? "" + val : "")
     const ph = (options && options.placeholder ? options.placeholder : "")
     const cname = "wiki wiki-textarea wiki-input" + (options && options.className ? " " + options.className : "")
@@ -109,22 +120,26 @@ export const ResizableStringInput = ({val, onChange, options}) => {
             onChange(e.target.value)
         }
     }
+
+    useEffect(() => {
+        if(options && options.autofocus) ipRef.current.focus()
+    }, [options])
     
     const checkSubmit = (e) => {
         if(e.key === 'Enter'){
             if(e.ctrlKey || options.singleline){
                 e.preventDefault()
-                commitChange(e)
+                commitChange(e, false, false, true)
             }
         }
     }
-
     return <TextareaAutosize 
+        defaultValue={val}
         minRows={1}
+        ref={ipRef}
         onBlur={commitChange}
         onKeyPress={checkSubmit} 
         className={cname}
         placeholder={ph} >
-            {mv}
         </TextareaAutosize>
 } 

@@ -5,7 +5,12 @@ import Select from "react-select"
 import { AiOutlineMenu, AiOutlinePlus, AiOutlineDown, AiOutlineRight, AiOutlineSave  } from "react-icons/ai";
 
 export function getTypeStruct(type, types){
-    let rec = (types ? types[type] || types[TerminusClient.UTILS.unshorten[type]] : false)
+
+    type = TerminusClient.UTILS.unshorten(type)
+    let rec = false
+    if(types){
+        rec = types[type] || types[TerminusClient.UTILS.shorten(type)]
+    }
     let meta = {}
     meta.id = TerminusClient.UTILS.shorten(type)
     if(rec){
@@ -20,10 +25,12 @@ export function getTypeStruct(type, types){
 }
 
 export function getDocStruct(docid, docs){
-    let rec = (docs? docs[docid] || docs[TerminusClient.UTILS.unshorten[docid]] : false)
+    docid = TerminusClient.UTILS.unshorten(docid)
+    if(!docs) return false
+    let rec = docs[docid] || docs[TerminusClient.UTILS.shorten(docid)]
     if(!rec) return false
     let meta = {}
-    meta.id = TerminusClient.UTILS.shorten[docid]
+    meta.id = TerminusClient.UTILS.shorten(docid)
     if(rec && rec['Name'] && rec['Name']["@value"]){
         meta.label = rec['Name']["@value"]
     } 
@@ -33,6 +40,31 @@ export function getDocStruct(docid, docs){
     return meta
 }
 
+
+export function getDocLabel(frame, types, docs){
+    let tstruct = getTypeStruct(frame.cls, types)
+    let lab = tstruct.label
+    let docstruct = getDocStruct(frame.subjid, docs)
+    if(docstruct && docstruct.label){
+        lab = docstruct.label
+    }
+    else {
+        let dlab = frame.first ? frame.first("rdfs:label") : false
+        if(dlab){
+            lab = dlab
+        }
+    }
+    return lab
+}
+
+export function getDocIDLabel(val, docs){
+    let lab = val
+    let docstruct = getDocStruct(val, docs)
+    if(docstruct && docstruct.label){
+        lab = docstruct.label
+    }
+    return lab
+}
 
 export function addFrameControl(frame, cname, func) {
     if(!frame.controls) frame.controls = {}
@@ -66,7 +98,7 @@ export const FrameErrors = ({frame, view}) => {
 }
 
 
-export const WikiRow = ({menus, navigation, active, type, tindex, children}) => {
+export const WikiRow = ({menus, navigation, active, type, index, children}) => {
     let cname = (type) ? "wiki-" + type + "-row" : "wiki-value-row"
     return <Row className={"wiki-row " + cname}>
         <Col className={"wiki-action-column " + cname + "-actions"} md={1}>
@@ -74,9 +106,9 @@ export const WikiRow = ({menus, navigation, active, type, tindex, children}) => 
         </Col>
         <Col className="wiki-main-column" md={10}>
             <Row className="wiki-main-column-inner">
-                {tindex &&
+                {index &&
                     <Col className="wiki-index-col"> 
-                        <span className='wiki-index wiki-data-index'>{tindex}</span>
+                        <span className='wiki-index wiki-data-index'>{index}</span>
                     </Col>
                 }
                 <Col className="wiki-content-col"> 
@@ -132,29 +164,4 @@ export function getFilledPropertySelector(frame, onSelect, text){
 
 export function hasControl(frame, cname){
     return (frame.controls && frame.controls[cname])
-}
-
-export function getDocLabel(frame, types, docs){
-    let tstruct = getTypeStruct(frame.cls, types)
-    let lab = tstruct.label
-    let docstruct = getDocStruct(frame.subjid, docs)
-    if(docstruct && docstruct.label){
-        lab = docstruct.label
-    }
-    else {
-        let dlab = frame.first("rdfs:label")
-        if(dlab){
-            lab = dlab
-        }
-    }
-    return lab
-}
-
-export function getDocIDLabel(val, docs){
-    let lab = val
-    let docstruct = getDocStruct(val, docs)
-    if(docstruct && docstruct.label){
-        lab = docstruct.label
-    }
-    return lab
 }

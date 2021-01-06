@@ -12,17 +12,19 @@ import Select from "react-select"
 import { shortenedText } from "../table/CellRenderer"
 
 
-export const PropertyRenderer = ({frame, mode, view, types, docs, autosave, onDelete}) => {
+export const PropertyRenderer = ({frame, mode, view, types, docs, autosave, onDelete, ping}) => {
     if(!frame) return null
     if(!frame.getLabel){
         console.log("strange frame", frame)
         return null
     }
     if(frame.depth() == 0){
-        if(frame.predicate == "rdfs:label" && frame.values.length == 1) return null
-        if(frame.predicate == "rdfs:comment" && frame.values.length == 1) return null
+        //displayed in title pane
+        if(frame.predicate == TerminusClient.UTILS.unshorten("rdfs:label") && frame.values.length == 1) return null
+        if(frame.predicate == TerminusClient.UTILS.unshorten("rdfs:comment") && frame.values.length == 1) return null
     }
-    const [redraw, setRedraw] = useState(1)
+
+    const [redraw, setRedraw] = useState()
     const [rvals, setRvals] = useState()
     const [expansion, setExpansion] = useState(getInitialFrameExpansion(frame, view, types, docs))
     const [active, setActive] = useState(false)
@@ -30,6 +32,7 @@ export const PropertyRenderer = ({frame, mode, view, types, docs, autosave, onDe
     const activeOn = () => setActive(true) 
     const activeOff = () => setActive(false) 
     const [highlighted, setHighlighted] = useState()
+    const [vrows, setVRows] = useState()
 
     function addValue(){
         frame.addValueFrame(frame.createEmpty())
@@ -42,6 +45,33 @@ export const PropertyRenderer = ({frame, mode, view, types, docs, autosave, onDe
         setRedraw(redraw+1)
     }
     
+    useEffect(() => {
+        if(rvals){
+            let rows = []
+            for(var i = 0 ; i < rvals.length; i++){
+                if(!((frame.predicate == TerminusClient.UTILS.unshorten("rdfs:label") || frame.predicate == TerminusClient.UTILS.unshorten("rdfs:comment")) && i == 0)){
+                    let vframe = rvals[i]
+                    addControlsToValueFrame(frame, vframe)
+                    rows.push(
+                        <ValueRenderer 
+                            redraw={redraw} 
+                            index={i} 
+                            expansion={expansion} 
+                            key={frame.predicate  + "_" + i}  
+                            types={types} 
+                            docs={docs}
+                            frame={vframe} 
+                            mode={mode}
+                            onDelete={onDelete}
+                            autosave={autosave}
+                        />
+                    )
+                }
+            }
+            setVRows(rows)
+        }
+    }, [rvals])
+
     useEffect(() => setRvals(getPvals()), [frame, mode])
 
     useEffect(() => {
@@ -49,13 +79,9 @@ export const PropertyRenderer = ({frame, mode, view, types, docs, autosave, onDe
             if(!frame.controls){
                 frame.controls = {}
             }
-            if(!frame.controls.expanded){
-                addFrameControl(frame, "expanded",expansion)
-            }
-            if(!frame.controls.setExpanded){
-                addFrameControl(frame, "setExpanded", setExpansion)
-            }
-            if(autosave && autosave.delete && !frame.controls.delete){
+            addFrameControl(frame, "expanded",expansion)
+            addFrameControl(frame, "setExpanded", setExpansion)
+            if(autosave && autosave.delete){
                 let delprop = () => {
                     autosave.delete(frame, "Document deleted with wiki console")
                     .then((r) => {
@@ -66,12 +92,12 @@ export const PropertyRenderer = ({frame, mode, view, types, docs, autosave, onDe
                     .catch((e) => {
                         frame.status = "error"
                         setStatus(frame.status)
-                        alert("err"); console.log(e)
+                        console.log(e)
                     })
                 }
                 addFrameControl(frame, "delete", delprop)    
             }
-            if(autosave && autosave.save && !frame.controls.save){
+            if(autosave && autosave.save){
                 let upddoc = () => {
                     autosave.save(frame, "Document updated with wiki console")
                     .then((r) => {
@@ -88,15 +114,10 @@ export const PropertyRenderer = ({frame, mode, view, types, docs, autosave, onDe
             addFrameControl(frame, "addValue", addValue)    
             addFrameControl(frame, "highlighted", highlighted)    
             addFrameControl(frame, "setHighlighted", setHighlighted)
-            if(rvals){
-                for(var i = 0 ; i < rvals.length; i++){
-                    addControlsToValueFrame(frame, rvals[i])
-                }
-            }
-
         }
     }, [frame])
 
+    if(!rvals || !rvals.length) return null
 
 
     const toggleExpanded = () => {
@@ -106,8 +127,7 @@ export const PropertyRenderer = ({frame, mode, view, types, docs, autosave, onDe
         else {
             setExpansion('compressed')
         }
-    }
-    
+    }  
 
 
     const deleteValue = (val, index) => {
@@ -134,16 +154,6 @@ export const PropertyRenderer = ({frame, mode, view, types, docs, autosave, onDe
         return rvals
     }
 
-
-    function getDelVal(index, vframe){
-        let g = vframe.get()
-        let f = function(){
-            alert(index)
-            deleteValue(g, index)
-        }
-        return f
-    }
-
     function addControlsToValueFrame(frame, vframe){
         if(!frame.controls) return
         if(!vframe.controls) vframe.controls = {}
@@ -151,31 +161,6 @@ export const PropertyRenderer = ({frame, mode, view, types, docs, autosave, onDe
         if(frame.controls.addValue) vframe.controls.addValue = frame.controls.addValue
     }
 
-
-
-    if(!rvals || !rvals.length) return null
-    
-    let rows = []
-    for(var i = 0 ; i < rvals.length; i++){
-        if(!((frame.predicate == "rdfs:label" || frame.predicate == "rdfs:comment") && i == 0)){
-            let vframe = rvals[i]
-            addControlsToValueFrame(frame, vframe)
-            rows.push(<span>Row {i}
-                <ValueRenderer 
-                    redraw={redraw} 
-                    index={i} 
-                    expansion={expansion} 
-                    key={frame.predicate  + "_" + i}  
-                    types={types} 
-                    docs={docs}
-                    frame={vframe} 
-                    mode={mode}
-                    onDelete={onDelete}
-                    autosave={autosave}
-                />
-            </span>)
-        }
-    }
     let wrapper_class = (highlighted ? "wiki-property-highlighted" : 
         (active ? "wiki-property-selected" : ""))
 
@@ -191,7 +176,7 @@ export const PropertyRenderer = ({frame, mode, view, types, docs, autosave, onDe
             docs={docs} 
         />
         {expansion != "compressed" && 
-            <>{rows}</>
+            <>{vrows}</>
         }
     </div>
 }
@@ -218,7 +203,7 @@ function getInitialFrameExpansion(frame, view, types, docs){
             if(frame.display_options.args['block']) return "block"
         }
         //if(longs.indexOf(TerminusClient.UTILS.shorten(t)) == -1) return "compressed"
-        return "list"
+        return "block"
     }
 }
 
@@ -318,6 +303,7 @@ export const PropertyActions = ({frame, mode, status, types, docs, active}) => {
     const [showMenu, setShowMenu] = useState(status=="loading")
     const toggleMenu = () => {
         if(status != "loading"){
+            window.global_popup_lock = !showMenu
             setShowMenu(!showMenu)
             if(hasControl(frame, "setHighlighted")) frame.controls.setHighlighted(!showMenu)
         }
@@ -330,11 +316,12 @@ export const PropertyActions = ({frame, mode, status, types, docs, active}) => {
         }
     }
 
+    let see_actions = (active && frame && (mode == "edit") && !window.global_popup_lock)
     return <span className="wiki-left-contents">
         {active && 
             <StatusIndicator type="object" status={status} />
         }
-        {active && frame && (mode == "edit") && <>
+        {see_actions && <>
             <span className="wiki-left-icon" onClick={toggleMenu}><AiOutlineMenu /></span>
             <span className="wiki-left-icon" onClick={addEntry}><AiOutlinePlus /></span>
         </>}
@@ -347,18 +334,24 @@ export const PropertyActions = ({frame, mode, status, types, docs, active}) => {
 
 export const PropertyActionMenu = ({frame, toggle, types, docs}) => {   
     const what = frame.getLabel() 
+    const getAction = (which) => {
+        return function() {
+            hasControl(frame, which)()
+            toggle()
+        }
+    }
     return <OutsideClickHandler onOutsideClick={toggle} >  
         <div className="wiki-menu">
             {hasControl(frame, 'addValue') && 
                 <>                    
-                    <div className="wiki-menu-entry wiki-menu-add" onClick={hasControl('addValue')}>
+                    <div className="wiki-menu-entry wiki-menu-add" onClick={getAction('addValue')}>
                         <AiOutlinePlus className='wiki-menu-icon'/> Add {what} value
                     </div>                  
                     <div className="wiki-menu-spacer"></div>
                 </>
             }
             {hasControl(frame, 'delete') &&                    
-                <div className="wiki-menu-entry wiki-menu-delete" onClick={hasControl(frame, 'delete')}>
+                <div className="wiki-menu-entry wiki-menu-delete" onClick={getAction('delete')}>
                     <RiDeleteBin5Line className='wiki-menu-icon'/> Delete all {what} values
                 </div>                  
             }
@@ -375,17 +368,16 @@ export const PropertyActionMenu = ({frame, toggle, types, docs}) => {
             }
             {hasControl(frame, 'addProperty') &&                    
                 <div className="wiki-menu-selector wiki-menu-addparent">
-                        {hasControl(frame, 'addProperty')()}
+                        {hasControl(frame, 'addProperty')(toggle)}
                 </div>
             }
         </div>
     </OutsideClickHandler>
 }
 
-export const PropertyNavigation = ({frame, onCollapse, expansion}) => {
+export const PropertyNavigation = ({frame, expansion}) => {
     if(!(frame && frame.controls)) return null
     let toggle = () => {
-        onCollapse()
         if(frame.controls.setCompressed){
             if(expansion != "compressed"){
                 frame.controls.setCompressed("compressed")

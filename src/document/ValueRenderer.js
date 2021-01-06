@@ -5,7 +5,7 @@ import TerminusClient from '@terminusdb/terminusdb-client'
 import TextareaAutosize from 'react-textarea-autosize';
 import { AiOutlineMenu, AiOutlinePlus, AiOutlineDown, AiOutlineCopy } from "react-icons/ai";
 import { PropertyHeader } from "./PropertyRenderer"
-import { DatatypeRenderer } from "./DatatypeRenderer"
+import { DatatypeFrameRenderer } from "./DatatypeRenderer"
 import { ChoiceRenderer } from "./ChoiceRenderer"
 import { DocumentRenderer } from "./DocumentRenderer"
 import { ObjectRenderer } from "./ObjectRenderer"
@@ -89,12 +89,11 @@ export const ValueRenderer = ({expansion, redraw, index, frame, mode, types, doc
 
     let ret = null
     if(frame.isObject()){
-        console.log("object frame", frame)        
         return <ObjectRenderer 
             ping={redraw} 
+            index={index} 
             expansion={expansion} 
             frame={frame} 
-            index={index} 
             mode={mode} 
             types={types} 
             docs={docs}
@@ -117,7 +116,7 @@ export const ValueRenderer = ({expansion, redraw, index, frame, mode, types, doc
    else if(frame.isDocument()){
         ret = <DocumentRenderer 
             redraw={redraw} 
-            expansion={expansion} 
+            expansion="tile" 
             index={index} 
             val={frame.get()} 
             frame={frame} 
@@ -128,17 +127,14 @@ export const ValueRenderer = ({expansion, redraw, index, frame, mode, types, doc
         />
     }
     else if(frame.isData()){
-        ret = <DatatypeRenderer 
+        ret = <DatatypeFrameRenderer 
             redraw={redraw} 
             expansion={expansion} 
-            index={index} 
             frame={frame} 
-            val={frame.get()} 
-            type={frame.getType()} 
             mode={mode} 
-            onChange={updval} 
             types={types} 
-            docs={docs}/>
+            docs={docs}
+        />
     }
     else {
         alert("Frame has no known type")
@@ -147,7 +143,7 @@ export const ValueRenderer = ({expansion, redraw, index, frame, mode, types, doc
     }
     let menus = <ValueActions frame={frame} mode={mode} types={types} docs={docs} active={active}/>
     let navigation = <ValueNavigation frame={frame} mode={mode} types={types} docs={docs} active={active} />
-    let tindex = (expansion == "block-list" ? (index ? (index+1) : 1) : false)
+    let tindex = ((expansion != "block-list" && expansion != "block") ? (index ? (index+1) : 1) : false)
 
     if(expansion && expansion == "block-list" && index > 0){
         return <span className="property-block">
@@ -162,27 +158,12 @@ export const ValueRenderer = ({expansion, redraw, index, frame, mode, types, doc
         index={tindex}
         type="value"
     >
-        <Row>
-            {tindex &&
-                <Col className="wiki-index-col"> 
-                    <span className='wiki-index wiki-data-index'>{tindex}</span>
-                </Col>
-            }
-            <Col className="wiki-content-col"> 
-                {ret && 
-                    <>{ret}</>
-                }
-                {false && 
-                    <span className="wiki-row-error">
-                        <FrameError error={err} />
-                    </span>
-                }
-            </Col>
-        </Row>       
+        <>{ret}</>
     </WikiRow>
 
     let wrapper_class = (highlighted ? "wiki-value-highlighted" : 
-    (active ? "wiki-value-selected" : ""))
+    (active ? "wiki-value-selected" : 
+    (frame.status == "new" ? "wiki-value-new" : "")))
     if(expansion == "compressed"){
         return <span className={"wiki-value-wrapper " + wrapper_class}  onMouseEnter={activeOn} onMouseLeave={activeOff}>
             {row}
@@ -199,6 +180,7 @@ export const ValueActions = ({frame, mode, status, types, docs, active}) => {
     const [showMenu, setShowMenu] = useState(status=="loading")
     const toggleMenu = () => {
         if(status != "loading"){
+            window.global_popup_lock = !showMenu
             setShowMenu(!showMenu)
             if(hasControl(frame, "setHighlighted")) frame.controls.setHighlighted(!showMenu)
         }
@@ -211,11 +193,13 @@ export const ValueActions = ({frame, mode, status, types, docs, active}) => {
         }
     }
 
+    let see_actions = (active && frame && (mode == "edit") && !window.global_popup_lock)
+
     return <span className="wiki-left-contents">
         {active && 
             <StatusIndicator type="object" status={status} />
         }
-        {active && frame && (mode == "edit") && <>
+        {see_actions && <>
             <span className="wiki-left-icon" onClick={toggleMenu}><AiOutlineMenu /></span>
             <span className="wiki-left-icon" onClick={addEntry}><AiOutlinePlus /></span>
         </>}
@@ -228,16 +212,23 @@ export const ValueActions = ({frame, mode, status, types, docs, active}) => {
 
 export const ValueActionsMenu = ({frame, toggle, types, docs}) => {   
     const what = frame.parent.getLabel() 
+    const getAction = (which) => {
+        return function() {
+            hasControl(frame, which)()
+            toggle()
+        }
+    }
+
     const ting = shortenedText(frame.get(), 12)
     return <OutsideClickHandler onOutsideClick={toggle} >  
         <div className="wiki-menu">
             {hasControl(frame, 'delete') &&                    
-                <div className="wiki-menu-entry wiki-menu-delete" onClick={hasControl(frame, 'delete')}>
+                <div className="wiki-menu-entry wiki-menu-delete" onClick={getAction('delete')}>
                     <RiDeleteBin5Line className='wiki-menu-icon'/> Delete {ting}
                 </div>                  
             }
             {hasControl(frame, 'duplicate') &&                    
-                <div className="wiki-menu-entry wiki-menu-duplicate" onClick={hasControl(frame, 'duplicate')}>
+                <div className="wiki-menu-entry wiki-menu-duplicate" onClick={getAction('duplicate')}>
                     <AiOutlineCopy className='wiki-menu-icon'/> Clone {ting}
                 </div>    
             }              
@@ -246,7 +237,7 @@ export const ValueActionsMenu = ({frame, toggle, types, docs}) => {
             }
             {hasControl(frame, 'addValue') && 
                 <>                    
-                    <div className="wiki-menu-entry wiki-menu-add" onClick={hasControl(frame, 'addValue')}>
+                    <div className="wiki-menu-entry wiki-menu-add" onClick={getAction('addValue')}>
                         <AiOutlinePlus className='wiki-menu-icon'/> Add {what}
                     </div>                  
                     <div className="wiki-menu-spacer"></div>
@@ -262,7 +253,7 @@ export const ValueActionsMenu = ({frame, toggle, types, docs}) => {
             }
             {hasControl(frame, 'addProperty') &&                    
                 <div className="wiki-menu-selector wiki-menu-addparent">
-                        {hasControl(frame, 'addProperty')()}
+                        {getAction('addProperty')(toggle)}
                 </div>
             }
         </div>
