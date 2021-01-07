@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {ToogleButton} from './ToogleButton';
 import {TOOLBAR_LABELS} from '../../constants/details-labels';
 import {ADD_NEW_ENTITY,ADD_NEW_CLASS,ADD_NEW_CHOICE_CLASS} from '../utils/actionType'
@@ -11,10 +11,22 @@ export const ModelMainHeaderComponent =(props)=>{
 
 	const viewEdit=props.isEditMode===true ? true : false;
 
+	const [commitMessage,setCommitMessage]=useState('');
+
+	const commitChange=(evt)=>{
+		const value=evt.currentTarget.value
+		setCommitMessage(value)
+
+	}
 
 	let style={style:{visibility:'hidden'}}
 		if(viewEdit){
 			style={}
+	}
+
+	const saveData=()=>{
+		props.saveData(commitMessage)
+		setCommitMessage('')
 	}
 
 	const setZoomIn=()=>{
@@ -77,14 +89,18 @@ export const ModelMainHeaderComponent =(props)=>{
           					resetTreeModel()
         				}></i>
 				   </div>
-				   <div className="icon-header" >
-				   		<ToogleButton baseTooltip={TOOLBAR_LABELS.SaveButtonTooltip} 
-				   					  baseIcon="fa fa-save"
-				   					  selectIcon="fa fa-save"
-				   					  isSelected={false}
-				   					  selectClassName="tdb__button__base tdb__panel__button"
-				   					  name="SAVE_BUTTON" onSelectionChange={props.saveData}/>
-				   </div>
+				   <div className="tdb__model__savebox">
+					   <input className="tdb__form__element" value={commitMessage} onChange={commitChange} placeholder="Add commit message" />
+					   <div className="icon-header--abs" >
+					   		<ToogleButton baseTooltip={TOOLBAR_LABELS.SaveButtonTooltip} 
+					   					  baseIcon="fa fa-save"
+					   					  selectIcon="fa fa-save"
+					   					  isSelected={false}
+					   					  selectClassName="tdb__button__base tdb__panel__button"
+					   					  name="SAVE_BUTTON" onSelectionChange={saveData}/>
+					   </div>
+					</div>
+
 				   
 
 				   {/*
