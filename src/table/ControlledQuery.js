@@ -11,8 +11,9 @@ function ControlledQueryHook(woqlClient, query, results, queryLimit, queryStart,
     const [loading, setLoading] = useState(false)
     const [woql, setWOQL] = useState(query)
     const [loaded, setLoaded] = useState(false)
+    const [commitMsg, setCommitMsg]=useState()
 
-    
+
     const docQuery = (q) => {
         if(q.containsUpdate()) return q
         let wrapper = WOQL.query()
@@ -42,8 +43,9 @@ function ControlledQueryHook(woqlClient, query, results, queryLimit, queryStart,
         if(ss != start) setStart(ss)
     }
 
-    const updateQuery = (nwoql) => {
+    const updateQuery = (nwoql, commitMsg) => {
         setWOQL(nwoql)
+        setCommitMsg(commitMsg)
     }
 
     const executeQuery = () => {
@@ -51,9 +53,9 @@ function ControlledQueryHook(woqlClient, query, results, queryLimit, queryStart,
             setLoading(true)
             let tstart = Date.now()
             let q = docQuery(woql)
-            q.execute(woqlClient)
+            q.execute(woqlClient, commitMsg)
             .then((response) => {
-                processSuccessfulResult(response, tstart) 
+                processSuccessfulResult(response, tstart)
             })
             .catch((error) => {
                 processErrorResult(error, tstart)
@@ -81,15 +83,15 @@ function ControlledQueryHook(woqlClient, query, results, queryLimit, queryStart,
         metadata.end = new Date()
         metadata.duration = metadata.end - stime
         if(typeof metadata.bindings != "undefined"){
-            metadata.rows = metadata.bindings ? metadata.bindings.length : 0 
+            metadata.rows = metadata.bindings ? metadata.bindings.length : 0
             metadata.columns = metadata.bindings && metadata.bindings[0] ? metadata.bindings[0].length : 0
         }
     }
-    
+
     function processSuccessfulResult(response, stime) {
         if (response) {
             attachMetadata(response, stime)
-            response.status=200            
+            response.status=200
             setResult(response)
         }
     }
@@ -100,7 +102,7 @@ function ControlledQueryHook(woqlClient, query, results, queryLimit, queryStart,
     function processErrorResult(e, stime) {
         let response = {}
         attachMetadata(response, stime)
-        response.status=e.status            
+        response.status=e.status
         response.error = e
         setResult(response)
     }
@@ -140,4 +142,3 @@ function ControlledQueryHook(woqlClient, query, results, queryLimit, queryStart,
 }
 
 export {ControlledQueryHook}
-
