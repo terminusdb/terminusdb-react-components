@@ -310,7 +310,7 @@ export const ArrayRenderer = ({depth, value, column, row, cell, view, args, pref
 
 
 
-const shortenedText = (text, max_cell_size, max_word_size) => {
+export const shortenedText = (text, max_cell_size, max_word_size) => {
 	if(max_cell_size && (text.length > max_cell_size)){
         text = text.substring(0, max_cell_size)
         let lastword = text.lastIndexOf(" ")

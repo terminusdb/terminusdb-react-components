@@ -35,15 +35,9 @@ export function FrameViewer({classframe, doc, type, view, mode, errors, extract,
             setDocObj(docobj)
         }
     }, [doc, view, classframe])
-
-    /*const getRenderer = (name, frame, args) => {
-        if(name == "fancy"){
-            const f = () => {
-            return FancyRenderer(frame, this.mode, view, ping)
-        }
-        return f
-    }*/
     if(!docobj) return null
+    let docconf = TerminusClient.View.document()
+    docconf.all()
     if(type == "fancy"){
         return <FancyRenderer frame={docobj} mode={mode} view = {view} errors={errors} client={client}/> 
     }
