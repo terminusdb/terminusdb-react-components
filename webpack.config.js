@@ -38,9 +38,38 @@ module.exports = {
                 'css-loader', 'less-loader'
               
               ],
-
+            },
+          {
+          test: /\.(svg|jpg|gif|png)$/,
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                name: '[name].[ext]',
+                //outputPath: "images",
+                //publicPath: "images"
+              }
             }
-        ]
+          ]
+        },
+        {
+          test: /\.(woff|woff2|eot|ttf|otf)$/,
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                outputPath: (url, resourcePath, context) => {
+                  //if(argv.mode === 'development') {
+                    const relativePath = path.relative(context, resourcePath);
+                    return `/${relativePath}`;
+                  //}
+                  //return `/assets/fonts/${path.basename(resourcePath)}`;
+                }
+              }
+            }
+          ]
+        }
+      ]
     },
     externals: {
     react: {

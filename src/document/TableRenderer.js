@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Row, Col} from "reactstrap"
+import {Row, Col} from "react-bootstrap" //replace
 import TerminusClient from '@terminusdb/terminusdb-client'
 import Select from 'react-select'; 
 

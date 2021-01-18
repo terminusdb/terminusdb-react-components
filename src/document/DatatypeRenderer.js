@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react'
-import {Row, Col} from "reactstrap"
+import {Row, Col} from "react-bootstrap" //replace
 import TerminusClient from '@terminusdb/terminusdb-client'
 import TextareaAutosize from 'react-textarea-autosize';
 import { getTypeStruct } from "./utils"

@@ -1,6 +1,6 @@
 import TerminusClient from '@terminusdb/terminusdb-client'
 import React, {useState, useEffect} from 'react'
-import {Row, Col} from 'reactstrap'
+import {Row, Col} from "react-bootstrap" //replace
 import Select from "react-select"
 import { AiOutlineMenu, AiOutlinePlus, AiOutlineDown, AiOutlineRight, AiOutlineSave  } from "react-icons/ai";
 

@@ -1,6 +1,10 @@
 import React,{useState,useEffect,Fragment} from 'react';
 import PropTypes from "prop-types";
-import {Accordion} from '../../form/Accordion'
+import {Accordion} from '../../form/Accordion' 
+
+/*
+* remove and use react-bootstrap
+*/
 import Tabs from 'react-responsive-tabs';
 import {BaseElement} from './BaseElement';
 import 'react-responsive-tabs/styles.css';
@@ -14,14 +18,12 @@ import {getLabelByName} from '../utils/elementsName'
 export const DetailsModelComponent = (props)=>{
 	
 	const [tabKey,setTabKey]=useState(1)
-
 	const nodeData = props.currentNodeJson ? props.currentNodeJson : {}
 	const objPropsRelatedToClass = props.objPropsRelatedToClass || []
 	const childrenArr = nodeData.allChildren || []
 	const hasConstraints = (childrenArr.length>0 || objPropsRelatedToClass.length >0) ? true : false; 
 	const imageType=ELEMENT_ICONS[nodeData.type]
 	const title=getLabelByName(nodeData.type);
-
 
 	useEffect(() => {
         setTabKey(1)

@@ -1,6 +1,6 @@
 import React,{useEffect, useMemo} from 'react';
 import { useTable, usePagination,  useSortBy } from 'react-table'
-import { Table,Container,Row, Col, Pagination, PaginationItem, PaginationLink,Button} from "reactstrap";
+import { Table,Container,Row, Col, Pagination, PaginationItem, PaginationLink,Button} from "react-bootstrap" //replace;
 
 /**
  * config options

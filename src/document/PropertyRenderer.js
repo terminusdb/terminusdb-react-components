@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Row, Col} from "reactstrap"
+import {Row, Col} from "react-bootstrap" //replace
 import TerminusClient from '@terminusdb/terminusdb-client'
 import TextareaAutosize from 'react-textarea-autosize';
 import { AiOutlineMenu, AiOutlinePlus, AiOutlineDown, AiOutlineRight, AiOutlineIdcard, AiOutlineUnorderedList, AiOutlineBuild, AiFillBuild } from "react-icons/ai";
