@@ -1,7 +1,6 @@
 import React,{useState} from 'react';
 import TerminusClient from '@terminusdb/terminusdb-client';
-//import { format } from "date-fns";
-import moment from "moment" 
+import { format } from "date-fns";
 import {MdExpandLess, MdExpandMore} from "react-icons/md"
 
 export const CellRenderer = ({value, column, row, cell, view, args, depth, prefixes})=>{
@@ -363,8 +362,7 @@ export const TimeRenderer = ({value, type, column, row, cell, view, args, prefix
     else fstr = (type == "xsd:date" ? "d MMM yy" : "MMM d, yyyy - HH:mm:ss")
 
     if(d instanceof Date && !isNaN(d)){
-        return <span title={"Temporal Type: " + type}>{moment(d).format(fstr)}</span>
-        //return <span title={"Temporal Type: " + type}>{format(d, fstr)}</span>
+        return <span title={"Temporal Type: " + type}>{format(d, fstr)}</span>
     }else {
         return <span>{value}</span>
     }

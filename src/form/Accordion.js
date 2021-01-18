@@ -1,5 +1,6 @@
 import React,{useState} from 'react';
 import PropTypes from "prop-types";
+import {FaCaretUp, FaCaretDown} from "react-icons/fa";
 
 export const Accordion = (props) => {
   	   
@@ -12,9 +13,9 @@ export const Accordion = (props) => {
     const arrowClassName=`tdb__accordion__arrow ${props.arrowClassName}`;
      		
     const bodyClassName=!showBody || props.isDisabled===true ? "tdb__accordion__body tdb__accordion__body--hidden" : "tdb__accordion__body"
-  
-    const openIconClass=showBody ? `${arrowClassName} ${props.arrowOpenClassName}` :  `${arrowClassName} ${props.arrowCloseClassName}`
-  		
+
+    const openIconClass=showBody ? <FaCaretUp className={arrowClassName}/> : <FaCaretDown className={arrowClassName}/>
+
     const titleClassName=`tdb__accordion__head ${props.titleClassName}`;
     const tooltip = props.tooltip ? {title:props.tooltip} :{}
 
@@ -29,7 +30,7 @@ export const Accordion = (props) => {
                       <i className={`tdb__accordion__icon ${props.leftIconClassName}`}></i>}
                     <div>{props.title}</div> 
                 </div>
-                <span className={openIconClass} role="presentation"></span>                   
+                {openIconClass}            
             </div>
             <div className={bodyClassName}>
                {props.children}
@@ -38,10 +39,8 @@ export const Accordion = (props) => {
 		)
 }
 
-
+// <span className={openIconClass} role="presentation"></span> 
 Accordion.propTypes = {
-    arrowOpenClassName:PropTypes.string,
-    arrowCloseClassName:PropTypes.string,
     className:PropTypes.string,
     arrowClassName:PropTypes.string,
     titleClassName:PropTypes.string,
@@ -50,8 +49,6 @@ Accordion.propTypes = {
 }
 
 Accordion.defaultProps = {
-    arrowOpenClassName:'fa fa-caret-up',
-    arrowCloseClassName:"fa fa-caret-down",
     title:'title',
     className:'',
     arrowClassName:'',
