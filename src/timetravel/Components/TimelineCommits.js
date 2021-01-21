@@ -4,6 +4,10 @@ import {Timeline} from './Timeline';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import {DateRangePicker,isInclusivelyBeforeDay,SingleDatePicker} from "react-dates";
+/*
+* I have to remove moment
+*/
+
 import moment from 'moment';
 import { SizeMe } from 'react-sizeme'
 /*
