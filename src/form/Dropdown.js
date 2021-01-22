@@ -1,6 +1,7 @@
 import React , {useState} from 'react';
 import OutsideClickHandler from 'react-outside-click-handler';
 import PropTypes from "prop-types";
+import {FaCaretDown} from "react-icons/fa";
 
 export const Dropdown = ({className, children, title, isOpen, toggle, mouseOverActive, onClickAction }) => {
 
@@ -28,7 +29,8 @@ export const Dropdown = ({className, children, title, isOpen, toggle, mouseOverA
     return(<OutsideClickHandler onOutsideClick={onOutsideClick} >  
                 <div className="tdb__dropdown" {...mouseOver} >
                     <button onClick={onClick} className={`tdb__dropdown__button tdb__dropdown__button--top ${className}`}  >
-                        <span  className="tdb__dropdown__title">{title}</span><i className="fa fa-caret-down"></i>
+                        <span  className="tdb__dropdown__title">{title}</span>
+                           <FaCaretDown/>
                     </button>
                     
                     <div className={dropdownContent}>

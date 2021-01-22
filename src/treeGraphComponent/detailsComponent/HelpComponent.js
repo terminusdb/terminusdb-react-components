@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
 import {ELEMENT_HELP}  from '../../constants/details-labels.js';
+import { FaInfoCircle } from "react-icons/fa";
 
 export const HelpComponent = (props) =>{
 
@@ -8,8 +9,8 @@ export const HelpComponent = (props) =>{
     
 	return(
 	  <div className="icon-help">
-	  	<i data-tip data-for={props.text} className="fas fa-info-circle"></i>
-	  	<ReactTooltip id={props.text} type="warning" effect="solid">
+	  	<FaInfoCircle data-tip data-for={props.text} ></FaInfoCircle>
+	  	<ReactTooltip textColor="#24292e" id={props.text} type="warning" effect="solid">
 	  	   {ELEMENT_HELP[props.text]}
 	  	</ReactTooltip>
 	  </div>

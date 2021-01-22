@@ -1,6 +1,5 @@
 import React, {useState,useEffect} from "react";
 import TerminusClient from '@terminusdb/terminusdb-client';
-//import { format } from "date-fns";
 import moment from 'moment'; 
 const DATETIME_FULL = "hh:mm:ss, DD-MM-YYYY"
 

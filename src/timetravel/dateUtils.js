@@ -3,9 +3,7 @@
  * function of date-fns package, to assist common date formats
  * used throughout the console
  */
-//import { format } from "date-fns";
-import moment from "moment"
-
+import { format } from "date-fns";
 
 export const DATETIME_COMPLETE = "hh:mm:ss MMM d, yyyy"
 export const DATETIME_FULL = "hh:mm:ss, dd/MM/yy"
@@ -24,7 +22,5 @@ export const DATETIME_SSS = "sss \s"
 
 export const printts = (ts, f) => {
     f = f || DATETIME_REGULAR
-    return moment(ts * 1000).format(f)
-
-    //return format(new Date(ts * 1000), f)
+    return format(new Date(ts * 1000), f)
 }
