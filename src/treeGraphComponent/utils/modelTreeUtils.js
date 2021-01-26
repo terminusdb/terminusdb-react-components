@@ -1,4 +1,4 @@
-import {NODE_ACTION_NAME} from './actionType'
+import * as NODE_ACTION_NAME from './actionType'
 import {UTILS} from "@terminusdb/terminusdb-client"
 
 export const removeElementToArr=(arrayList,elementName)=>{
@@ -50,10 +50,11 @@ export const treeModelApplyAction=(nodeName,actionName,graphData,nodeIndex)=>{
              }else if(actionName===NODE_ACTION_NAME.ADD_NEW_CLASS){
                indexNewObj.type='OrdinaryClass';
                actionName=NODE_ACTION_NAME.ADD_CHILD;
-             }else if(actionName===NODE_ACTION_NAME.ADD_NEW_RELATIONSHIP){
-                indexNewObj.type='Relationship';
-                actionName=NODE_ACTION_NAME.ADD_CHILD;
              }
+             //else if(actionName===NODE_ACTION_NAME.ADD_NEW_RELATIONSHIP){
+               // indexNewObj.type='Relationship';
+               // actionName=NODE_ACTION_NAME.ADD_CHILD;
+             //}
             //this.nodeIndex[newName]=indexNewObj;
             switch (actionName ){ 
               case NODE_ACTION_NAME.ADD_CHILD:
