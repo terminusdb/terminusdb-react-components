@@ -12,7 +12,7 @@ function ControlledQueryHook(woqlClient, query, results, queryLimit, queryStart,
     const [woql, setWOQL] = useState(query)
     const [loaded, setLoaded] = useState(false)
     const [commitMsg, setCommitMsg]=useState()
-
+    const [reload, setReload] = useState(0)
 
     const docQuery = (q) => {
         if(q.containsUpdate()) return q
@@ -33,6 +33,11 @@ function ControlledQueryHook(woqlClient, query, results, queryLimit, queryStart,
             setStart(0)
         }
     }
+
+    const onReload = () => {
+        setReload(reload+1)
+    }
+
 
     const changeLimits = (l, s) => {
         let ll = parseInt(l) || 0
@@ -114,7 +119,7 @@ function ControlledQueryHook(woqlClient, query, results, queryLimit, queryStart,
         else {
             setLoaded(true)
         }
-    }, [limit, start, orderBy])
+    }, [limit, start, orderBy, reload])
 
     useEffect( () => {
         if(woql){
@@ -138,6 +143,7 @@ function ControlledQueryHook(woqlClient, query, results, queryLimit, queryStart,
         start,
         loading,
         rowCount,
+        onReload
     }
 }
 

@@ -4,6 +4,7 @@ import { WOQLTable } from './WOQLTable';
 
 export const ControlledWOQLTable = ({client, query, results, order, rows, freewidth, view, onEmpty, onError, onLoading}) => {
     const [loaded, setLoaded] = useState(false)
+
     const {
         updateQuery,
         changeOrder,
@@ -15,8 +16,8 @@ export const ControlledWOQLTable = ({client, query, results, order, rows, freewi
         orderBy,
         loading,
         rowCount,
+        onReload
     } = ControlledQueryHook(client, query, results, rows, order)
-
 
 
     useEffect(() => {
@@ -39,13 +40,13 @@ export const ControlledWOQLTable = ({client, query, results, order, rows, freewi
 
     return (
         <div className="tdb__loading__parent">
-            {loading && onLoading && 
+            {loading && onLoading &&
                 <>{onLoading()}</>
             }
-            {result && result.status != 200 &&  
+            {result && result.status != 200 &&
                 <>{onError(result)}</>
             }
-            {result && result.status == 200 && isEmpty(result) && onEmpty && 
+            {result && result.status == 200 && isEmpty(result) && onEmpty &&
                 <>{onEmpty(result)}</>
             }
             {result && result.status == 200 && !isEmpty(result) &&
@@ -60,6 +61,7 @@ export const ControlledWOQLTable = ({client, query, results, order, rows, freewi
                     setLimits={changeLimits}
                     setOrder={changeOrder}
                     totalRows={rowCount}
+                    onReload={onReload}
                 />
             }
         </div>

@@ -1,5 +1,6 @@
 import React,{useEffect, useMemo} from 'react';
 import { useTable, usePagination,  useSortBy } from 'react-table'
+import {BiRefresh} from "react-icons/bi"
 import { Table,Container,Row, Col, Pagination, PaginationItem, PaginationLink,Button} from "react-bootstrap" //replace;
 
 /**
@@ -8,8 +9,8 @@ import { Table,Container,Row, Col, Pagination, PaginationItem, PaginationLink,Bu
  * sort - no, local, remote
  */
 
-export const TableComponent = ({columns, data, view, pages, freewidth, orderBy, rowCount, pageNumber, setLimits, setOrder, pagesizes})=>{
-    
+export const TableComponent = ({columns, data, view, pages, freewidth, orderBy, rowCount, pageNumber, setLimits, setOrder, pagesizes, onReload})=>{
+
     pagesizes = pagesizes || [10, 20, 30, 40, 50]
     let pager = view.config.pager()
 
@@ -32,7 +33,7 @@ export const TableComponent = ({columns, data, view, pages, freewidth, orderBy, 
             ut_config.manualPagination = true
             ut_config.manualSortBy = true
             ut_config.pageCount = pages || 1
-            init_state.pageIndex = pageNumber || 0 
+            init_state.pageIndex = pageNumber || 0
             init_state.sortBy = woql_to_order(orderBy)
         }
     }
@@ -40,7 +41,7 @@ export const TableComponent = ({columns, data, view, pages, freewidth, orderBy, 
 
 
     ut_config.initialState = init_state
-    
+
     const {
         getTableProps,
         getTableBodyProps,
@@ -59,24 +60,24 @@ export const TableComponent = ({columns, data, view, pages, freewidth, orderBy, 
         previousPage,
         setPageSize,
         state: { pageIndex, pageSize, sortBy },
-        } = useTable(ut_config, useSortBy, usePagination)    
+        } = useTable(ut_config, useSortBy, usePagination)
 
     useEffect(() => {
         if(pager == "remote"){
             let worder = order_to_woql(sortBy)
             if(setOrder) setOrder(worder)
         }
-    }, [sortBy]) 
+    }, [sortBy])
 
-   
+
     useEffect(() => {
-        if((pager == "remote") && setLimits && (pageSize != ut_config.initialState.pageSize || pageIndex != (pageNumber || 0))) 
+        if((pager == "remote") && setLimits && (pageSize != ut_config.initialState.pageSize || pageIndex != (pageNumber || 0)))
             setLimits(pageSize, (pageIndex)*pageSize)
-     }, [pageIndex, pageSize ]) 
-     
+     }, [pageIndex, pageSize ])
+
      let rowCountStr = ""
      if(pager){
-         let ps = view.config.pagesize() || 10 
+         let ps = view.config.pagesize() || 10
          let st = ((ps * pageIndex) + 1)
          let en = page.length + st - 1
          rowCountStr = "Record " + st + " to " + en
@@ -84,6 +85,7 @@ export const TableComponent = ({columns, data, view, pages, freewidth, orderBy, 
             rowCountStr += " of " + rowCount
         }
     }
+
      return (
         <span>
             <Table {...getTableProps()} hover>
@@ -123,9 +125,9 @@ export const TableComponent = ({columns, data, view, pages, freewidth, orderBy, 
                 })}
                 </tbody>
             </Table>
-            {pager && 
+            {pager &&
                 <Row md={12} className="mr-0 ml-0">
-                    <Col md={5} >
+                    <Col md={4} >
                         <Pagination className="pagination">
                             <button onClick={() => previousPage()} disabled={!canPreviousPage}>
                             {'<'}
@@ -156,6 +158,13 @@ export const TableComponent = ({columns, data, view, pages, freewidth, orderBy, 
                     <Col md={3} className="justify-content-end">
                         {rowCountStr}
                     </Col>
+                    <Col md={1} className="justify-content-end">
+                        <div className="tdb__toolbar__base">
+                            <button onClick={onReload} className="tdb__toolbar__base__button">
+                                Refresh
+                            </button>
+                        </div>
+                    </Col>
               </Row>
             }
     </span>
@@ -166,13 +175,13 @@ function getCellProps(cell, view){
     let cs = {}
     if(view.hasCellClick(cell.row.original, cell.column.id)){
         let onc = view.getCellClick(cell.row.original, cell.column.id)
-        if(onc){    
+        if(onc){
             cs.onClick = function(){
                 onc(cell)
             }
             cs.style = { cursor: "pointer"}
-        }    
-    }        
+        }
+    }
     return cs
 }
 
@@ -180,13 +189,13 @@ function getRowProps(row, view){
     let cs = {}
     if(view.hasRowClick(row.original)){
         let onc = view.getRowClick(row.original)
-        if(onc){    
+        if(onc){
             cs.onClick = function(){
                 onc(row)
             }
             cs.style = { cursor: "pointer"}
-        }    
-    }        
+        }
+    }
     return cs
 }
 
@@ -209,7 +218,7 @@ function getColumnProps(column, view, freewidth){
     }
     return {
         style: cstyle
-    }    
+    }
 }
 
 const order_to_woql = (lorder) => {
@@ -221,7 +230,7 @@ const order_to_woql = (lorder) => {
         orderarr.push(lorder[i].desc ? "desc" : "asc")
     }
     return orderarr
-} 
+}
 
 const woql_to_order = (ob) => {
     if(!ob) return []
