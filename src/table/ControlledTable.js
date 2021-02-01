@@ -16,7 +16,7 @@ export const ControlledWOQLTable = ({client, query, results, order, rows, freewi
         orderBy,
         loading,
         rowCount,
-        onReload
+        onRefresh
     } = ControlledQueryHook(client, query, results, rows, order)
 
 
@@ -61,7 +61,7 @@ export const ControlledWOQLTable = ({client, query, results, order, rows, freewi
                     setLimits={changeLimits}
                     setOrder={changeOrder}
                     totalRows={rowCount}
-                    onReload={onReload}
+                    onRefresh={onRefresh}
                 />
             }
         </div>

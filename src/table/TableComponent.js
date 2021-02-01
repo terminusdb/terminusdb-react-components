@@ -9,7 +9,7 @@ import { Table,Container,Row, Col, Pagination, PaginationItem, PaginationLink,Bu
  * sort - no, local, remote
  */
 
-export const TableComponent = ({columns, data, view, pages, freewidth, orderBy, rowCount, pageNumber, setLimits, setOrder, pagesizes, onReload})=>{
+export const TableComponent = ({columns, data, view, pages, freewidth, orderBy, rowCount, pageNumber, setLimits, setOrder, pagesizes, onRefresh})=>{
 
     pagesizes = pagesizes || [10, 20, 30, 40, 50]
     let pager = view.config.pager()
@@ -160,7 +160,7 @@ export const TableComponent = ({columns, data, view, pages, freewidth, orderBy, 
                     </Col>
                     <Col md={1} className="justify-content-end">
                         <div className="tdb__toolbar__base">
-                            <button onClick={onReload} className="tdb__toolbar__base__button">
+                            <button onClick={onRefresh} className="tdb__toolbar__base__button" title="Refresh table contents">
                                 Refresh
                             </button>
                         </div>
