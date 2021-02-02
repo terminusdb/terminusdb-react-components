@@ -127,7 +127,8 @@ export const TableComponent = ({columns, data, view, pages, freewidth, orderBy, 
             </Table>
             {pager &&
                 <Row md={12} className="mr-0 ml-0">
-                    <Col md={4} >
+                    <Col md={3}/>
+                    <Col md={1} >
                         <Pagination className="pagination">
                             <button onClick={() => previousPage()} disabled={!canPreviousPage}>
                             {'<'}
@@ -137,7 +138,7 @@ export const TableComponent = ({columns, data, view, pages, freewidth, orderBy, 
                             </button>{' '}
                         </Pagination>
                     </Col>
-                    <Col md={4} className="justify-content-end">
+                    <Col md={2} className="justify__content__end">
                          <span>
                             Page{' '}
                             <strong>
@@ -155,16 +156,18 @@ export const TableComponent = ({columns, data, view, pages, freewidth, orderBy, 
                             ))}
                         </select>
                     </Col>
-                    <Col md={3} className="justify-content-end">
+                    <Col md={2} className="justify__content__end">
                         {rowCountStr}
                     </Col>
-                    <Col md={1} className="justify-content-end">
+                    <Col md={1} className="justify__content__end">
                         <div className="tdb__toolbar__base">
                             <button onClick={onRefresh} className="tdb__toolbar__base__button" title="Refresh table contents">
-                                Refresh
+                                <BiRefresh className="tdb__toolbar__base__icon"/>
+                                <span>Refresh</span>
                             </button>
                         </div>
                     </Col>
+                    <Col md={3}/>
               </Row>
             }
     </span>
