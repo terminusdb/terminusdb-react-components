@@ -619,7 +619,7 @@ GraphResultsViewer.prototype.setConfigOptions = function(config) {
 	//configuration options for different types of behaviour
     // Need to explicitly know font family name for unicode glyphs
     this.onClick = config.onClick
-	this.fontfam = (config && (config.fontfamily()) ? config.fontfamily() : "FontAwesome"),//'Font Awesome 5 Free');
+	this.fontfam = (config && (config.fontfamily()) ? config.fontfamily() : "Font Awesome\ 5 Free"),//'Font Awesome 5 Free');
 	this.selected_grows = (config && typeof config.selected_grows() != "undefined" ? config.selected_grows() : true);
 	this.show_force = (config && typeof config.show_force() != "undefined" ? config.show_force() : true);
 	this.fix_nodes = (config && typeof config.fix_nodes() != "undefined" ? config.fix_nodes() : false);
