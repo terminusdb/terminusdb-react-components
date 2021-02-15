@@ -349,8 +349,13 @@ GraphResultsViewer.prototype.updateGraph = function(nodes, links) {
     var ep_enter = this.edgepaths
         .enter()
         .append('path')
-        .style("pointer-events", "none")
-        .attr('d', function(d) {return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y})
+		.style("pointer-events", "none")
+		/*
+		to be review don't pass a number
+		.attr('d', function(d) {
+			console.log(d)
+			return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y
+		})*/
         .attr('class', 'edgepath')
         .attr('fill-opacity', 0)
         .attr('stroke-opacity', 0)
