@@ -116,8 +116,7 @@ export const TypeRenderer = ({value, column, row, cell, view, args, prefixes})=>
     return <span className='iri'>{ value }</span>
 }
 
-
-export const JSONLDRenderer = ({value, column, row, cell, view, args})=>{
+export const JSONLDRenderer = ({value, column, row, cell, view, args,prefixes})=>{
     return <JSONRenderer
             prefixes={prefixes}
             value={value}
