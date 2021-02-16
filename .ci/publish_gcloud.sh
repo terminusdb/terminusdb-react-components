@@ -1,2 +1,2 @@
 BRANCH=$1
-gsutil cp -r dist/* "gs://cdn.terminusdb.com/js_libs/terminusdb_console/${BRANCH}/"
+gsutil cp -r dist/* "gs://cdn.terminusdb.com/js_libs/terminusdb-react-components/${BRANCH}/"
