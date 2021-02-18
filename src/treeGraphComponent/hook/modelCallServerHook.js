@@ -53,7 +53,7 @@ export const modelCallServerHook = (woqlClient,branch,ref) => {
 		if(query!==undefined){
 			let ts = Date.now()
 			setLoading(true)
-			const commitM=commitMessage || "Update schema"
+			const commitM=commitMessage || "Update from model builder"
 			woqlClient.query(query,commitM).then(result=>{				
 				let msg = `Successfully updated schema graph`
 	            setReport({
