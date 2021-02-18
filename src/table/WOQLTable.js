@@ -63,8 +63,18 @@ export const WOQLTable = ({bindings, result, view, freewidth, query, start, limi
     }
 
     function formatTableColumns(){
+
         let colids = woqt.getColumnsToRender()
-        let listOfColumns = colids.map((item, index) => {
+
+        let fixedColIds = colids.map((item, index) => {
+            if(item == "") {
+                item = "_" + index
+            }
+            return item
+        })
+
+        let listOfColumns = fixedColIds.map((item, index) => {
+
             let col = {
                 Header: woqt.getColumnHeaderContents(item) || item,
                 id: item,

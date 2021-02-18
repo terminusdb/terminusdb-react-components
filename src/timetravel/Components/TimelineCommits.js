@@ -20,11 +20,11 @@ import {useCommitsControl} from '../hook/useCommitsControl';
 * I have to fix the size start
 */
 export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStartTime,currentCommit,headMessage,firstCommit,onChange}) =>{
-    
+
     const [ref, { x, y, width }] = useDimensions();
-    
+
     const currentDay=currentStartTime ? moment.unix(currentStartTime) : moment();
-    
+
     const {dataProviderValues,
           loadPreviousPage,
           gotoPosition,
@@ -33,15 +33,15 @@ export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStart
           setSelectedValue,
           loadNextPage} = useCommitsControl(woqlClient, setError, branch, currentDay.unix(), currentCommit, firstCommit);
     /*
-    * set the day in the calendar 
-    */    
+    * set the day in the calendar
+    */
     const [selectedDay, onDateChange] = useState( currentDay);
     const [focused,onFocusChange] = useState(false);
-    
+
     useEffect(() => {
         if(onChange) onChange(currentItem)
     }, currentItem)
-    
+
     const startConf={ isTouchEnabled: true,
                       //isKeyboardEnabled: true,
                       isOpenEnding: true,
@@ -63,7 +63,7 @@ export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStart
           setHead(currentItem)
        }
     }
-    
+
     const dataProvider= dataProviderValues.dataProvider;
     const currentItem = dataProvider.length>0  ? dataProvider[dataProviderValues.selectedValue] : {label:'No Value',author:'',message:''}
     const buttonActive = dataProvider.length>0 ? {onClick:setSelectedCommit} : {disabled:true}
@@ -72,7 +72,7 @@ export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStart
     if(!currentItem) return null
     return (
       <div className="history__nav__content">
-        <div className="history__nav__row"> 
+        <div className="history__nav__row">
             <SingleDatePicker
                 showDefaultInputIcon
                 date={selectedDay}
@@ -90,14 +90,14 @@ export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStart
                  />
               <div className="history__nav__display__commit">
                   <span className="history__nav__display__test">
-                  {`${currentItem.label} - ${currentItem.author}` }</span> 
+                  {`${currentItem.label} - ${currentItem.author}` }</span>
                   <span className="history__nav__display__test">{`${currentItem.message}` }</span>
               </div>
             <button className="tdb__button__base tdb__button__base--bgreen" {...buttonActive} {...buttonVisible}>
                 {headMessage}
-            </button> 
-        </div>       
-          <div className="history__nav__slider__content" ref={ref}>         
+            </button>
+        </div>
+          <div className="history__nav__slider__content" ref={ref}>
                   <Timeline
                     containerWidth={width}
                     containerHeight={100}
@@ -111,8 +111,8 @@ export const TimelineCommits = ({woqlClient,setHead,branch,setError,currentStart
                     styles={styles}
                     values={dataProvider}
                     gotoPosition={gotoPosition}
-                  />            
-          </div>   
+                  />
+          </div>
       </div>
     );
   //}
