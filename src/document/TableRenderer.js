@@ -27,7 +27,10 @@ export const TableRenderer = ({frame, mode, view, errors, client, setExtractDocs
 const MissingPropertySelector = ({client, frame, onAddProp}) => {
     let arr=[]
 
-    if(frame.isObject() && frame.classframes) return <div/>
+    if(frame.isObject() && frame.classframes) {
+        if(frame.status=="new"  || frame.newDoc) // for update of doc => display MissingProperty
+            return <div/>
+    }
 
     if(!frame.classframes) {
         let cls = frame.cls
@@ -84,33 +87,6 @@ export const ObjectRenderer = ({frame, mode, view, ping, setDocType, client, set
         }
         frame.addProperty(p)
         setRedraw(redraw + 1)
-    }
-
-    const getMissingPropertySelectorOLD = () => {
-        if(frame.type=="objectProperty") return null
-        if(!frame.classframes) {
-            let cls = frame.cls
-            if (client) {
-                client.getClassFrame(cls).then((results)=>{
-                    let classframe=results, opts=[]
-                    if((classframe && classframe['system:properties'])) {
-                        for(var key in classframe['system:properties']){
-                            opts.push(key.label)
-                        }
-                    }
-                    var mpl=opts
-                })
-            }
-        }
-        else var mpl = frame.getMissingPropertyList()
-        if(Object.keys(mpl).length){
-            return <Select
-                onChange={onAddProp}
-                options={mpl}
-                placeholder="Add Property"
-            />
-        }
-        return null
     }
 
     const updateID = (nid) => {
@@ -275,6 +251,9 @@ export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDoc
     }
 
     if(!rvals || !rvals.length) return null
+
+    console.log("rvals", rvals)
+
     let rows = []
     for(var i = 0 ; i < rvals.length; i++){
         if(i == 0){
