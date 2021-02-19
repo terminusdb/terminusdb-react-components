@@ -252,7 +252,7 @@ export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDoc
 
     if(!rvals || !rvals.length) return null
 
-    console.log("rvals", rvals)
+    //console.log("rvals", rvals)
 
     let rows = []
     for(var i = 0 ; i < rvals.length; i++){
