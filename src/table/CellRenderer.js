@@ -116,8 +116,7 @@ export const TypeRenderer = ({value, column, row, cell, view, args, prefixes})=>
     return <span className='iri'>{ value }</span>
 }
 
-
-export const JSONLDRenderer = ({value, column, row, cell, view, args})=>{
+export const JSONLDRenderer = ({value, column, row, cell, view, args,prefixes})=>{
     return <JSONRenderer
             prefixes={prefixes}
             value={value}
@@ -310,7 +309,7 @@ export const ArrayRenderer = ({depth, value, column, row, cell, view, args, pref
 
 
 
-const shortenedText = (text, max_cell_size, max_word_size) => {
+export const shortenedText = (text, max_cell_size, max_word_size) => {
 	if(max_cell_size && (text.length > max_cell_size)){
         text = text.substring(0, max_cell_size)
         let lastword = text.lastIndexOf(" ")
@@ -352,14 +351,20 @@ export const TimeRenderer = ({value, type, column, row, cell, view, args, prefix
     if(typeof value == "number"){
         if(!isNaN(parseFloat(value))){
             d = new Date(parseFloat(value*1000))
+         }else {
+             return <span>{value}</span>
          }
-    }
-    else {
+    }else {
         d = new Date(value)
     }
     if(args && args.format) fstr = args.format
     else fstr = (type == "xsd:date" ? "d MMM yy" : "MMM d, yyyy - HH:mm:ss")
-    return <span title={"Temporal Type: " + type}>{format(d, fstr)}</span>
+
+    if(d instanceof Date && !isNaN(d)){
+        return <span title={"Temporal Type: " + type}>{format(d, fstr)}</span>
+    }else {
+        return <span>{value}</span>
+    }
 }
 
 export const RangeRenderer = ({value, type, column, row, cell, view, args, prefixes})=>{

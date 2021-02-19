@@ -12,7 +12,7 @@ export const Timeline = (props) =>{
     }
     const dates=props.values || []
 
-    if(dates.length===0) return <div>NO Value</div> 
+    if(dates.length===0) return <div>NO Value</div>
     // Calculate the distances for all events
     const events = cummulativeSeparation(
       dates,
@@ -49,7 +49,7 @@ export const Timeline = (props) =>{
         loadPreviousPage={props.loadPreviousPage}
         totalWidth={totalWidth}
         visibleWidth={visibleWidth}
-        
+
         index={props.index}
         styles={props.styles}
         indexClick={props.indexClick}

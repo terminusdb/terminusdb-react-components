@@ -1,8 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./App";
-import {GraphApp} from "./GraphApp";
+//import App from "./App";
+//import {GraphApp} from "./GraphApp";
+import {TabTest } from "/TabTest"
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<TabTest />, document.getElementById('root'));
 
 //ReactDOM.render(<GraphApp />, document.getElementById('root'));

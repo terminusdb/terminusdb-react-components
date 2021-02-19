@@ -1,32 +1,32 @@
-import {NODE_ACTION_NAME} from './actionType'
-
-const newNodeTemplate = {
-       data:{},
-       depth: null,
-       height: 0,
-       parent: null,
-       x:0,
-       y:0 
-}
-
-let index_newObj=1;
+import * as NODE_ACTION_NAME from './actionType'
+import {UTILS} from "@terminusdb/terminusdb-client"
 
 export const removeElementToArr=(arrayList,elementName)=>{
-        if(!arrayList)return undefined
-        const index=arrayList.findIndex(function(item){return item===elementName || item.name===elementName})
-        if(index>-1){
-            arrayList.splice(index,1);
-            return elementName;
-        }
-        return undefined;
+    if(!arrayList)return undefined
+    const index=arrayList.findIndex(function(item){return item===elementName || item.name===elementName})
+    if(index>-1){
+        arrayList.splice(index,1);
+        return elementName;
+    }
+    return undefined;
 }
 
-function initializeNewNode(type){
-	const newObj = Object.assign({}, newNodeTemplate);
-	const newName='new_'+index_newObj++;
-	const indexNewObj={name: newName, "label": "NEW NODE", type:'node',type:type};
-	newObj.data=indexNewObj;
-
+export const getNewNodeTemplate=(name=null,type=null,label="NEW NODE",comment="",)=>{
+	const nodeId= name ?  UTILS.shorten(name) : ""
+    const nodeName= name || `CLASS_${(new Date()).getTime()}`;
+    const newObj = {
+                     name:nodeName,
+                     id: nodeId,
+                     label:label,
+                     comment:comment,
+                     parents:[],
+                     newElement:true,
+                     children:[],
+                     type:type,
+                     allChildren:[],
+                     abstract:false
+                    }
+    if(name!==null)newObj['newElement']=false;
 	return newObj;
 }
 
@@ -50,10 +50,11 @@ export const treeModelApplyAction=(nodeName,actionName,graphData,nodeIndex)=>{
              }else if(actionName===NODE_ACTION_NAME.ADD_NEW_CLASS){
                indexNewObj.type='OrdinaryClass';
                actionName=NODE_ACTION_NAME.ADD_CHILD;
-             }else if(actionName===NODE_ACTION_NAME.ADD_NEW_RELATIONSHIP){
-                indexNewObj.type='Relationship';
-                actionName=NODE_ACTION_NAME.ADD_CHILD;
              }
+             //else if(actionName===NODE_ACTION_NAME.ADD_NEW_RELATIONSHIP){
+               // indexNewObj.type='Relationship';
+               // actionName=NODE_ACTION_NAME.ADD_CHILD;
+             //}
             //this.nodeIndex[newName]=indexNewObj;
             switch (actionName ){ 
               case NODE_ACTION_NAME.ADD_CHILD:

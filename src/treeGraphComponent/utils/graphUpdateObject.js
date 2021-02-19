@@ -1,6 +1,8 @@
-import {ADD_PARENT, REMOVE_PARENT} from './actionType';  
-import TerminusClient from '@terminusdb/terminusdb-client';
+import {ADD_PARENT, REMOVE_PARENT} from './actionType'
+import TerminusClient from '@terminusdb/terminusdb-client'
 import {PROPERTY_TYPE_NAME,CLASS_TYPE_NAME} from '../utils/elementsName'
+import {getNewNodeTemplate} from '../utils/modelTreeUtils'
+import {UTILS} from "@terminusdb/terminusdb-client"
 
 export const graphUpdateObject=()=>{
 	const newNodesList = new Map()
@@ -30,8 +32,7 @@ export const graphUpdateObject=()=>{
 				let nodeType=CLASS_TYPE_NAME.OBJECT_CLASS
 				if(isChoiceClass){
 					nodeType=CLASS_TYPE_NAME.CHOICE_CLASS
-					newNode.choices
-					=[]
+					newNode.choices=[]
 				}
 				newNode.type=nodeType
 			}
@@ -71,35 +72,24 @@ export const graphUpdateObject=()=>{
 			values['domain']=currentElement.domain;
 		}		
 	}
-  
 
 	/*
 	* newNodeParent : parent of the new node 
 	* newNodeChild  : child of the new node
 	*/
 	const addNodeToTree=(newNodeParent,newNodeChild=null,isChoiceClass=false)=>{
-		const newName=`CLASS_${(new Date()).getTime()}`;
-		let elementModel={
-						 name:newName,
-						 id: "",
-			             label:"NEW NODE",
-			             comment:"",
-			             newElement:true,
-			             children:[],
-			             allChildren:[],
-			             abstract:false
-		          		}
-
+		let elementModel=getNewNodeTemplate()
+		
 		addParent(newNodeParent,elementModel,isChoiceClass)
 		
-		newNodesList.set(newName,elementModel);
+		newNodesList.set(elementModel['name'],elementModel);
 
 		if(newNodeChild){
 			/*
 			* add the parent relationship to the child node
 			*/
-			changeNodeParent(newNodeChild.name,newName,ADD_PARENT)
-			newNodeChild.parents.push(newName)
+			changeNodeParent(newNodeChild.name,elementModel['name'],ADD_PARENT)
+			newNodeChild.parents.push(elementModel['name'])
 		}
 
 		return elementModel;
@@ -172,23 +162,35 @@ export const graphUpdateObject=()=>{
 		if(propertyObj.type===PROPERTY_TYPE_NAME.OBJECT_PROPERTY){
 			copyNode['range']=getRealId(copyNode.range);
 		}
-		copyNode.id=`scm:${propertyObj.id}`;
+		/*
+		* add the prefix for save the property
+		*/
+		copyNode.id=checkNewId(propertyObj.id);
 		return copyNode
 	}
 
-	const getRealId = (elementName)=>{//scm:bike_parent_003
+	/*
+	* the new node has not the prefix I have to add the prefix
+	*/
+	const getRealId = (elementName)=>{
 		if(newNodesList.has(elementName)){
-			return `scm:${newNodesList.get(elementName).id}`
+			return checkNewId(newNodesList.get(elementName).id)
 		}
-		return elementName;
-		//const arr = elementName.split("#")
-		//return `scm:${arr[1]}`	
+		return elementName;	
+	}
+
+	const checkNewId=(id)=>{
+		if(id.indexOf(":")===-1){
+			return `scm:${id}`
+		}
+		return id;
 	}
 
 	const formatChoiceListForWoql = (choicelist)=>{
 		const choices=[]
 		choicelist.forEach((item)=>{
-			const choiceArr=[`scm:${item.id}`,item.label,item.comment]
+			const id= checkNewId(item.id)
+			const choiceArr=[id,item.label,item.comment]
 			choices.push(choiceArr);
 		})
 		return choices;

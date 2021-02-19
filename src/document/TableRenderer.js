@@ -1,27 +1,11 @@
 import React, {useState, useEffect} from 'react'
-import {Row, Col} from "reactstrap"
+import {Row, Col} from "react-bootstrap" //replace
 import TerminusClient from '@terminusdb/terminusdb-client'
-import Select from 'react-select'; 
+import Select from 'react-select';
+import {PLUS_STYLE, MINUS_STYLE, DEL_STYLE, TAB_STYLE, VALUE_STYLE, LABEL_STYLE, HEADER_STYLE, HEADER_TWO_STYLE} from "./frames.constants.js"
 
-let valuestyle = {
-    padding: "0.5em"    
-}
+export const TableRenderer = ({frame, mode, view, errors, client, setExtractDocs}) => {
 
-let labelstyle = {
-    backgroundColor: "#efefef",
-    fontWeight: 600,
-    borderRadius: "0 0 0 6px",
-    textAlign: "right",
-    padding: "6px",
-    borderBottom: "1px solid white",
-    width: "150px"
-}
-
-let tabstyle = {
-    width: "100%",
-}
-
-export const TableRenderer = ({frame, mode, view, errors}) => {
     const [ping, setPing] = useState(0)
     useEffect(() => {
         if(errors){
@@ -31,71 +15,96 @@ export const TableRenderer = ({frame, mode, view, errors}) => {
         }
     },[errors])
 
-    return (
-        <table style={tabstyle}>
-            <ObjectRenderer frame={frame.document} mode={mode} view={view} ping={ping}/>
+    return (<>
+        <table style={TAB_STYLE}>
+            <ObjectRenderer frame={frame.document} mode={mode} view={view} ping={ping} client={client} setExtractDocs={setExtractDocs}/>
         </table>
-    )
+
+    </>)
 }
 
-export const ObjectRenderer = ({frame, mode, view, ping}) => {
+
+const MissingPropertySelector = ({client, frame, onAddProp}) => {
+    let arr=[]
+
+    if(frame.isObject() && frame.classframes) {
+        if(frame.status=="new"  || frame.newDoc) // for update of doc => display MissingProperty
+            return <div/>
+    }
+
+    if(!frame.classframes) {
+        let cls = frame.cls
+        if (client) {
+            client.getClassFrame(cls).then((results)=>{
+                let classframe=results
+                if((classframe && classframe['system:properties'])) {
+                    for(var key in classframe['system:properties']){
+                        arr.push({value: classframe['system:properties'][key].property, label: classframe['system:properties'][key].label["@value"], props: classframe['system:properties'][key]})
+                    }
+                }
+            })
+
+            return <Select
+                onChange={onAddProp}
+                options={arr}
+                placeholder="Add Property"
+            />
+        }
+
+    }
+    else {
+        let mpl=frame.getMissingPropertyList()
+
+        return <Select
+            onChange={onAddProp}
+            options={mpl}
+            placeholder="Add Property"
+        />
+
+    }
+
+    return <div/>
+
+
+}
+
+export const ObjectRenderer = ({frame, mode, view, ping, setDocType, client, setExtractDocs}) => {
     if(!frame) return null
+
     const [redraw, setRedraw] = useState(1)
     const [oid, setOid] = useState(frame.subject())
     const [otype, setOtype] = useState(frame.subjectClass())
 
-
-    let showid = (view && view.show_id && (frame.depth() == 0) ? view.show_id : false) 
+    let showid = (view && view.show_id && (frame.depth() == 0) ? view.show_id : false)
     let showtype = (view && view.show_type ? view.show_type : false)
 
-
-    let headerstyle = {
-        borderRadius: "6px 0 0 0",
-        padding: "6px",
-        backgroundColor: "#efefef",
-        color: "#888"
-    }
-
-
-    let header2style = {
-        padding: "6px",
-        backgroundColor: "#efefef",
-        color: "#888"
-    }
-
     const onAddProp = (e) => {
-        frame.addProperty(e.value)
-        setRedraw(redraw + 1)
-    }
-
-    const getMissingPropertySelector = () => {
-        let mpl = frame.getMissingPropertyList()
-        if(Object.keys(mpl).length){
-            return <Select  
-                onChange={onAddProp} 
-                options={mpl}  
-                placeholder="Add Property"
-            />
+        if(e.props) {
+            var p = e.props
         }
-        return null
+        else{
+            var p = e.value
+        }
+        frame.addProperty(p)
+        setRedraw(redraw + 1)
     }
 
     const updateID = (nid) => {
         frame.subjid = nid
         setOid(nid)
-    } 
+    }
 
     const updateType = (ntype) => {
         frame.cls = ntype
         setOtype(ntype)
-    } 
+    }
 
     const renderProperties = () => {
         let props = []
+
         for(var p in frame.properties){
             let pframe = frame.properties[p]
-            //let nvframe = (Array.isArray(vframe) ? vframe[0] : vframe)
-            props = props.concat(<PropertyRenderer ping={ping} view={view} key={p + "_property"} frame={pframe} mode={mode}/>)
+            props = props.concat(<PropertyRenderer ping={ping} view={view} key={p + "_property"} frame={pframe} mode={mode} client={client} setExtractDocs={setExtractDocs}/>)
         }
         return props
     }
@@ -103,14 +112,14 @@ export const ObjectRenderer = ({frame, mode, view, ping}) => {
     return <>
             <thead>
                 <tr>
-                    <th colSpan="2" style={headerstyle} title={frame.subject()}>
+                    <th colSpan="2" style={HEADER_STYLE} title={frame.subject()}>
                         {frame.subjectClass()}
                     </th>
                     {mode=="edit" &&
-                        <th style={headerstyle}>
+                        <th style={HEADER_STYLE}>
                             <Row>
                                 <Col>
-                                    {getMissingPropertySelector()}
+                                    <MissingPropertySelector client={client} frame={frame} onAddProp={onAddProp}/>
                                 </Col>
                                 <Col></Col>
                             </Row>
@@ -119,10 +128,10 @@ export const ObjectRenderer = ({frame, mode, view, ping}) => {
                 </tr>
             </thead>
             <tbody>
-                {showid && 
+                {showid &&
                     <IDRenderer id={oid} mode={mode} view={view} update={updateID}/>
                 }
-                {showtype && 
+                {showtype &&
                     <TypeRenderer type={otype}  mode={mode} view={view} update={updateType}/>
                 }
                 {renderProperties()}
@@ -135,11 +144,11 @@ export const IDRenderer = ({id, mode, view, update}) => {
         update(e.target.value)
     }
     return <tr>
-        <td style={labelstyle}>ID</td>
+        <td style={LABEL_STYLE}>ID</td>
         {mode == "edit" &&
             <td></td>
         }
-        <td style={valuestyle}>
+        <td style={VALUE_STYLE}>
             {mode != "edit" &&
                 <span>{TerminusClient.UTILS.shorten(id)}</span>
             }
@@ -152,7 +161,7 @@ export const IDRenderer = ({id, mode, view, update}) => {
                 </Row>
             }
         </td>
-    </tr>    
+    </tr>
 }
 
 export const TypeRenderer = ({type, mode, view, update}) => {
@@ -160,11 +169,11 @@ export const TypeRenderer = ({type, mode, view, update}) => {
         update(e.target.value)
     }
     return <tr>
-        <td style={labelstyle}>Type</td>
+        <td style={LABEL_STYLE}>Type</td>
         {mode == "edit" &&
             <td></td>
         }
-        <td style={valuestyle}>
+        <td style={VALUE_STYLE}>
             {mode != "edit" &&
                 <span>{TerminusClient.UTILS.shorten(type)}</span>
             }
@@ -175,31 +184,14 @@ export const TypeRenderer = ({type, mode, view, update}) => {
                 </Row>
             }
         </td>
-    </tr>    
+    </tr>
 }
 
-
-export const PropertyRenderer = ({frame, mode, view, ping}) => {
+export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDocs}) => {
     if(!frame) return null
+
     const [redraw, setRedraw] = useState(1)
     const [rvals, setRvals] = useState()
-
-    let delstyle = {
-        padding: "2px",
-        width: "16px",
-        textAlign: "center"
-    }
-
-    let minusStyle = {
-        color: "red",
-        fontSize: "2em",
-        backgroundColor: "white"
-    }
-
-    let plusStyle = {
-        color: "green",
-        fontSize: "1.3em",
-    }
 
     useEffect(() => setRvals(getPvals()), [frame, mode])
 
@@ -208,99 +200,182 @@ export const PropertyRenderer = ({frame, mode, view, ping}) => {
         return null
     }
 
-    function addValue(){
+    function getLabelPart(index, vframe){
+
+        return <td key={frame.predicate + "_label"} style={LABEL_STYLE} rowSpan={1}>
+            {mode == "edit" &&
+                <button style={PLUS_STYLE} onClick={getAddValue(index, vframe)}>+</button>
+            }
+            {frame.getLabel()}
+        </td>
+    }
+
+    function getPvals(){
+        let rvals = []
+        for(var i = 0 ; i < frame.values.length; i++){
+            rvals.push(frame.values[i])
+        }
+        if(!frame.values.length){
+            rvals.push(frame.cframe)
+        }
+        return rvals
+    }
+
+    const addValue = (vframe) => {
         frame.addValueFrame(frame.createEmpty())
         setRvals(getPvals())
         setRedraw(redraw+1)
     }
 
-    const deleteValue = (val, index) => {
+    function getAddValue(index, vframe){
+        let g = vframe.get()
+        let f = function(){
+            addValue(vframe, index)
+        }
+        return f
+    }
+
+
+     const deleteValue = (val, index) => {
         frame.removeValue(val)
         setRvals(getPvals())
         setRedraw(redraw+1)
-    }
-
-    function getLabelPart(len){
-        return <td key={frame.predicate + "_label"} style={labelstyle} rowSpan={len}>
-            {mode == "edit" &&
-                <button style={plusStyle} onClick={addValue}>+</button>
-            }
-            {frame.getLabel()}
-        </td>
-    }
-    
-    function getPvals(){
-        let vals = []
-        const isDup = (val) => {
-            if(vals.indexOf(val) == -1){
-                vals.push(val)
-                return false
-            }
-            return true
-        }
-        let rvals = []
-        for(var i = 0 ; i < frame.values.length; i++){
-            if(!isDup(frame.values[i].get())){
-                rvals.push(frame.values[i])
-            }
-        }
-        return rvals
-    }
-
+     }
 
     function getDelVal(index, vframe){
         let g = vframe.get()
         let f = function(){
-            deleteValue(g, index)
+            deleteValue(vframe, index)
         }
         return f
     }
 
     if(!rvals || !rvals.length) return null
+
+    //console.log("rvals", rvals)
+
     let rows = []
     for(var i = 0 ; i < rvals.length; i++){
         if(i == 0){
             rows.push(<tr key={frame.predicate  + "_" + i}>
-                {getLabelPart(rvals.length)}
+                {getLabelPart(i, rvals[i])}
                 {mode == "edit" &&
-                    <td style={delstyle}><button style={minusStyle} onClick={getDelVal(i, rvals[i])}>-</button> </td>
+                    <td style={DEL_STYLE}><button style={MINUS_STYLE} onClick={getDelVal(i, rvals[i])}>-</button> </td>
                 }
-                <td key={frame.predicate  + "_value_" + i} style={valuestyle} >
-                    <ValueRenderer redraw={redraw} frame={rvals[i]} mode={mode} view={view} ping={ping} />
+                <td key={frame.predicate  + "_value_" + i} style={VALUE_STYLE} >
+                    <ValueRenderer redraw={redraw} frame={rvals[i]} mode={mode} view={view} ping={ping} client={client} setExtractDocs={setExtractDocs}/>
                 </td>
             </tr>)
         }
         else {
             rows.push(<tr key={frame.predicate + "_" + i}>
-                {mode == "edit" &&
-                    <td style={delstyle}>
-                        <button style={minusStyle} onClick={getDelVal(i, rvals[i])}>-</button>
+                <td style={LABEL_STYLE} rowSpan={1}/>
+                {mode == "edit" && <>
+
+                    <td style={DEL_STYLE}>
+                        <button style={MINUS_STYLE} onClick={getDelVal(i, rvals[i])}>-</button>
                     </td>
-                }
-                <td style={valuestyle}>
-                    <ValueRenderer redraw={redraw} frame={rvals[i]} mode={mode} view={view} ping={ping} />
+                </>}
+                <td style={VALUE_STYLE}>
+                    <ValueRenderer redraw={redraw} frame={rvals[i]} mode={mode} view={view} ping={ping} client={client} setExtractDocs={setExtractDocs}/>
                 </td>
             </tr>)
         }
     }
-    return rows 
+    return rows
 }
 
-export const ValueRenderer = ({frame, mode, view, redraw, ping}) => {
+export const ChoiceClassRenderer = ({frame, mode, view, redraw, ping, client, type, updateVal, setExtractDocs}) => {
+    const [opts, setOpts]=useState([])
+    const [classOpts, setClassOpts]=useState([])
+
+    const [selectedDoc, setSelectedDoc]=useState()
+
+    useEffect(() => {
+        if(!client) return
+        let WOQL = TerminusClient.WOQL
+        let range = frame.range
+        let q = WOQL.and(
+            WOQL.lib().classes(),
+            WOQL.sub(range, "v:Class ID").not().eq("v:Class ID", range)
+        )
+        client.query(q).then((results)=>{
+            for(var i = 0; i<results.bindings.length; i++){
+                opts.push({value: results.bindings[i]["Class ID"], label: results.bindings[i]["Class Name"]["@value"]})
+            }
+            setOpts(opts)
+        }).catch((err) => {
+            console.log("err", err)
+        })
+
+    }, [frame, client])
+
+    function handleClass (e) {
+        if(!client || !e.value) return
+        let cls=e.value
+        updateVal(cls)
+
+
+       client.getClassFrame(cls).then((results)=>{
+            let classframe=results
+            let docobj = view.create(client)
+            if((classframe && classframe['system:properties'])) {
+                docobj.loadSchemaFrames(classframe['system:properties'])
+                docobj.filterFrame()
+            }
+            if(setExtractDocs) setExtractDocs( arr => [...arr, docobj]);
+            setSelectedDoc(docobj)
+
+        }).catch((err) => {
+            console.log("err", err)
+        })
+    }
+
+    useEffect(() => {
+        setClassOpts(opts)
+    }, [opts])
+
+    return <>
+        <Row>
+            <Col md={6}>
+                <Select placeholder="Choose a class"
+                    options={classOpts}
+                    onChange={handleClass}/>
+            </Col>
+            <Col md={4}>
+                {type &&
+                    <>{TerminusClient.UTILS.shorten(type)}</>
+                }
+            </Col>
+        </Row>
+        {selectedDoc && <TableRenderer frame={selectedDoc} mode={mode} view = {view} client={client} />}
+    </>
+}
+
+export const ValueRenderer = ({frame, mode, view, redraw, ping, client, setExtractDocs}) => {
+
     let [v, setV] = useState("")
 
-    useEffect(() => setV(frame.get()), [redraw, frame])
+    useEffect(() =>
+        setV(frame.get()
+    ), [redraw, frame])
 
     const updval = (vv) => {
         setV(vv)
         frame.set(vv)
     }
+
     if(!frame.isData()){
-        return  <table style={tabstyle}>
-            <ObjectRenderer frame={frame} mode={mode} view={view}/>
-        </table>
+        if (frame.isClassChoice()){
+            return  <ChoiceClassRenderer frame={frame} redraw={redraw} mode={mode} view={view} client={client} type={frame.getType()} updateVal={updval} setExtractDocs={setExtractDocs}/>
+        }
+        else {
+            return  <table style={TAB_STYLE}>
+                <ObjectRenderer frame={frame} mode={mode} view={view} client={client}/>
+            </table>
+        }
     }
-    else if(frame.isChoice()){  
+    else if(frame.isChoice()){
         return <ChoiceRenderer val={v} frame={frame} mode={mode} updateVal={updval} view={view} />
     }
     else if(frame.isDocument()){
@@ -341,12 +416,12 @@ export const FrameErrors = ({frame, view}) => {
     for(var i = 0; i<frame.errors.length; i++){
         fes.push(<FrameError error={frame.errors[i]} />)
     }
-    return <span>{fes}</span> 
+    return <span>{fes}</span>
 }
 
 export const FrameError = ({error}) => {
-    let msg = error && error['vio:message'] ? error['vio:message']["@value"] : error && error['api:message'] ? error['api:message'] : "Error with field" 
-    return <span style={{color:"#f84848"}}>{msg}</span> 
+    let msg = error && error['vio:message'] ? error['vio:message']["@value"] : error && error['api:message'] ? error['api:message'] : "Error with field"
+    return <span style={{color:"#f84848"}}>{msg}</span>
 }
 
 
@@ -359,21 +434,24 @@ export const ChoiceRenderer = ({val, mode, frame, updateVal}) => {
             }
             return { value: TerminusClient.UTILS.shorten(item.class), label: item.label["@value"]}
         })
-        
+
         let onChange = function(e){
             updateVal(e.value)
         }
 
-        return <Row><Col><Select  
+        return <Row><Col><Select
             defaultValue={val}
             isClearable={true}
-            onChange={onChange} 
-            options={opts}  
+            onChange={onChange}
+            options={opts}
             placeholder={lab}
         /></Col>
          <Col>
             {frame.errors &&
                 <FrameErrors frame={frame} />
+            }
+            {!frame.errors &&
+                <>{TerminusClient.UTILS.shorten(frame.range)}</>
             }
             </Col>
         </Row>
@@ -386,14 +464,14 @@ export const ChoiceRenderer = ({val, mode, frame, updateVal}) => {
             if(TerminusClient.UTILS.compareIDs(item.class, val)){
                 tit = val + (item.comment ? " - " + item.comment["@value"] : "")
                 lab = (item.label ? item.label["@value"] : TerminusClient.UTILS.labelFromURL(item.class))
-            }    
+            }
         })
         return <span title={tit}>{lab}</span>
     }
 }
 
 export const DataRenderer = ({val, mode, type, updateVal, frame}) => {
-    
+
     if(mode == "edit"){
         let onc = function(e){
             updateVal(e.target.value)
@@ -407,7 +485,7 @@ export const DataRenderer = ({val, mode, type, updateVal, frame}) => {
                 {frame.errors &&
                     <FrameErrors frame={frame} />
                 }
-                {!frame.errors && 
+                {!frame.errors &&
                     <>{TerminusClient.UTILS.shorten(type)}</>
                 }
             </Col>

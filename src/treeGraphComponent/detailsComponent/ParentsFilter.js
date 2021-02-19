@@ -33,6 +33,7 @@ export const ParentsFilter = (props) => {
 			case CLASS_TYPE_NAME.DOCUMENT_CLASSES:
 		    	  dataProvider=availableParentsList.documentClassArr
 		    	  break;
+		    case CLASS_TYPE_NAME.CHOICE_CLASS:
 		    case CLASS_TYPE_NAME.OBJECT_CLASS:
 		    	/*
 		    	* if the object type === "Object"
