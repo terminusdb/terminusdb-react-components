@@ -104,7 +104,10 @@ export const ObjectRenderer = ({frame, mode, view, ping, setDocType, client, set
 
         for(var p in frame.properties){
             let pframe = frame.properties[p]
-            props = props.concat(<PropertyRenderer ping={ping} view={view} key={p + "_property"} frame={pframe} mode={mode} client={client} setExtractDocs={setExtractDocs}/>)
+            //if (pframe.cframe.isClassChoice())
+            //    pframe.values=pframe.cframe
+            let parentId=frame.subjid
+            props = props.concat(<PropertyRenderer ping={ping} view={view} key={p + "_property"} frame={pframe} mode={mode} client={client} setExtractDocs={setExtractDocs} parentId={parentId}/>)
         }
         return props
     }
@@ -187,13 +190,22 @@ export const TypeRenderer = ({type, mode, view, update}) => {
     </tr>
 }
 
-export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDocs}) => {
+export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDocs, parentId}) => {
     if(!frame) return null
 
     const [redraw, setRedraw] = useState(1)
     const [rvals, setRvals] = useState()
 
-    useEffect(() => setRvals(getPvals()), [frame, mode])
+
+    function addValueFrameForChoiceClass() {
+        if(!frame.isClassChoice()) return
+        frame.addValueFrame(frame.createEmpty())
+    }
+
+    useEffect(() => {
+        addValueFrameForChoiceClass()
+        setRvals(getPvals())
+    } , [frame, mode])
 
     if(!frame.getLabel){
         console.log("strange frame", frame)
@@ -222,6 +234,9 @@ export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDoc
     }
 
     const addValue = (vframe) => {
+        //console.log("add frame", frame)
+        //console.log("parentId", parentId)
+
         frame.addValueFrame(frame.createEmpty())
         setRvals(getPvals())
         setRedraw(redraw+1)
@@ -237,7 +252,8 @@ export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDoc
 
 
      const deleteValue = (val, index) => {
-        frame.removeValue(val)
+        //console.log("delete frame", frame)
+        frame.removeValue(val, index)
         setRvals(getPvals())
         setRedraw(redraw+1)
      }
@@ -271,7 +287,6 @@ export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDoc
             rows.push(<tr key={frame.predicate + "_" + i}>
                 <td style={LABEL_STYLE} rowSpan={1}/>
                 {mode == "edit" && <>
-
                     <td style={DEL_STYLE}>
                         <button style={MINUS_STYLE} onClick={getDelVal(i, rvals[i])}>-</button>
                     </td>
@@ -289,7 +304,10 @@ export const ChoiceClassRenderer = ({frame, mode, view, redraw, ping, client, ty
     const [opts, setOpts]=useState([])
     const [classOpts, setClassOpts]=useState([])
 
-    const [selectedDoc, setSelectedDoc]=useState()
+    const [selectedDoc, setSelectedDoc]=useState({})
+
+    //console.log("selectedDoc", selectedDoc)
+    //console.log("frame", frame)
 
     useEffect(() => {
         if(!client) return
@@ -322,6 +340,7 @@ export const ChoiceClassRenderer = ({frame, mode, view, redraw, ping, client, ty
             if((classframe && classframe['system:properties'])) {
                 docobj.loadSchemaFrames(classframe['system:properties'])
                 docobj.filterFrame()
+                frame.subjid=docobj.document.subjid
             }
             if(setExtractDocs) setExtractDocs( arr => [...arr, docobj]);
             setSelectedDoc(docobj)
@@ -348,8 +367,24 @@ export const ChoiceClassRenderer = ({frame, mode, view, redraw, ping, client, ty
                 }
             </Col>
         </Row>
-        {selectedDoc && <TableRenderer frame={selectedDoc} mode={mode} view = {view} client={client} />}
+        <TableRenderer frame={selectedDoc} mode={mode} view = {view} client={client} />
     </>
+
+    /*return <>
+        <Row>
+            <Col md={6}>
+                <Select placeholder="Choose a class"
+                    options={classOpts}
+                    onChange={handleClass}/>
+            </Col>
+            <Col md={4}>
+                {type &&
+                    <>{TerminusClient.UTILS.shorten(type)}</>
+                }
+            </Col>
+        </Row>
+        {selectedDoc.show && <TableRenderer frame={selectedDoc.docObj} mode={mode} view = {view} client={client} />}
+    </> */
 }
 
 export const ValueRenderer = ({frame, mode, view, redraw, ping, client, setExtractDocs}) => {
@@ -374,6 +409,14 @@ export const ValueRenderer = ({frame, mode, view, redraw, ping, client, setExtra
                 <ObjectRenderer frame={frame} mode={mode} view={view} client={client}/>
             </table>
         }
+        /*if (frame.isClassChoice()){
+            return  <ChoiceClassRenderer frame={frame} redraw={redraw} mode={mode} view={view} client={client} type={frame.getType()} updateVal={updval} setExtractDocs={setExtractDocs}/>
+        }
+        else {
+            return  <table style={TAB_STYLE}>
+                <ObjectRenderer frame={frame} mode={mode} view={view} client={client}/>
+            </table>
+        } */
     }
     else if(frame.isChoice()){
         return <ChoiceRenderer val={v} frame={frame} mode={mode} updateVal={updval} view={view} />
