@@ -24,6 +24,16 @@ jobs:
         fi
     - run: npm install
     - run: npm run build
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@master
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCLOUD_TOKEN }}
+        export_default_credentials: true
     - run: bash ".ci/publish_bintray.sh" "${GITHUB_REF##*/}"
       env:
         BINTRAY_API_TOKEN: ${{ secrets.BINTRAY_API_TOKEN }}
+    - run: |
+        if [ $(echo "${{ github.ref }}" | grep -P "dev|canary") ]; then
+            bash ".ci/publish_gcloud.sh" "${GITHUB_REF##*/}"
+        fi
