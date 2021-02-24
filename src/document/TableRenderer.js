@@ -504,7 +504,10 @@ export const ChoiceRenderer = ({val, mode, frame, updateVal}) => {
             if(TerminusClient.UTILS.compareIDs(item.class, val)){
                 lab = item.label["@value"]
             }
-            return { value: TerminusClient.UTILS.shorten(item.class), label: item.label["@value"]}
+            const className=TerminusClient.UTILS.shorten(item.class)
+            const label = item.label ? item.label["@value"] : className
+            
+            return { value: className, label: label}
         })
 
         let onChange = function(e){
