@@ -33,7 +33,7 @@ export const ChoiceList =(props)=> {
 
 
 	const removeChoice=(choiceName)=>{
-		const index= choicesList.indexOf(choiceName);
+		const index= choicesList.findIndex(x => x.id ===choiceName);
 		const tmpList=choicesList.slice();
 		tmpList.splice(index,1);
 		setChoiceList(tmpList);

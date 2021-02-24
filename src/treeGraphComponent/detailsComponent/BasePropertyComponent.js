@@ -52,6 +52,7 @@ export const BasePropertyComponent = (props)=> {
 				<div className="tdb__panel__box">	               
 	               	{props.showCardinality &&
 	               		<Fragment>
+							<BaseInputElement help="card_cardinality" defaultValue={currentNodeJson.cardinality || ''} name='cardinality' title={CARDINALITY_MIN_TITLE} onBlur={changePropertyValue}/>
 	               			<BaseInputElement help="card_min" defaultValue={currentNodeJson.min || ''} name='min' title={CARDINALITY_MIN_TITLE} onBlur={changePropertyValue}/>
                 			<BaseInputElement help="card_max" defaultValue={currentNodeJson.max || ''} name='max' title={CARDINALITY_MAX_TITLE} onBlur={changePropertyValue}/>
 	               		</Fragment>

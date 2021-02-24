@@ -295,7 +295,8 @@ export const graphUpdateObject=()=>{
 	*maybe I don't have to remove all the retriction
 	*/
 	const updateCardinality=(WOQL,subjectId,vname,value,domain)=>{
-		const cardType={max:'owl:maxCardinality',min:'owl:minCardinality'}
+		const cardType={max:'owl:maxCardinality',min:'owl:minCardinality',
+						cardinality:'owl:maxCardinality'}
 
 		const cardName= subjectId + '_' + vname + '_' + value;
 		const cardTypeName=cardType[vname]
