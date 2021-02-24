@@ -4,7 +4,7 @@ import TerminusClient from '@terminusdb/terminusdb-client'
 import Select from 'react-select';
 import {PLUS_STYLE, MINUS_STYLE, DEL_STYLE, TAB_STYLE, VALUE_STYLE, LABEL_STYLE, HEADER_STYLE, HEADER_TWO_STYLE} from "./frames.constants.js"
 
-export const TableRenderer = ({frame, mode, view, errors, client, setExtractDocs}) => {
+export const TableRenderer = ({frame, mode, view, errors, client, setExtractDocs, extractDocs}) => {
 
     const [ping, setPing] = useState(0)
     useEffect(() => {
@@ -17,7 +17,7 @@ export const TableRenderer = ({frame, mode, view, errors, client, setExtractDocs
 
     return (<>
         <table style={TAB_STYLE}>
-            <ObjectRenderer frame={frame.document} mode={mode} view={view} ping={ping} client={client} setExtractDocs={setExtractDocs}/>
+            <ObjectRenderer frame={frame.document} mode={mode} view={view} ping={ping} client={client} setExtractDocs={setExtractDocs} extractDocs={extractDocs}/>
         </table>
 
     </>)
@@ -68,7 +68,7 @@ const MissingPropertySelector = ({client, frame, onAddProp}) => {
 
 }
 
-export const ObjectRenderer = ({frame, mode, view, ping, setDocType, client, setExtractDocs}) => {
+export const ObjectRenderer = ({frame, mode, view, ping, setDocType, client, setExtractDocs, extractDocs}) => {
     if(!frame) return null
 
     const [redraw, setRedraw] = useState(1)
@@ -107,7 +107,7 @@ export const ObjectRenderer = ({frame, mode, view, ping, setDocType, client, set
             //if (pframe.cframe.isClassChoice())
             //    pframe.values=pframe.cframe
             let parentId=frame.subjid
-            props = props.concat(<PropertyRenderer ping={ping} view={view} key={p + "_property"} frame={pframe} mode={mode} client={client} setExtractDocs={setExtractDocs} parentId={parentId}/>)
+            props = props.concat(<PropertyRenderer ping={ping} view={view} key={p + "_property"} frame={pframe} mode={mode} client={client} setExtractDocs={setExtractDocs} extractDocs={extractDocs} parentId={parentId}/>)
         }
         return props
     }
@@ -190,7 +190,7 @@ export const TypeRenderer = ({type, mode, view, update}) => {
     </tr>
 }
 
-export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDocs, parentId}) => {
+export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDocs, extractDocs, parentId}) => {
     if(!frame) return null
 
     const [redraw, setRedraw] = useState(1)
@@ -198,12 +198,12 @@ export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDoc
 
 
     function addValueFrameForChoiceClass() {
-        if(!frame.isClassChoice()) return
+        if(!frame.isClassChoice() || frame.values.length>0) return
         frame.addValueFrame(frame.createEmpty())
     }
 
     useEffect(() => {
-        addValueFrameForChoiceClass()
+        if(mode=="edit") addValueFrameForChoiceClass()
         setRvals(getPvals())
     } , [frame, mode])
 
@@ -251,17 +251,45 @@ export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDoc
     }
 
 
-     const deleteValue = (val, index) => {
-        //console.log("delete frame", frame)
-        frame.removeValue(val, index)
-        setRvals(getPvals())
+     const deleteValue = (val, index, extractDocs, setExtractDocs) => {
+        let newExtracts=[], newProps=[]
+        for(var i = 0 ; i < rvals.length; i++){
+            if(rvals[i].subjid == val.subjid) {
+                rvals[i].hide = true
+                if(val.status=="new"){ //create
+                    for(var j=0; j < extractDocs.length; j++) {
+                        if(extractDocs[j].document.subjid !== rvals[i].subjid) {
+                            newExtracts.push(extractDocs[j])
+                        }
+                    }
+                }
+                else if(!val.newDoc) { //update
+                    for(var j=0; j < extractDocs.length; j++) {
+                        for (var props in extractDocs[j].document.properties) {
+                            if(extractDocs[j].document.properties[props].isClassChoice()) {
+                                let pvals=extractDocs[j].document.properties[props].values
+                                extractDocs[j].document.properties[props].values=[]
+                                for(var v=0; v < pvals.length; v++) {
+                                    if(pvals[v].subjid !== rvals[i].subjid) {
+                                        //newExtracts.push(extractDocs[j])
+                                        extractDocs[j].document.properties[props].values.push(pvals[v])
+                                        newExtracts.push(extractDocs[j])
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        setExtractDocs(newExtracts)
         setRedraw(redraw+1)
      }
 
-    function getDelVal(index, vframe){
+    function getDelVal(index, vframe, extractDocs, setExtractDocs){
         let g = vframe.get()
         let f = function(){
-            deleteValue(vframe, index)
+            deleteValue(vframe, index, extractDocs, setExtractDocs)
         }
         return f
     }
@@ -272,11 +300,15 @@ export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDoc
 
     let rows = []
     for(var i = 0 ; i < rvals.length; i++){
+        if(rvals[i].hasOwnProperty('hide')){
+            if(rvals[i].hide)
+                continue
+        }
         if(i == 0){
             rows.push(<tr key={frame.predicate  + "_" + i}>
                 {getLabelPart(i, rvals[i])}
                 {mode == "edit" &&
-                    <td style={DEL_STYLE}><button style={MINUS_STYLE} onClick={getDelVal(i, rvals[i])}>-</button> </td>
+                    <td style={DEL_STYLE}><button style={MINUS_STYLE} onClick={getDelVal(i, rvals[i], extractDocs, setExtractDocs)}>-</button> </td>
                 }
                 <td key={frame.predicate  + "_value_" + i} style={VALUE_STYLE} >
                     <ValueRenderer redraw={redraw} frame={rvals[i]} mode={mode} view={view} ping={ping} client={client} setExtractDocs={setExtractDocs}/>
@@ -288,7 +320,7 @@ export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDoc
                 <td style={LABEL_STYLE} rowSpan={1}/>
                 {mode == "edit" && <>
                     <td style={DEL_STYLE}>
-                        <button style={MINUS_STYLE} onClick={getDelVal(i, rvals[i])}>-</button>
+                        <button style={MINUS_STYLE} onClick={getDelVal(i, rvals[i], extractDocs, setExtractDocs)}>-</button>
                     </td>
                 </>}
                 <td style={VALUE_STYLE}>
@@ -300,11 +332,13 @@ export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDoc
     return rows
 }
 
-export const ChoiceClassRenderer = ({frame, mode, view, redraw, ping, client, type, updateVal, setExtractDocs}) => {
+export const ChoiceClassRenderer = ({frame, mode, view, redraw, ping, client, type, updateVal, setExtractDocs, extractDocs}) => {
     const [opts, setOpts]=useState([])
     const [classOpts, setClassOpts]=useState([])
 
     const [selectedDoc, setSelectedDoc]=useState({})
+
+    //console.log("redraw", redraw)
 
     //console.log("selectedDoc", selectedDoc)
     //console.log("frame", frame)
@@ -328,11 +362,10 @@ export const ChoiceClassRenderer = ({frame, mode, view, redraw, ping, client, ty
 
     }, [frame, client])
 
-    function handleClass (e) {
+    let onChange = function(e){
         if(!client || !e.value) return
         let cls=e.value
-        updateVal(cls)
-
+        //updateVal(cls)
 
        client.getClassFrame(cls).then((results)=>{
             let classframe=results
@@ -342,7 +375,7 @@ export const ChoiceClassRenderer = ({frame, mode, view, redraw, ping, client, ty
                 docobj.filterFrame()
                 frame.subjid=docobj.document.subjid
             }
-            if(setExtractDocs) setExtractDocs( arr => [...arr, docobj]);
+            if(setExtractDocs) setExtractDocs(arr => [...arr, docobj]);
             setSelectedDoc(docobj)
 
         }).catch((err) => {
@@ -354,12 +387,16 @@ export const ChoiceClassRenderer = ({frame, mode, view, redraw, ping, client, ty
         setClassOpts(opts)
     }, [opts])
 
+    useEffect(() => {
+        frame.selectedDoc=selectedDoc
+    }, [selectedDoc])
+
     return <>
         <Row>
             <Col md={6}>
                 <Select placeholder="Choose a class"
                     options={classOpts}
-                    onChange={handleClass}/>
+                    onChange={onChange}/>
             </Col>
             <Col md={4}>
                 {type &&
@@ -367,7 +404,7 @@ export const ChoiceClassRenderer = ({frame, mode, view, redraw, ping, client, ty
                 }
             </Col>
         </Row>
-        <TableRenderer frame={selectedDoc} mode={mode} view = {view} client={client} />
+        <TableRenderer frame={selectedDoc} mode={mode} view = {view} client={client} setExtractDocs={setExtractDocs} extractDocs={extractDocs}/>
     </>
 
     /*return <>
@@ -387,7 +424,7 @@ export const ChoiceClassRenderer = ({frame, mode, view, redraw, ping, client, ty
     </> */
 }
 
-export const ValueRenderer = ({frame, mode, view, redraw, ping, client, setExtractDocs}) => {
+export const ValueRenderer = ({frame, mode, view, redraw, ping, client, setExtractDocs, extractDocs}) => {
 
     let [v, setV] = useState("")
 
@@ -402,21 +439,13 @@ export const ValueRenderer = ({frame, mode, view, redraw, ping, client, setExtra
 
     if(!frame.isData()){
         if (frame.isClassChoice()){
-            return  <ChoiceClassRenderer frame={frame} redraw={redraw} mode={mode} view={view} client={client} type={frame.getType()} updateVal={updval} setExtractDocs={setExtractDocs}/>
+            return  <ChoiceClassRenderer frame={frame} redraw={redraw} mode={mode} view={view} client={client} type={frame.getType()} updateVal={updval} setExtractDocs={setExtractDocs} extractDocs={extractDocs}/>
         }
         else {
             return  <table style={TAB_STYLE}>
-                <ObjectRenderer frame={frame} mode={mode} view={view} client={client}/>
+                <ObjectRenderer frame={frame} mode={mode} view={view} client={client} setExtractDocs={setExtractDocs} extractDocs={extractDocs}/>
             </table>
         }
-        /*if (frame.isClassChoice()){
-            return  <ChoiceClassRenderer frame={frame} redraw={redraw} mode={mode} view={view} client={client} type={frame.getType()} updateVal={updval} setExtractDocs={setExtractDocs}/>
-        }
-        else {
-            return  <table style={TAB_STYLE}>
-                <ObjectRenderer frame={frame} mode={mode} view={view} client={client}/>
-            </table>
-        } */
     }
     else if(frame.isChoice()){
         return <ChoiceRenderer val={v} frame={frame} mode={mode} updateVal={updval} view={view} />
