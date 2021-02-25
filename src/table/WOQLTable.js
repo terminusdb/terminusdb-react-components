@@ -3,7 +3,7 @@ import TerminusClient from '@terminusdb/terminusdb-client';
 import {TableComponent} from './TableComponent';
 import { CellRenderer } from "./CellRenderer"
 
-export const WOQLTable = ({bindings, result, view, freewidth, query, start, limit, orderBy, totalRows, setLimits, setOrder})=>{
+export const WOQLTable = ({bindings, result, view, freewidth, query, start, limit, orderBy, totalRows, setLimits, setOrder, onRefresh})=>{
     let wt = TerminusClient.View.table()
     if(view)  wt.loadJSON(view.table, view.rules)
     let woqt = new TerminusClient.WOQLTable(false, wt)
@@ -63,8 +63,18 @@ export const WOQLTable = ({bindings, result, view, freewidth, query, start, limi
     }
 
     function formatTableColumns(){
+
         let colids = woqt.getColumnsToRender()
-        let listOfColumns = colids.map((item, index) => {
+
+        let fixedColIds = colids.map((item, index) => {
+            if(item == "") {
+                item = "_" + index
+            }
+            return item
+        })
+
+        let listOfColumns = fixedColIds.map((item, index) => {
+
             let col = {
                 Header: woqt.getColumnHeaderContents(item) || item,
                 id: item,
@@ -97,6 +107,7 @@ export const WOQLTable = ({bindings, result, view, freewidth, query, start, limi
             rowCount={totalRows}
             setLimits={setLimits}
             setOrder={setOrder}
+            onRefresh={onRefresh}
         />
     )
 }

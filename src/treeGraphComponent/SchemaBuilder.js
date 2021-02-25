@@ -32,9 +32,9 @@ export const SchemaBuilder = (props)=>{
 	const [panelIsOpen,setOpenClosePanel]=useState(true)
 	const [zoomEvent,setZoomEvent]=useState(undefined)
 
-	const saveData=()=>{
+	const saveData=(commitMessage)=>{
 		const query = savedObjectToWOQL();
-		if(props.saveGraph)props.saveGraph(query)
+		if(props.saveGraph)props.saveGraph(query,commitMessage)
 	}
 
 	/*

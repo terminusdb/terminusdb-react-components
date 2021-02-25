@@ -1,7 +1,6 @@
 import React, {useState,useEffect} from "react";
 import TerminusClient from '@terminusdb/terminusdb-client';
-//import { format } from "date-fns";
-import moment from 'moment'; 
+import moment from 'moment';
 const DATETIME_FULL = "hh:mm:ss, DD-MM-YYYY"
 
 const QUERY_TYPE_LOAD = 'QUERY_TYPE_LOAD';
@@ -11,10 +10,10 @@ const QUERY_TYPE_NEXT = 'QUERY_TYPE_NEXT';
 export const useCommitsControl = (woqlClient, setError, branch='main', currentStartTime=null, currentCommit=null, firstCommit=null, limit=10,page=0) => {
 
     const WOQL = TerminusClient.WOQL
-    const [currentPage, setCurrentPage] = useState(page); 
-   // const [commit, setCurrentCommit] = useState(currentCommit); 
+    const [currentPage, setCurrentPage] = useState(page);
+   // const [commit, setCurrentCommit] = useState(currentCommit);
     //const [dataProvider, setDataProvider] = useState([]);
-    const [startTime, setUpdateStartTime] = useState(currentStartTime);  
+    const [startTime, setUpdateStartTime] = useState(currentStartTime);
     const [gotoPosition,setGotoPosition] = useState(null);
     const [reloadQuery,setReloadQuery] = useState(0);
 
@@ -26,7 +25,7 @@ export const useCommitsControl = (woqlClient, setError, branch='main', currentSt
         const newValue={dataProvider:dataProviderValues.dataProvider,
                         selectedValue:value}
         setDataProviderValues(newValue)
-    }   
+    }
     /*ss
     * move the commit search from time
     */
@@ -35,18 +34,18 @@ export const useCommitsControl = (woqlClient, setError, branch='main', currentSt
     }
 
     const setStartTime=(time)=>{
-        setCurrentPage(0);        
+        setCurrentPage(0);
         setGotoPosition(null)
-        //setCurrentCommit(null)     
+        //setCurrentCommit(null)
         setUpdateStartTime(time)
     }
 
     /*
-    *the result the first is the last commit the last last is the older     
+    *the result the first is the last commit the last last is the older
     */
     //next_commits
     //previous_commits
-    
+
     //load commit Count
     /*
     * first render
@@ -57,11 +56,11 @@ export const useCommitsControl = (woqlClient, setError, branch='main', currentSt
         let queryObj = WOQL.query()
         switch(queryType){
             case QUERY_TYPE_NEXT:
-                const firstElement= dataProviderValues.dataProvider.slice(-1)[0] 
+                const firstElement= dataProviderValues.dataProvider.slice(-1)[0]
                 queryObj=WOQL.lib().next_commits(firstElement.commit,branch,limit)
                 break;
             case QUERY_TYPE_PREVIOUS:
-                const lastElement= dataProviderValues.dataProvider[0] 
+                const lastElement= dataProviderValues.dataProvider[0]
                 queryObj=WOQL.lib().previous_commits(lastElement.commit,limit)
                 break;
             default:
@@ -75,9 +74,9 @@ export const useCommitsControl = (woqlClient, setError, branch='main', currentSt
                 }
 
         }
-  
+
         woqlClient.query(queryObj).then((result) => {
-            if (result.bindings) {                
+            if (result.bindings) {
                 const dataFormatted=formatResult(result.bindings);
                 let newPoss=dataFormatted.newPoss;
                 let selVal=dataFormatted.toBeSelect;
@@ -88,10 +87,10 @@ export const useCommitsControl = (woqlClient, setError, branch='main', currentSt
                 //if(startTime && currentPage===0){
                 //newPoss=selVal;
                 //}
-                
+
                 setDataProviderValues({dataProvider:dataFormatted.dataP,selectedValue:selVal})
-                setQueryType(QUERY_TYPE_LOAD);         
-                setGotoPosition(newPoss)               
+                setQueryType(QUERY_TYPE_LOAD);
+                setGotoPosition(newPoss)
             }
         }).catch((err)=>{
             if(setError)setError(err);
@@ -101,19 +100,19 @@ export const useCommitsControl = (woqlClient, setError, branch='main', currentSt
 
     /*
     * the result comes order by time so the first is the last commits.
-    * we need to reverse the array for the time travel 
+    * we need to reverse the array for the time travel
     * (the last in the right position must be the last in the array),
     * the 0 post have to be the oldest of the result commits
     */
-    
+
     const formatResult=(result)=>{
         let dataP=[];
         const resLength= Math.max(result.length-1,0)
         /*
         * head of the commit
         */
-        let toBeSelect= resLength; 
-               
+        let toBeSelect= resLength;
+
         if(queryType===QUERY_TYPE_PREVIOUS || queryType===QUERY_TYPE_NEXT){
             dataP=dataProviderValues.dataProvider;
         }else{
@@ -180,6 +179,6 @@ export const useCommitsControl = (woqlClient, setError, branch='main', currentSt
         startTime,
         setStartTime,
         setSelectedValue,
-        loadNextPage,//:()=>{setCurrentPage(currentPage+1)}       
+        loadNextPage,//:()=>{setCurrentPage(currentPage+1)}
     }
 }
