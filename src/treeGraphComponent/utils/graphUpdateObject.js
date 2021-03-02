@@ -196,7 +196,7 @@ export const graphUpdateObject=()=>{
 		return choices;
 	}
 
-	const savedObjectToWOQL = ()=>{
+	const savedObjectToWOQL = (_rootIndexObj,_propertiesList)=>{
 		let WOQL = TerminusClient.WOQL
 		const andValues = []
 		newNodesList.forEach((node,key) =>{
@@ -239,25 +239,42 @@ export const graphUpdateObject=()=>{
 		})
 
 		updateTriple.forEach((valuesObject,subject) =>{
-			const subjectId=getRealId(subject)
-			for (const vname in valuesObject) {
-				if(vname==="domain")continue;								
-				if(['min','max','cardinality'].indexOf(vname)>-1){
-					andValues.push(updateCardinality(WOQL,subjectId,vname,valuesObject[vname],valuesObject['domain']))
-				}else{
-					if(vname==='abstract'){
-						andValues.push(updateAbstract(WOQL,subjectId,valuesObject[vname]))
+			/*
+			* update triple only if the object exists
+			*/
+			if(_rootIndexObj[subject] || _propertiesList.get(subject)){
+				const subjectId=getRealId(subject)
+				let addCard=true
+				for (const vname in valuesObject) {
+					if(vname==="domain")continue;
+					/*
+					* I add the cardinality value all together
+					*/							
+					if(['min','max','cardinality'].indexOf(vname)>-1 && addCard){
+						addCard=false
+						const propertyObj=_propertiesList.get(subject);
+						andValues.push(updateCardinality(WOQL,subjectId,propertyObj))
 					}else{
-						andValues.push(WOQL.update_quad(subjectId,vname,valuesObject[vname],'schema/main'))
+						if(vname==='abstract'){
+							andValues.push(updateAbstract(WOQL,subjectId,valuesObject[vname]))
+						}else{
+							andValues.push(WOQL.update_quad(subjectId,vname,valuesObject[vname],'schema/main'))
+						}
+											
 					}
- 					 					
- 				}
+				}
 			}			
 		})
 
+
+	
 		deleteNodesList.forEach((nodeObj)=>{
-			const varName=`v:${nodeObj.id}`
-			andValues.push(WOQL.delete_class(nodeObj.name,null,varName));
+			if(nodeObj.type===CLASS_TYPE_NAME.CHOICE_CLASS){
+				andValues.push(WOQL.opt().deleteChoiceList(nodeObj.id))
+			}else{
+				const varName=`v:${nodeObj.id}`
+				andValues.push(WOQL.delete_class(nodeObj.name,null,varName));
+			}
 		})
 
 		deletePropertiesList.forEach((proObj)=>{
@@ -266,13 +283,20 @@ export const graphUpdateObject=()=>{
 		})
 
 		/*
-		* if I change somethingin the choicelist I have to remove and add again
+		* if I change something in the choicelist I have to remove and add again
+		* I do this only if the element exists
 		*/
 		updateChoiceList.forEach((choiceObj,choiceName)=>{
-			const choiceId=getRealId(choiceName)
-			const choices=formatChoiceListForWoql(choiceObj.choices)
-			andValues.push(WOQL.updateChoiceList(choiceId, choiceObj.label, choiceObj.comment, choices))
+			if(_rootIndexObj[choiceName]){
+				const choiceId=getRealId(choiceName)
+				const choices=formatChoiceListForWoql(choiceObj.choices)
+				andValues.push(WOQL.updateChoiceList(choiceId, choiceObj.label, choiceObj.comment, choices))
+			}
 		})
+
+		/*
+		* I have to review the save mode
+		*/
 
 		if(andValues.length===0)return undefined;
 		const query = WOQL.and(...andValues);
@@ -290,27 +314,62 @@ export const graphUpdateObject=()=>{
 	    )
 	}
 
-	/*
-	*to be review if I have both and I like to update only one 
-	*maybe I don't have to remove all the retriction
-	*/
-	const updateCardinality=(WOQL,subjectId,vname,value,domain)=>{
-		const cardType={max:'owl:maxCardinality',min:'owl:minCardinality',
-						cardinality:'owl:maxCardinality'}
+	const addCardinality = (WOQL,subjectId,cardName,cardType,value,domainId)=>{
+		return WOQL.add_quad(cardName, "type", "owl:Restriction", "schema/main")
+		.add_quad(cardName, "owl:onProperty", subjectId, "schema/main")
+		.add_quad(cardName, cardType, WOQL.literal(value, "xsd:nonNegativeInteger"), "schema/main")
+		.add_quad(domainId, "subClassOf", cardName, "schema/main")
+	}
 
-		const cardName= subjectId + '_' + vname + '_' + value;
-		const cardTypeName=cardType[vname]
-		const domainId=getRealId(domain);
-		return WOQL.and(
-      			WOQL.opt(
-          				WOQL.quad("v:Restriction", "owl:onProperty", subjectId, "schema/main")
-          				.delete_quad("v:Restriction", "owl:onProperty", subjectId, "schema/main")
-      				),
-		      WOQL.add_quad(cardName, "type", "owl:Restriction", "schema/main")
-		    	  .add_quad(cardName, "owl:onProperty", subjectId, "schema/main")
-		          .add_quad(cardName, cardTypeName, WOQL.literal(value, "xsd:nonNegativeInteger"), "schema/main")
-		          .add_quad(domainId, "subClassOf", cardName, "schema/main")
+	const deleteSubClass = (WOQL,domainId,cardName,varName)=>{
+		return WOQL.opt(
+			WOQL.quad(domainId, "rdfs:subClassOf", varName, "schema/main").eq(varName,`${cardName}`)
+			.delete_quad(domainId, "rdfs:subClassOf", varName, "schema/main")
 		)
+	}
+
+	const updateCardinality=(WOQL,subjectId,propertyObj)=>{
+		const domainId=getRealId(propertyObj.domain);
+		/*
+		*remove alle the cardinality restriction
+		*/
+
+		const query=[WOQL.opt(
+					WOQL.quad("v:Restriction", "owl:onProperty", subjectId, "schema/main")
+					.delete_quad("v:Restriction", "owl:onProperty", subjectId, "schema/main")
+				)]
+		if(propertyObj.min_start){
+			const minStartName= `${subjectId}_min_${propertyObj.min_start}`
+			query.push(deleteSubClass(WOQL,domainId,minStartName,'v:minStart'))
+		}
+		if(propertyObj.max_start){
+			const maxStartName= `${subjectId}_max_${propertyObj.max_start}`
+			query.push(deleteSubClass(WOQL,domainId,maxStartName,'v:maxStart'))
+		}
+		if(propertyObj.cardinality_start){
+			const cardStartName= `${subjectId}_cardinality_${propertyObj.cardinality_start}`
+			query.push(deleteSubClass(WOQL,domainId,cardStartName,'v:carStart'))
+		}
+
+		if(propertyObj.min && propertyObj.max && propertyObj.min === propertyObj.max){
+			const cardName= subjectId + '_card_'+ propertyObj.min;
+			const value=	propertyObj.min	
+			query.push(addCardinality(WOQL,subjectId,cardName,"owl:cardinality",value,domainId))
+		}else{
+			if(propertyObj.min && parseFloat(propertyObj.min)>0){
+				const cardNameMin= subjectId + '_min_'+ propertyObj.min;
+				const minValue=	propertyObj.min	
+				query.push(addCardinality(WOQL,subjectId,cardNameMin,"owl:minCardinality",minValue,domainId))
+			}
+			if(propertyObj.max && parseFloat(propertyObj.max)>0){
+				const cardNameMax= subjectId + '_max_'+ propertyObj.max;
+				const maxValue=	propertyObj.max	
+				query.push(addCardinality(WOQL,subjectId,cardNameMax,"owl:maxCardinality",maxValue,domainId))
+			}
+		}
+		const tmp= WOQL.and(...query)	   
+		//console.log("__QUERY___",tmp.prettyPrint())
+		return tmp
 	}
 	return {updateChoicesList,addNodeToTree,changeNodeParent,addPropertyToClass,removePropertyToClass,savedObjectToWOQL,removeNode,updateTripleElement}
 }

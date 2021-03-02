@@ -63,14 +63,18 @@ export const addRestictionToProps=(propertiesList,restrDataProvider)=>{
 		if(property){
 			if(item.cardinality!=="system:unknown"){
 				property['cardinality']=item.cardinality['@value'];
+
+				property['cardinality_start']=item.cardinality['@value'];
 				//min and max 
-				//property['min']=item.cardinality['@value'];
-				//property['max']=item.cardinality['@value'];
+				property['min']=item.cardinality['@value'];
+				property['max']=item.cardinality['@value'];
 			}
 			if(item.min!=="system:unknown"){
+				property['min_start']=item.min['@value'];
 				property['min']=item.min['@value'];
 			}
 			if(item.max!=="system:unknown"){
+				property['min_stop']=item.min['@value'];
 				property['max']=item.max['@value'];
 			}
 		}
