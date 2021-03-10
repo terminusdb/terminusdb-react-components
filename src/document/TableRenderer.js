@@ -2,9 +2,9 @@ import React, {useState, useEffect} from 'react'
 import {Row, Col} from "react-bootstrap" //replace
 import TerminusClient from '@terminusdb/terminusdb-client'
 import Select from 'react-select';
-import {PLUS_STYLE, MINUS_STYLE, DEL_STYLE, TAB_STYLE, VALUE_STYLE, LABEL_STYLE, HEADER_STYLE, HEADER_TWO_STYLE} from "./frames.constants.js"
+import {PLUS_STYLE, MINUS_STYLE, DEL_STYLE, TAB_STYLE, VALUE_STYLE, LABEL_STYLE, HEADER_STYLE, HEADER_TWO_STYLE, SELECT_VALUES_LIMIT} from "./frames.constants.js"
 
-export const TableRenderer = ({frame, mode, view, errors, client, setExtractDocs, extractDocs}) => {
+export const TableRenderer = ({frame, mode, view, errors, client, setExtractDocs, extractDocs, loading, setLoading}) => {
 
     const [ping, setPing] = useState(0)
     useEffect(() => {
@@ -17,7 +17,7 @@ export const TableRenderer = ({frame, mode, view, errors, client, setExtractDocs
 
     return (<>
         <table style={TAB_STYLE}>
-            <ObjectRenderer frame={frame.document} mode={mode} view={view} ping={ping} client={client} setExtractDocs={setExtractDocs} extractDocs={extractDocs}/>
+            <ObjectRenderer frame={frame.document} mode={mode} view={view} ping={ping} client={client} setExtractDocs={setExtractDocs} extractDocs={extractDocs} setLoading={setLoading}/>
         </table>
 
     </>)
@@ -68,7 +68,7 @@ const MissingPropertySelector = ({client, frame, onAddProp}) => {
 
 }
 
-export const ObjectRenderer = ({frame, mode, view, ping, setDocType, client, setExtractDocs, extractDocs}) => {
+export const ObjectRenderer = ({frame, mode, view, ping, setDocType, client, setExtractDocs, extractDocs, setLoading}) => {
     if(!frame) return null
 
     const [redraw, setRedraw] = useState(1)
@@ -107,7 +107,7 @@ export const ObjectRenderer = ({frame, mode, view, ping, setDocType, client, set
             //if (pframe.cframe.isClassChoice())
             //    pframe.values=pframe.cframe
             let parentId=frame.subjid
-            props = props.concat(<PropertyRenderer ping={ping} view={view} key={p + "_property"} frame={pframe} mode={mode} client={client} setExtractDocs={setExtractDocs} extractDocs={extractDocs} parentId={parentId}/>)
+            props = props.concat(<PropertyRenderer ping={ping} view={view} key={p + "_property"} frame={pframe} mode={mode} client={client} setExtractDocs={setExtractDocs} extractDocs={extractDocs} parentId={parentId} setLoading={setLoading}/>)
         }
         return props
     }
@@ -190,7 +190,7 @@ export const TypeRenderer = ({type, mode, view, update}) => {
     </tr>
 }
 
-export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDocs, extractDocs, parentId}) => {
+export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDocs, extractDocs, parentId, setLoading}) => {
     if(!frame) return null
 
     const [redraw, setRedraw] = useState(1)
@@ -311,7 +311,7 @@ export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDoc
                     <td style={DEL_STYLE}><button style={MINUS_STYLE} onClick={getDelVal(i, rvals[i], extractDocs, setExtractDocs)}>-</button> </td>
                 }
                 <td key={frame.predicate  + "_value_" + i} style={VALUE_STYLE} >
-                    <ValueRenderer redraw={redraw} frame={rvals[i]} mode={mode} view={view} ping={ping} client={client} setExtractDocs={setExtractDocs}/>
+                    <ValueRenderer redraw={redraw} frame={rvals[i]} mode={mode} view={view} ping={ping} client={client} setExtractDocs={setExtractDocs} setLoading={setLoading}/>
                 </td>
             </tr>)
         }
@@ -324,7 +324,7 @@ export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDoc
                     </td>
                 </>}
                 <td style={VALUE_STYLE}>
-                    <ValueRenderer redraw={redraw} frame={rvals[i]} mode={mode} view={view} ping={ping} client={client} setExtractDocs={setExtractDocs}/>
+                    <ValueRenderer redraw={redraw} frame={rvals[i]} mode={mode} view={view} ping={ping} client={client} setExtractDocs={setExtractDocs} setLoading={setLoading}/>
                 </td>
             </tr>)
         }
@@ -332,7 +332,7 @@ export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDoc
     return rows
 }
 
-export const ChoiceClassRenderer = ({frame, mode, view, redraw, ping, client, type, updateVal, setExtractDocs, extractDocs}) => {
+export const ChoiceClassRenderer = ({frame, mode, view, redraw, ping, client, type, updateVal, setExtractDocs, extractDocs, setLoading}) => {
     const [opts, setOpts]=useState([])
     const [classOpts, setClassOpts]=useState([])
 
@@ -404,7 +404,7 @@ export const ChoiceClassRenderer = ({frame, mode, view, redraw, ping, client, ty
                 }
             </Col>
         </Row>
-        <TableRenderer frame={selectedDoc} mode={mode} view = {view} client={client} setExtractDocs={setExtractDocs} extractDocs={extractDocs}/>
+        <TableRenderer frame={selectedDoc} mode={mode} view = {view} client={client} setExtractDocs={setExtractDocs} extractDocs={extractDocs} setLoading={setLoading}/>
     </>
 
     /*return <>
@@ -424,9 +424,11 @@ export const ChoiceClassRenderer = ({frame, mode, view, redraw, ping, client, ty
     </> */
 }
 
-export const ValueRenderer = ({frame, mode, view, redraw, ping, client, setExtractDocs, extractDocs}) => {
+export const ValueRenderer = ({frame, mode, view, redraw, ping, client, setExtractDocs, extractDocs, setLoading}) => {
 
     let [v, setV] = useState("")
+
+    console.log("frame", frame)
 
     useEffect(() =>
         setV(frame.get()
@@ -443,7 +445,7 @@ export const ValueRenderer = ({frame, mode, view, redraw, ping, client, setExtra
         }
         else {
             return  <table style={TAB_STYLE}>
-                <ObjectRenderer frame={frame} mode={mode} view={view} client={client} setExtractDocs={setExtractDocs} extractDocs={extractDocs}/>
+                <ObjectRenderer frame={frame} mode={mode} view={view} client={client} setExtractDocs={setExtractDocs} extractDocs={extractDocs} setLoading={setLoading}/>
             </table>
         }
     }
@@ -451,7 +453,7 @@ export const ValueRenderer = ({frame, mode, view, redraw, ping, client, setExtra
         return <ChoiceRenderer val={v} frame={frame} mode={mode} updateVal={updval} view={view} />
     }
     else if(frame.isDocument()){
-        return <DocumentRenderer val={v} frame={frame} mode={mode} updateVal={updval} view={view} />
+        return <DocumentRenderer val={v} frame={frame} mode={mode} updateVal={updval} view={view} client={client}  type={frame.getType()} setLoading={setLoading}/>
     }
     else if(frame.isData()){
         return <DataRenderer frame={frame} val={v} type={frame.getType()} mode={mode} updateVal={updval} view={view} />
@@ -461,9 +463,73 @@ export const ValueRenderer = ({frame, mode, view, redraw, ping, client, setExtra
     }
 }
 
-export const DocumentRenderer = ({val, mode, frame, updateVal, view}) => {
+export const DocumentRenderer = ({val, mode, frame, updateVal, view, client, type, setLoading}) => {
     if(mode == "edit"){
-        return <DataRenderer frame={frame} val={val} mode={mode} type={frame.getType()} updateVal={updateVal} />
+
+        const [showSelect, setShowSelect]=useState(false)
+
+        const [opts, setOpts]=useState([])
+        const [classOpts, setClassOpts]=useState([])
+
+        const [chosen, setChosen]=useState(false)
+        const [placeHolder, setPlaceHolder]=useState("No " + " available to link with")
+
+        let doc=frame.frame
+
+        useEffect(() => {
+            if(!client) return
+            let WOQL = TerminusClient.WOQL
+            let q = WOQL.triple("v:Document", "v:Type", doc.class).triple("v:Document", "label", "v:Label")
+
+            client.query(q).then((results)=>{
+                if(results.bindings.length > SELECT_VALUES_LIMIT){
+                    setShowSelect(false)
+                }
+                else {
+                    for(var i = 0; i<results.bindings.length; i++){
+                        opts.push({value: TerminusClient.UTILS.shorten(results.bindings[i]["Document"]), label: results.bindings[i]["Label"]["@value"]})
+                    }
+                    setOpts(opts)
+                    setPlaceHolder("Choose a " + frame.label + " to link with")
+                    setShowSelect(true)
+                }
+                if(setLoading) setLoading(false)
+            }).catch((err) => {
+                console.log("err", err)
+            })
+
+        }, [frame, client])
+
+        useEffect(() => {
+            setClassOpts(opts)
+        }, [opts])
+
+        const onChange =(e) => {
+            if(!client || !e.value) return
+            let selectedDocument=e.value
+            updateVal(selectedDocument)
+            let docId=e.value
+            setChosen(docId)
+        }
+
+        return <>
+            {showSelect && <Row>
+                <Col md={6}>
+                    <Select placeholder={placeHolder}
+                        options={classOpts}
+                        onChange={onChange}/>
+                </Col>
+                <Col md={6}>
+                    {type && <>
+                        <Col md={3}>{TerminusClient.UTILS.shorten(type)}</Col>
+                        {chosen && <Col md={9}>{chosen}</Col>}
+                    </>
+                    }
+                </Col>
+            </Row>}
+            {!showSelect && <DataRenderer frame={frame} val={val} mode={mode} type={frame.getType()} updateVal={updateVal} />}
+        </>
+        /*return <DataRenderer frame={frame} val={val} mode={mode} type={frame.getType()} updateVal={updateVal} />*/
     }
     else {
         let ds = function(){
@@ -506,7 +572,7 @@ export const ChoiceRenderer = ({val, mode, frame, updateVal}) => {
             }
             const className=TerminusClient.UTILS.shorten(item.class)
             const label = item.label ? item.label["@value"] : className
-            
+
             return { value: className, label: label}
         })
 

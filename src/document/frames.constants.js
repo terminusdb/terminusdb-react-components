@@ -47,3 +47,6 @@ export const HEADER_TWO_STYLE = {
 	backgroundColor: "#efefef",
 	color: "#888"
 }
+
+
+export const SELECT_VALUES_LIMIT=1000
