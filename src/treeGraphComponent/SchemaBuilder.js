@@ -84,48 +84,51 @@ export const SchemaBuilder = (props)=>{
 				changeMode={setIsEditMode}
 				isEditMode={isEditMode}/>
 		</div>
-		{view == DEFAULT_SCHEMA_VIEW && <SplitPane className="tdb_panel_split" split="vertical" minSize={400} size={mainPanelSize}>
-			<div>
-				<SizeMe monitorHeight={true}>{({ size }) =>
-		            <div style={{ minHeight:"400px", height: "calc(100vh - 10px)"}}>
-		                {graphDataProvider && <>
-							<ModelTreeComponent
-			              		objectPropertyToRange={objectPropertyToRange}
-			              		zoomEvent={zoomEvent}
-			              		isEditMode={isEditMode}
-			              		setNodeAction={setNodeAction}
-			              		selectedNodeObject={selectedNodeObject}
-			              		changeCurrentNode={changeCurrentNode}
-			              		width={size.width} height={size.height}
-			              		addedNewNode={selectedNodeObject.newNode}
-			              		graphUpdateLabel={graphUpdateLabel}
-			              		graphDataProvider={graphDataProvider}
-			              		isFocusOnNode={isFocusOnNode}/>
-						</>}
-		              </div>
-		              }
-		        </SizeMe>
-		    </div>
-		    {showInfoComp && selectedNodeObject.type!==CLASS_TYPE_NAME.SCHEMA_GROUP &&
-		    	<InfoBoxComponent dbName={props.dbName}/>
-		    }
-		    {showInfoComp && selectedNodeObject.type===CLASS_TYPE_NAME.SCHEMA_GROUP &&
-		    	<InfoObjectComponent panelType={selectedNodeObject.name}/>
-		    }
-		    {!showInfoComp && isEditMode===false &&
-		    	<ObjectClassModelViewMode />}
-	        {!showInfoComp &&
-	        	<DetailsModelComponent
-	        		updateChoices={updateChoices}
-		        	objPropsRelatedToClass={objPropsRelatedToClass}
-		        	objectPropertyList={objectPropertyList}
-		        	removeElement={removeElement}
-		        	addNewProperty={addNewProperty}
-		        	nodePropertiesList={nodePropertiesList}
-		        	currentNodeJson={selectedNodeObject}
-		        	updateValue={updateValue}/>	}
-	    </SplitPane>}
-	    <div className="tdb__model__footer"/>
+		{view == DEFAULT_SCHEMA_VIEW && <>
+			<SplitPane className="tdb_panel_split" split="vertical" minSize={400} size={mainPanelSize}>
+				<div>
+					<SizeMe monitorHeight={true}>{({ size }) =>
+			            <div style={{ minHeight:"400px", height: "calc(100vh - 10px)"}}>
+			                {graphDataProvider && <>
+								<ModelTreeComponent
+				              		objectPropertyToRange={objectPropertyToRange}
+				              		zoomEvent={zoomEvent}
+				              		isEditMode={isEditMode}
+				              		setNodeAction={setNodeAction}
+				              		selectedNodeObject={selectedNodeObject}
+				              		changeCurrentNode={changeCurrentNode}
+				              		width={size.width} height={size.height}
+				              		addedNewNode={selectedNodeObject.newNode}
+				              		graphUpdateLabel={graphUpdateLabel}
+				              		graphDataProvider={graphDataProvider}
+				              		isFocusOnNode={isFocusOnNode}/>
+							</>}
+			              </div>
+			              }
+			        </SizeMe>
+			    </div>
+			    {showInfoComp && selectedNodeObject.type!==CLASS_TYPE_NAME.SCHEMA_GROUP &&
+			    	<InfoBoxComponent dbName={props.dbName}/>
+			    }
+			    {showInfoComp && selectedNodeObject.type===CLASS_TYPE_NAME.SCHEMA_GROUP &&
+			    	<InfoObjectComponent panelType={selectedNodeObject.name}/>
+			    }
+			    {!showInfoComp && isEditMode===false &&
+			    	<ObjectClassModelViewMode />}
+		        {!showInfoComp &&
+		        	<DetailsModelComponent
+		        		updateChoices={updateChoices}
+			        	objPropsRelatedToClass={objPropsRelatedToClass}
+			        	objectPropertyList={objectPropertyList}
+			        	removeElement={removeElement}
+			        	addNewProperty={addNewProperty}
+			        	nodePropertiesList={nodePropertiesList}
+			        	currentNodeJson={selectedNodeObject}
+			        	updateValue={updateValue}/>	}
+		    </SplitPane>
+			<div className="tdb__model__footer"/>
+		</>}
+
 	    </>
 	)
 }
