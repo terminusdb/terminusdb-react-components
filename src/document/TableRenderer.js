@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import {Row, Col} from "react-bootstrap" //replace
 import TerminusClient from '@terminusdb/terminusdb-client'
 import Select from 'react-select';
+import AsyncSelect from 'react-select/async';
 import {PLUS_STYLE, MINUS_STYLE, DEL_STYLE, TAB_STYLE, VALUE_STYLE, LABEL_STYLE, HEADER_STYLE, HEADER_TWO_STYLE, SELECT_VALUES_LIMIT} from "./frames.constants.js"
 
 export const TableRenderer = ({frame, mode, view, errors, client, setExtractDocs, extractDocs, loading, setLoading}) => {
@@ -428,8 +429,6 @@ export const ValueRenderer = ({frame, mode, view, redraw, ping, client, setExtra
 
     let [v, setV] = useState("")
 
-    console.log("frame", frame)
-
     useEffect(() =>
         setV(frame.get()
     ), [redraw, frame])
@@ -474,6 +473,8 @@ export const DocumentRenderer = ({val, mode, frame, updateVal, view, client, typ
         const [chosen, setChosen]=useState(false)
         const [placeHolder, setPlaceHolder]=useState("No " + " available to link with")
 
+        const [asyncValue, setAsyncValue] = useState();
+
         let doc=frame.frame
 
         useEffect(() => {
@@ -486,13 +487,13 @@ export const DocumentRenderer = ({val, mode, frame, updateVal, view, client, typ
                     setShowSelect(false)
                 }
                 else {
-                    for(var i = 0; i<results.bindings.length; i++){
-                        opts.push({value: TerminusClient.UTILS.shorten(results.bindings[i]["Document"]), label: results.bindings[i]["Label"]["@value"]})
-                    }
-                    setOpts(opts)
-                    setPlaceHolder("Choose a " + frame.label + " to link with")
                     setShowSelect(true)
                 }
+                for(var i = 0; i<results.bindings.length; i++){
+                    opts.push({value: TerminusClient.UTILS.shorten(results.bindings[i]["Document"]), label: results.bindings[i]["Label"]["@value"]})
+                }
+                setOpts(opts)
+                setPlaceHolder("Choose a " + frame.label + " to link with")
                 if(setLoading) setLoading(false)
             }).catch((err) => {
                 console.log("err", err)
@@ -512,11 +513,50 @@ export const DocumentRenderer = ({val, mode, frame, updateVal, view, client, typ
             setChosen(docId)
         }
 
+        const getOptionsWithMatch = async(e) => {
+            if(!client || !e) return
+            let searchText=`${e}*`
+            let q = WOQL.and(WOQL.triple("v:Document", "v:Type", doc.class).triple("v:Document", "label", "v:label"),
+     			WOQL.re(searchText, "v:label", "v:Test"))
+            return searchText
+        }
+
+        const loadOptions = async (inputValue, callback) => {
+          // perform a request
+          if(!client) return
+          if(!inputValue) return console.log("inputValue", inputValue)
+          let searchText=`${inputValue}*`
+          let WOQL = TerminusClient.WOQL
+          setOpts([])
+          let q = WOQL.and(WOQL.triple("v:Document", "v:Type", doc.class).triple("v:Document", "label", "v:Label"),
+              WOQL.re(searchText, "v:Label", "v:Searched"))
+          const requestResults = await client.query(q).then((results) =>{
+
+              for(var i = 0; i<results.bindings.length; i++){
+                  opts.push({value: TerminusClient.UTILS.shorten(results.bindings[i]["Document"]), label: results.bindings[i]["Label"]["@value"]})
+              }
+              return opts
+          }).catch((err) => {
+              console.log("err", err)
+          })
+          callback(requestResults)
+        }
+
+
+        const onAsyncChange = (option) => {
+            let selectedDocument=option.value
+            updateVal(selectedDocument)
+            let docId=option.value
+            setChosen(docId)
+            setAsyncValue(option);
+        }
+
         return <>
             {showSelect && <Row>
                 <Col md={6}>
                     <Select placeholder={placeHolder}
                         options={classOpts}
+                        key={doc.class + "select"}
                         onChange={onChange}/>
                 </Col>
                 <Col md={6}>
@@ -527,7 +567,18 @@ export const DocumentRenderer = ({val, mode, frame, updateVal, view, client, typ
                     }
                 </Col>
             </Row>}
-            {!showSelect && <DataRenderer frame={frame} val={val} mode={mode} type={frame.getType()} updateVal={updateVal} />}
+            {!showSelect && <Row>
+                <Col md={6}>
+                    <AsyncSelect defaultOptions={classOpts} cacheOptions loadOptions={loadOptions} onChange={onAsyncChange} value={asyncValue} />
+                </Col>
+                <Col md={6}>
+                    {type && <>
+                        <Col md={3}>{TerminusClient.UTILS.shorten(type)}</Col>
+                        {chosen && <Col md={9}>{chosen}</Col>}
+                    </>
+                    }
+                </Col>
+            </Row>}
         </>
         /*return <DataRenderer frame={frame} val={val} mode={mode} type={frame.getType()} updateVal={updateVal} />*/
     }
