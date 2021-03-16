@@ -49,4 +49,4 @@ export const HEADER_TWO_STYLE = {
 }
 
 
-export const SELECT_VALUES_LIMIT=5
+export const SELECT_VALUES_LIMIT=1000

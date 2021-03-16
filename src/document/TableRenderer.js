@@ -480,7 +480,7 @@ export const DocumentRenderer = ({val, mode, frame, updateVal, view, client, typ
         useEffect(() => {
             if(!client) return
             let WOQL = TerminusClient.WOQL
-            let q = WOQL.limit(1000).triple("v:Document", "v:Type", doc.class).triple("v:Document", "label", "v:Label")
+            let q = WOQL.limit(SELECT_VALUES_LIMIT).triple("v:Document", "v:Type", doc.class).triple("v:Document", "label", "v:Label")
             if(setLoading) setLoading(true)
             client.query(q).then((results)=>{
                 if(results.bindings.length > SELECT_VALUES_LIMIT){
