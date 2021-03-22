@@ -234,11 +234,11 @@ export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDoc
         return rvals
     }
 
-    const addValue = (vframe) => {
+    const addValue = (vframe, index) => {
         //console.log("add frame", frame)
         //console.log("parentId", parentId)
-
         frame.addValueFrame(frame.createEmpty())
+        frame.index=index
         setRvals(getPvals())
         setRedraw(redraw+1)
     }
@@ -289,10 +289,11 @@ export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDoc
     const deleteValue = (val, index, extractDocs, setExtractDocs) => {
        let newExtracts=[], newProps=[]
 
-       //console.log("val", val)
+       console.log("val", val)
        //console.log("index", index)
        /*console.log("extractDocs", extractDocs)
        console.log("rvals", rvals)*/
+
 
        //if(val.index==0 || val.index==undefined) return // at least one value should be available in form
 
@@ -387,7 +388,7 @@ export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDoc
             rows.push(<tr key={frame.predicate  + "_" + i}>
                 {getLabelPart(i, rvals[i])}
                 {mode == "edit" &&
-                    <td style={DEL_STYLE}><button style={MINUS_STYLE} onClick={getDelVal(i, rvals[i], extractDocs, setExtractDocs)}>-</button> </td>
+                    <td style={DEL_STYLE}><button style={MINUS_STYLE}>-</button> </td>
                 }
                 <td key={frame.predicate  + "_value_" + i} style={VALUE_STYLE} >
                     <ValueRenderer redraw={redraw} frame={rvals[i]} mode={mode} view={view} ping={ping} client={client} setExtractDocs={setExtractDocs} setLoading={setLoading}/>
