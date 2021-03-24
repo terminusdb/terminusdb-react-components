@@ -234,11 +234,11 @@ export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDoc
         return rvals
     }
 
-    const addValue = (vframe, index) => {
+    const addValue = (vframe) => {
         //console.log("add frame", frame)
         //console.log("parentId", parentId)
+
         frame.addValueFrame(frame.createEmpty())
-        frame.index=index
         setRvals(getPvals())
         setRedraw(redraw+1)
     }
@@ -251,93 +251,36 @@ export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDoc
         return f
     }
 
-    function removeDeletedProperties(extractDocs) {
 
-        for(var j=0; j < extractDocs.length; j++) {
-            for (var props in extractDocs[j].document.properties) {
-                var newVal=[]
-                for (var v in extractDocs[j].document.properties[props].values) { // loop pver values
-                    if(!extractDocs[j].document.properties[props].values[v].hide) { // if not hide
-                        newVal.push(extractDocs[j].document.properties[props].values[v])
-                    }
-                }
-                extractDocs[j].document.properties[props].values=newVal
-            }
-        }
+     const deleteValue = (val, index, extractDocs, setExtractDocs) => {
         let newExtracts=[], newProps=[]
-        for(var i = 0 ; i < rvals.length; i++){
-            for(var j=0; j < extractDocs.length; j++) {
-                for (var props in extractDocs[j].document.properties) {
-                    if(extractDocs[j].document.properties[props].isClassChoice()) {
-                        let pvals=extractDocs[j].document.properties[props].values
-                        extractDocs[j].document.properties[props].values=[]
-                        //console.log("pvals", pvals)
-                        //console.log("rvals", rvals)
-                        for(var v=0; v < pvals.length; v++) {
-                            if(pvals[v].subjid !== rvals[i].subjid) {
-                                //newExtracts.push(extractDocs[j])
-                                extractDocs[j].document.properties[props].values.push(pvals[v])
-                                newExtracts.push(extractDocs[j])
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+        //if(val.index == undefined) return
 
-    const deleteValue = (val, index, extractDocs, setExtractDocs) => {
-       let newExtracts=[], newProps=[]
+        //console.log("val", val)
+        //console.log("rvals", rvals)
 
-       console.log("val", val)
-       //console.log("index", index)
-       /*console.log("extractDocs", extractDocs)
-       console.log("rvals", rvals)*/
-
-
-       //if(val.index==0 || val.index==undefined) return // at least one value should be available in form
-
-       for(var i = 0 ; i < rvals.length; i++){
-           if(rvals[i].subjid == val.subjid) {
-               if(val.status=="new"){ //create
-                   if(val.index == rvals[i].index) {
-                       rvals[i].hide = true
-                   }
-               }
-               else if(!val.newDoc) { //update
-                   if(val.index == rvals[i].index) {
-                       rvals[i].hide = true
-                   }
-                   /*for(var j=0; j < extractDocs.length; j++) {
-                       for (var props in extractDocs[j].document.properties) {
-                           if(extractDocs[j].document.properties[props].isClassChoice()) {
-                               let pvals=extractDocs[j].document.properties[props].values
-                               extractDocs[j].document.properties[props].values=[]
-                               for(var v=0; v < pvals.length; v++) {
-                                   if(pvals[v].subjid !== rvals[i].subjid) {
-                                       //newExtracts.push(extractDocs[j])
-                                       extractDocs[j].document.properties[props].values.push(pvals[v])
-                                       newExtracts.push(extractDocs[j])
-                                   }
-                               }
-                           }
-                       }
-                   } */
-               }
-           }
-       }
-       removeDeletedProperties(extractDocs)
-       //setExtractDocs(newExtracts)
-       setRedraw(redraw+1)
-    }
-
-
-     /*const deleteValue = (val, index, extractDocs, setExtractDocs) => {
-        let newExtracts=[], newProps=[]
         for(var i = 0 ; i < rvals.length; i++){
             if(rvals[i].subjid == val.subjid) {
+                if((val.status=="new") && (val.index == 0)) return
+                if(!rvals[i].subjid){
+                    if(val.index==rvals[i].index){
+                        rvals[i].hide = true
+                    }
+                }
+                else if (rvals[i].subjid && rvals[i].index==val.index) {
+                    rvals[i].hide = true
+                }
                 if(val.status=="new"){ //create
                     for(var j=0; j < extractDocs.length; j++) {
+                        for (var props in extractDocs[j].document.properties) {
+                            let pvals=extractDocs[j].document.properties[props].values
+                            extractDocs[j].document.properties[props].values=[]
+                            for(var v=0; v < pvals.length; v++) {
+                                if(!pvals[v].hide) {
+                                    extractDocs[j].document.properties[props].values.push(pvals[v])
+                                }
+                            }
+                        }
                         if(extractDocs[j].document.subjid !== rvals[i].subjid) {
                             newExtracts.push(extractDocs[j])
                         }
@@ -347,24 +290,36 @@ export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDoc
                     for(var j=0; j < extractDocs.length; j++) {
                         for (var props in extractDocs[j].document.properties) {
                             if(extractDocs[j].document.properties[props].isClassChoice()) {
+                                let newPropValues=[]
                                 let pvals=extractDocs[j].document.properties[props].values
-                                extractDocs[j].document.properties[props].values=[]
                                 for(var v=0; v < pvals.length; v++) {
                                     if(pvals[v].subjid !== rvals[i].subjid) {
                                         //newExtracts.push(extractDocs[j])
+                                        //extractDocs[j].document.properties[props].values.push(pvals[v])
+                                        newPropValues.push(pvals[v])
+
+                                    }
+                                }
+                                extractDocs[j].document.properties[props].values=newPropValues
+                            }
+                            else {
+                                let pvals=extractDocs[j].document.properties[props].values
+                                extractDocs[j].document.properties[props].values=[]
+                                for(var v=0; v < pvals.length; v++) {
+                                    if(!pvals[v].hide) {
                                         extractDocs[j].document.properties[props].values.push(pvals[v])
-                                        newExtracts.push(extractDocs[j])
                                     }
                                 }
                             }
                         }
+                        newExtracts.push(extractDocs[j])
                     }
                 }
             }
         }
         setExtractDocs(newExtracts)
         setRedraw(redraw+1)
-    }   */
+     }
 
     function getDelVal(index, vframe, extractDocs, setExtractDocs){
         let g = vframe.get()
@@ -388,7 +343,7 @@ export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDoc
             rows.push(<tr key={frame.predicate  + "_" + i}>
                 {getLabelPart(i, rvals[i])}
                 {mode == "edit" &&
-                    <td style={DEL_STYLE}><button style={MINUS_STYLE}>-</button> </td>
+                    <td style={DEL_STYLE}><button style={MINUS_STYLE} onClick={getDelVal(i, rvals[i], extractDocs, setExtractDocs)}>-</button> </td>
                 }
                 <td key={frame.predicate  + "_value_" + i} style={VALUE_STYLE} >
                     <ValueRenderer redraw={redraw} frame={rvals[i]} mode={mode} view={view} ping={ping} client={client} setExtractDocs={setExtractDocs} setLoading={setLoading}/>
@@ -554,14 +509,12 @@ export const DocumentRenderer = ({val, mode, frame, updateVal, view, client, typ
 
         const [asyncValue, setAsyncValue] = useState();
 
-        const [textCharLimit, setTextCharLimit] = useState(0)
-
         let doc=frame.frame
 
         useEffect(() => {
             if(!client) return
             let WOQL = TerminusClient.WOQL
-            let q = WOQL.triple("v:Document", "v:Type", doc.class).triple("v:Document", "label", "v:Label")
+            let q = WOQL.limit(SELECT_VALUES_LIMIT).triple("v:Document", "v:Type", doc.class).triple("v:Document", "label", "v:Label")
             if(setLoading) setLoading(true)
             client.query(q).then((results)=>{
                 if(results.bindings.length > SELECT_VALUES_LIMIT){
@@ -616,7 +569,6 @@ export const DocumentRenderer = ({val, mode, frame, updateVal, view, client, typ
               for(var i = 0; i<results.bindings.length; i++){
                   opts.push({value: TerminusClient.UTILS.shorten(results.bindings[i]["Document"]), label: results.bindings[i]["Label"]["@value"]})
               }
-              setTextCharLimit(0)
               return opts
           }).catch((err) => {
               console.log("err", err)
