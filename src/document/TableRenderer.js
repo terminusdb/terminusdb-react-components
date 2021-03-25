@@ -252,7 +252,7 @@ export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDoc
     }
 
 
-     const deleteValue = (val, index, extractDocs, setExtractDocs) => {
+    const deleteValue = (val, index, extractDocs, setExtractDocs) => {
         let newExtracts=[], newProps=[]
         //if(val.index == undefined) return
 
@@ -335,32 +335,32 @@ export const PropertyRenderer = ({frame, mode, view, ping, client, setExtractDoc
 
     let rows = []
     for(var i = 0 ; i < rvals.length; i++){
-        if(rvals[i].hasOwnProperty('hide')){
+        /*if(rvals[i].hasOwnProperty('hide')){
             if(rvals[i].hide)
                 continue
-        }
+        }*/
         if(i == 0){
             rows.push(<tr key={frame.predicate  + "_" + i}>
                 {getLabelPart(i, rvals[i])}
-                {mode == "edit" &&
+                {!rvals[i].hide && <>{mode == "edit" &&
                     <td style={DEL_STYLE}><button style={MINUS_STYLE} onClick={getDelVal(i, rvals[i], extractDocs, setExtractDocs)}>-</button> </td>
                 }
                 <td key={frame.predicate  + "_value_" + i} style={VALUE_STYLE} >
                     <ValueRenderer redraw={redraw} frame={rvals[i]} mode={mode} view={view} ping={ping} client={client} setExtractDocs={setExtractDocs} setLoading={setLoading}/>
-                </td>
+                </td></>}
             </tr>)
         }
         else {
             rows.push(<tr key={frame.predicate + "_" + i}>
                 <td style={LABEL_STYLE} rowSpan={1}/>
-                {mode == "edit" && <>
+                {!rvals[i].hide && <>{mode == "edit" && <>
                     <td style={DEL_STYLE}>
                         <button style={MINUS_STYLE} onClick={getDelVal(i, rvals[i], extractDocs, setExtractDocs)}>-</button>
                     </td>
                 </>}
                 <td style={VALUE_STYLE}>
                     <ValueRenderer redraw={redraw} frame={rvals[i]} mode={mode} view={view} ping={ping} client={client} setExtractDocs={setExtractDocs} setLoading={setLoading}/>
-                </td>
+                </td></>}
             </tr>)
         }
     }
