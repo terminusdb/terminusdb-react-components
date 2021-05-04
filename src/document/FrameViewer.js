@@ -3,7 +3,7 @@ import TerminusClient from '@terminusdb/terminusdb-client'
 import {TableRenderer} from "./TableRenderer"
 import {FancyRenderer} from "./FancyRenderer"
 
-export function FrameViewer({classframe, doc, type, view, mode, errors, extract, onExtract, client}){
+export function FrameViewer({classframe, doc, type, view, mode, errors, extract, onExtract, client, loading, setLoading}){
     const [docobj, setDocObj] = useState()
     const [extractDocs, setExtractDocs] = useState([])
 
@@ -98,6 +98,6 @@ export function FrameViewer({classframe, doc, type, view, mode, errors, extract,
         return <FancyRenderer frame={docobj} mode={mode} view = {view} errors={errors} client={client}/>
     }
     else {
-        return <TableRenderer frame={docobj} mode={mode} view = {view} errors={errors} client={client} setExtractDocs={setExtractDocs} extractDocs={extractDocs}/>
+        return <TableRenderer frame={docobj} mode={mode} view = {view} errors={errors} client={client} setExtractDocs={setExtractDocs} extractDocs={extractDocs} loading={loading} setLoading={setLoading}/>
     }
 }

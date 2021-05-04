@@ -21,7 +21,11 @@ export const BaseInputElement = (props) => {
     },[inputElement.current,props.panelName])
 	
 	const onBlur = (evt)=>{
-		if(typeof props.onBlur ==='function')props.onBlur(props.name,value);
+		let valueChecked=true
+		if(typeof props.checkValue ==='function' ){
+			valueChecked=props.checkValue(props.name,value)
+		}
+		if(typeof props.onBlur ==='function' && valueChecked)props.onBlur(props.name,value);
 	}
 
 	const onChange = (evt) =>{

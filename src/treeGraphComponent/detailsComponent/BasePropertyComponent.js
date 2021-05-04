@@ -1,4 +1,4 @@
-import React,{Fragment} from 'react'
+import React,{Fragment,useState} from 'react'
 import {BaseElement} from './BaseElement';
 import {Accordion} from '../../form/Accordion';
 import {GET_ICON_NAME,CARDINALITY_MIN_TITLE,CARDINALITY_MAX_TITLE} from '../../constants/details-labels';
@@ -9,6 +9,9 @@ import {HelpComponent} from './HelpComponent';
 import {BaseInputElement} from './BaseInputElement';
 
 export const BasePropertyComponent = (props)=> {
+
+		const [minError,setMinError] = useState('')
+		const [maxError,setMaxError] = useState('')
 
 		const currentNodeJson=props.currentNodeJson || {}
 		let title=currentNodeJson.label || currentNodeJson.id
@@ -21,7 +24,18 @@ export const BasePropertyComponent = (props)=> {
 				title=propValue;
 			}
 			props.updateValue(propName,propValue,currentNodeJson)
-		} 	
+		} 
+		
+		const cardCheckValue=(propName,propValue)=>{
+			if(propValue.trim()==='' || parseFloat(propValue)>0){
+				if(propName==='min')setMinError("")
+				if(propName==='max')setMaxError("")
+				return true
+			}
+			if(propName==='min')setMinError("Please enter a valid number >0")
+			if(propName==='max')setMaxError("Please enter a valid number >0")
+			return false
+		}
 
 		return(
 			<Accordion showBody={props.showBody} 
@@ -52,8 +66,8 @@ export const BasePropertyComponent = (props)=> {
 				<div className="tdb__panel__box">	               
 	               	{props.showCardinality &&
 	               		<Fragment>
-	               			<BaseInputElement help="card_min" defaultValue={currentNodeJson.min || ''} name='min' title={CARDINALITY_MIN_TITLE} onBlur={changePropertyValue}/>
-                			<BaseInputElement help="card_max" defaultValue={currentNodeJson.max || ''} name='max' title={CARDINALITY_MAX_TITLE} onBlur={changePropertyValue}/>
+							<BaseInputElement itemError={minError} help="card_min" defaultValue={currentNodeJson.min || ''} name='min' title={CARDINALITY_MIN_TITLE} onBlur={changePropertyValue} checkValue={cardCheckValue}/>
+                			<BaseInputElement itemError={maxError} help="card_max" defaultValue={currentNodeJson.max || ''} name='max' title={CARDINALITY_MAX_TITLE} onBlur={changePropertyValue} checkValue={cardCheckValue}/>
 	               		</Fragment>
 	               	}         					
 				</div>
