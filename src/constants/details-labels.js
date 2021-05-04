@@ -21,10 +21,10 @@ export const PROPERTY_STRING_BY_RANGE={'string':'xsd:string',
 										'url':'xdd:url',
 										'email':'xdd:email'};
 
-export const PROPERTY_NUMBER_BY_RANGE={ 'integer':'xsd:integer', 
+export const PROPERTY_NUMBER_BY_RANGE={ 'integer':'xsd:integer',
 										'decimal':'xsd:decimal',
 										'long':'xsd:long',
-										'bite':'xsd:bite',
+										'byte':'xsd:byte',
 										'short':'xsd:short',
 										'decimalRange':'xdd:decimalRange',
 										'unsignedByte':'xsd:unsignedByte',
@@ -35,7 +35,7 @@ export const PROPERTY_NUMBER_BY_RANGE={ 'integer':'xsd:integer',
 										'nonPositiveInteger':'xsd:nonPositiveInteger',
 										'negativeInteger':'xsd:negativeInteger'}
 
-	
+
 export const PROPERTY_GEO_BY_RANGE={'coordinate':'xdd:coordinate',
 									'coordinatePolyline':'xdd:coordinatePolyline',
 									'coordinatePolygon':'xdd:coordinatePolygon'}
@@ -78,7 +78,7 @@ export const STRING_TYPE_ELEMENT_ID='value_type';
 export const GEO_PROPERTY_VALUE_ID='value_type';
 
 
-/*  
+/*
 */
 export const STRING_TYPE_DATAPROVIDER={label: 'String Type',
 	                                   id:'range',
@@ -86,7 +86,7 @@ export const STRING_TYPE_DATAPROVIDER={label: 'String Type',
 									  {label:'Json', value:'xdd:json',description:'A JSON Encoded String'},
 									  //{label:'Text', value:'text'},
 									  {label:'Base64 Binary', value:'xsd:base64Binary', description:'An xsd:base64Binary value.'},
-									  
+
 									  {label:'URL', value:'xdd:url' ,'description':'A valid url.'},
 									  {label:'HTML', value:'xdd:html', description:'A safe HTML string'},
 									  //{label:'RDFA', value:'rdfa'},
@@ -113,8 +113,8 @@ export const GET_ICON_NAME={StringProperty:'custom-img-string',
 
 
 export const UNITS_ELEMENT_ID='units';
-export const PRECISION_ELEMENT_ID='value_type';	
-export const NUMERIC_TYPE_ELEMENT_ID='interpretation'; 
+export const PRECISION_ELEMENT_ID='value_type';
+export const NUMERIC_TYPE_ELEMENT_ID='interpretation';
 
 export const NUMBER_PROPERTY_PRECISION_DATAPROVIDER={label:'Precision',
 													id:'range',
@@ -123,7 +123,7 @@ export const NUMBER_PROPERTY_PRECISION_DATAPROVIDER={label:'Precision',
 										            //{label:'Decimal', value:'xsd:decimal', description:'A decimal value (e.g. 23.34)'},
 										            {label:'Decimal Range', value:'xdd:decimalRange',description:'Uncertain range of decimal values (e.g.[23.4, 4.143]. Enables uncertainty to be encoded directly in the data'},
 										            {label:'Long', value:'xsd:long', description:'An xsd:long value.'},
-										            {label:'Bite', value:'xsd:bite', description:'An xsd:byte value'},
+										            {label:'Byte', value:'xsd:byte', description:'An xsd:byte value'},
 										            {label:'Short', value:'xsd:short', description:'An xsd:short value'},
 										            {label:'Unsigned Byte', value:'xsd:unsignedByte', description:'An xsd:unsignedByte value'},
 										            {label:'Unsigned Integer', value:'xsd:unsignedInt', description:'An xsd:unsignedInt value'},
@@ -156,7 +156,7 @@ export const TEMPORAL_PROPERTY_DATAPROVIDER={label: 'Temporal Type',
 									   {label:'Month',value:'xsd:gMonth',description:'A particular 4 digit year YYYY - negative years are BCE.'},
 									   {label:'Day',value:'xsd:gDay',description:'A particular day. An xsd:gDay value. ---DD'},
 									   {label:'Year / Month', value:'xsd:gYearMonth',description:'A year and a month. An xsd:gYearMonth value.'},
-									  
+
 									   {label:'Month / Day', value:'xsd:gMonthDay',description:'A month and a day. An xsd:gMonthDay value.'},
 									   {label:'Duraction',value:'xsd:duration',description:'A period of time. An xsd:duration value.'},
 									   {label:'Date (Uncertain Range)',value:'xdd:dateRange',description:'A date or a range of dates YYYY-MM-DD'},
@@ -189,7 +189,7 @@ export const CONFIDENCE_PROPS_DATAPROVIDER={label:'Value',
     							{label:'Tag', value:'tag'}]}
 
 
-    
+
 export const ELEMENT_BASE_CLASS_LIST=[{value:'', label:'Class'},
 	    							  {value:'OrdinaryClass',label:'Ordinary Class'}];
 
@@ -244,6 +244,8 @@ export const ELEMENT_HELP = {
     'time_subtype': "A date, a date and time, or a range of date times"
 }
 
+export const DEFAULT_SCHEMA_VIEW="default"
+
 /*export default {
 
 	OPEN_DETAILS_PANEL:'Open Details Panel',
@@ -262,7 +264,7 @@ export const ELEMENT_HELP = {
 
 	GEOGRAPHY_PANEL_NAME : 'geography',
 	TEMPORAL_SCOPING_PANEL_NAME: 'lifespan',
-	GEO_TEMPORAL_SCOPING_PANEL_NAME: 'geolifespan',	
+	GEO_TEMPORAL_SCOPING_PANEL_NAME: 'geolifespan',
 	CONFIDENCE_PANEL_NAME:'confidencePanel',
 	CARDINALITY_PANEL_NAME:'cardinalityPanel',
 
@@ -280,5 +282,5 @@ export const ELEMENT_HELP = {
 
 
 	GEOGRAPHY_PROPS_ID :'geographyProps',
-	
+
 };*/

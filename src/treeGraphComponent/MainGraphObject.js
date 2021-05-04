@@ -89,6 +89,10 @@ export const MainGraphObject = (mainGraphDataProvider,dbName)=>{
 		}		
 	}
 
+	const uniqueName=(newID)=>{
+
+	}
+
 	const objectPropertyToRange=()=>{
 		return _objectPropertyToRange;
 	}
@@ -283,14 +287,14 @@ export const MainGraphObject = (mainGraphDataProvider,dbName)=>{
 	   _graphUpdateObject.changeNodeParent(elementName,parentName,actionName);
 
 	   if(actionName===NODE_ACTION_NAME.ADD_PARENT){
-	   	    if(parentObjClass.type===elementObjClass.type){
-	   	       removeChildFromRoot(elementObjClass);
-	   	    }
-	   	    //{label:label,name:classId,type:_rootIndexObj[classId].type}
-			//elementObjClass.parents.push({label:parentObjClass.label,name:parentObjClass.name,type:parentObjClass.type})//(parentName,parentObjClass);
-				
+			//the node could be children of another node or children of root node 
+			if(parentObjClass.type===elementObjClass.type){
+				  removeChildFromRoot(elementObjClass);
+				  if(elementObjClass.parents.length===0){
+					parentObjClass.children.push(elementObjClass);
+				  }
+			}			
 			elementObjClass.parents.push(parentObjClass.name);
-			parentObjClass.children.push(elementObjClass);
 			parentObjClass.allChildren.push(elementObjClass);
 
 		}else{
@@ -491,7 +495,7 @@ export const MainGraphObject = (mainGraphDataProvider,dbName)=>{
 	}
 
 	const savedObjectToWOQL=()=>{
-		return _graphUpdateObject.savedObjectToWOQL(_rootIndexObj);
+		return _graphUpdateObject.savedObjectToWOQL(_rootIndexObj,_propertiesList);
 	}
 
 	const updateChoices=(elementName,choicesList)=>{

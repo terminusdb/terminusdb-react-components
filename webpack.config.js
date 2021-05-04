@@ -71,7 +71,13 @@ module.exports = {
         }
       ]
     },
-    externals: {
+   /* externals: {
+    '@terminusdb/terminusdb-client': {
+        root: 'TerminusDBClient',
+        commonjs2: '@terminusdb/terminusdb-client',
+        commonjs: '@terminusdb/terminusdb-client',
+        amd: 'TerminusDBClient',
+    },
     react: {
       root: 'React',
       commonjs2: 'react',
@@ -90,6 +96,6 @@ module.exports = {
       commonjs: 'prop-types',
       amd: 'prop-types',
     }
-  },
+  },*/
   //target: 'node'
 };
