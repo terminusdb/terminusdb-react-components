@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import {BasePropertyComponent} from './BasePropertyComponent'; 
-import {BaseSelectComponent} from './BaseSelectComponent';
 import {BaseSelectReactElement} from './BaseSelectReactElement';
 import {ELEMENT_BASE_CLASS_LIST,ELEMENT_ENTITY_LIST_ITEM} from '../../constants/details-labels';
 

@@ -17,11 +17,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 14
-    - run: |
-        if [ $(echo "${{ github.ref }}" | grep -P "dev|canary|rc") ]; then
-            BRANCH="${GITHUB_REF##*/}"
-            echo "@terminusdb:registry=https://api.bintray.com/npm/terminusdb/npm-$BRANCH" > .npmrc
-        fi
     - run: npm install
     - run: npm run build
     - name: Set up Cloud SDK
@@ -30,9 +25,6 @@ jobs:
         project_id: ${{ secrets.GCP_PROJECT_ID }}
         service_account_key: ${{ secrets.GCLOUD_TOKEN }}
         export_default_credentials: true
-    - run: bash ".ci/publish_bintray.sh" "${GITHUB_REF##*/}"
-      env:
-        BINTRAY_API_TOKEN: ${{ secrets.BINTRAY_API_TOKEN }}
     - run: |
         if [ $(echo "${{ github.ref }}" | grep -P "dev|canary") ]; then
             bash ".ci/publish_gcloud.sh" "${GITHUB_REF##*/}"
