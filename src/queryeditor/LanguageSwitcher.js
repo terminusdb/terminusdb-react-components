@@ -4,8 +4,8 @@ import {Dropdown} from "../form/Dropdown"
 import PropTypes from "prop-types";
 
 export const LanguageSwitcher = ({currentLanguage, showEditButton, languages, onChange, onEdit}) => {
-    
-    
+
+
      LanguageSwitcher.propTypes = {
         currentLanguage:PropTypes.string,
         showEditButton:PropTypes.bool,
@@ -45,10 +45,10 @@ export const LanguageSwitcher = ({currentLanguage, showEditButton, languages, on
                     )})
 
     return (
-        <>       
+        <>
          <button className={buttonClass} onClick={setEditLanguage}>{EDIT_THIS_VERSION}
          </button>
-        <Dropdown toggle={toggle} isOpen={dropdownOpen} title={currentLabel } className="nav__main__link tdb__commit__bar--drop" >                   
+        <Dropdown toggle={toggle} isOpen={dropdownOpen} title={currentLabel } className="nav__main__link tdb__commit__bar--drop" >
            {entries}
         </Dropdown>           
         </>

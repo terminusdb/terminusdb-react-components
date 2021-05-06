@@ -1,20 +1,24 @@
 import React, {useState,useEffect} from "react";
-import {makeWOQLFromString , makeWOQLIntoString} from "../queryPaneUtils" 
+import {makeWOQLFromString , makeWOQLIntoString} from "../queryPaneUtils"
 
 export const useEditorControl = (initEditableLanguage, setError, initEditablecontent='', editable=true) => {
 
     const [editableLanguage, setEditableLanguage] = useState(initEditableLanguage || "js");
-    const [editableContent, setEditableContent] = useState(initEditablecontent); 
+    const [editableContent, setEditableContent] = useState(false);
 
-    const [showLanguage, setShowLanguage] = useState(false);   
-    const [showContent, setShowContent] = useState("");  
+    const [showLanguage, setShowLanguage] = useState(false);
+    const [showContent, setShowContent] = useState(false);
 
     const [isEditable, setIsEditable] = useState(editable)
     const [editorContent, setEditorContent] = useState(editableContent)
     const [editorLanguage, setEditorLanguage] = useState(editableLanguage)
     const [showEditableButton, setShowEditableButton] = useState(false)
 //
-    
+    useEffect(() => {
+        setEditableContent(initEditablecontent)
+        setShowContent(initEditablecontent)
+    }, [initEditablecontent])
+
     useEffect(() => {
         if(showLanguage){
             const showedit = (isEditable && showLanguage && ["js", "json"].indexOf(showLanguage) !== -1)
@@ -37,7 +41,7 @@ export const useEditorControl = (initEditableLanguage, setError, initEditablecon
         /*
         * change the edit language and set the content like editable
         */
-        setEditableLanguage(lang)        
+        setEditableLanguage(lang)
         setEditableContent(showContent)
         setShowContent("");
         setShowLanguage(false);
@@ -49,11 +53,11 @@ export const useEditorControl = (initEditableLanguage, setError, initEditablecon
     * the current language visualized
     */
     const changeCurrentLanguage=(lang)=>{
-        if(lang === editableLanguage){            
+        if(lang === editableLanguage){
             setShowContent("")
             setShowLanguage(false)
         }else {
-            if(typeof editableContent !=="string" || editableContent===""){              
+            if(typeof editableContent !=="string" || editableContent===""){
                 setShowContent("")
                 setShowLanguage(lang)
             }else{
@@ -72,7 +76,9 @@ export const useEditorControl = (initEditableLanguage, setError, initEditablecon
     }
 
     return {
-        changeEditorContent : (text)=>{setEditableContent(text)},
+        //changeEditorContent : (text)=>{setEditableContent(text)},
+        setEditableContent,
+        editableContent,
         changeEditableLanguage,
         changeCurrentLanguage,
         editorContent,

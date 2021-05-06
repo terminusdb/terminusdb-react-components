@@ -279,7 +279,7 @@ GraphResultsViewer.prototype.zoomed = function() {
     if(this.link_elements)
         this.link_elements.attr("transform", d3.event.transform);
     if(this.edgepaths)
-        this.edgepaths.attr("transform",  d3.event.transform);    
+        this.edgepaths.attr("transform",  d3.event.transform);
 
 }
 
@@ -390,11 +390,11 @@ GraphResultsViewer.prototype.updateGraph = function(nodes, links) {
 		if(this.node_elements)
 			this.node_elements.attr("transform", this.current_transform);
 	    if(this.link_elements)
-	    	this.link_elements.attr("transform", this.current_transform);    
+	    	this.link_elements.attr("transform", this.current_transform);
         if(this.edgelabels)
-	    	this.edgelabels.attr("transform", this.current_transform);    
+	    	this.edgelabels.attr("transform", this.current_transform);
         if(this.edgepaths)
-	    	this.edgepaths.attr("transform", this.current_transform);    
+	    	this.edgepaths.attr("transform", this.current_transform);
 	}
 }
 
@@ -412,10 +412,10 @@ GraphResultsViewer.prototype.updateSimulation = function(mode) {
 			.attr('x1', function(link){ return link.source.x})
 			.attr('y1', function(link){ return link.source.y})
 			.attr('x2', function(link){ return link.target.x })
-            .attr('y2', function(link){ return link.target.y});      
+            .attr('y2', function(link){ return link.target.y});
         self.edgepaths
             .attr('d', function(d) { var path='M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y;
-                        return path});                
+                        return path});
     }
 	if(this.show_force){
 		this.simulation.nodes(this.nodes).on('tick', ticker).force('link').links(this.links);
@@ -634,7 +634,7 @@ GraphResultsViewer.prototype.setConfigOptions = function(config) {
 	this.defaults = {
 		edge: {
 			type: "edge",
-			distance: (config && config.edge && config.edge.distance ? config.edge.distance : 70),
+			distance: (config && config.edge && config.edge.distance ? config.edge.distance : 100),
 			arrow: (config && config.edge && config.edge.arrow ? config.edge.arrow : {width: 16, height: 24, color: [220, 218, 216]}),//{ width: 36, height: 16}),
 			symmetric: (config && config.edge && config.edge.symmetric ? config.edge.symmetric : true),
 			color: (config && config.edge && config.edge.color ? config.edge.color : [120, 118, 116]),//[150,150,255]),
@@ -646,7 +646,7 @@ GraphResultsViewer.prototype.setConfigOptions = function(config) {
 				unicode: (config && config.edge && config.edge.icon && config.edge.icon.unicode ? config.edge.icon.unicode : "\uf007"),///"\uf238"),////"\uf4fb"),
 				size: (config && config.edge && config.edge.icon && config.edge.icon.size ? config.edge.icon.size : 0.8),
 				faclass: (config && config.edge && config.edge.icon && config.edge.icon.faclass ? config.edge.icon.faclass : "fas fa-user")
-			},			
+			},
 		},
 		node: {
 			type: "node",
@@ -796,7 +796,7 @@ GraphResultsViewer.prototype.getEdgeColour = function(edge) {
 }
 
 GraphResultsViewer.prototype.getArrowColour = function(edge) {
-    var col = (edge && edge.arrow && edge.arrow.color ? edge.arrow.color : 
+    var col = (edge && edge.arrow && edge.arrow.color ? edge.arrow.color :
         (edge && edge.color ? edge.color : this.defaults.edge.arrow.color ))
 	return "rgb("+col.join(",")+")";
 }

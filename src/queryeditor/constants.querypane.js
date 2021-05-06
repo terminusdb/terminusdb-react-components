@@ -1,5 +1,5 @@
-export const WOQL_EDITOR_THEME = 'mdn-like'
-export const WOQL_VIEWER_THEME = 'mdn-like'
+export const WOQL_EDITOR_THEME = 'eclipse'
+export const WOQL_VIEWER_THEME = 'eclipse'
 export const HIDE_QUERY_EDITOR = 'Hide Query Editor'
 export const SHOW_QUERY_EDITOR = 'Show Query Editor'
 export const SHOW_VIEW_EDITOR = 'Show View Editor'
@@ -18,14 +18,15 @@ export const EDITOR_READ_OPTIONS = {
     noHScroll: false,
     readOnly: true,
     lineNumbers: true,
-    theme: "mdn-like"
+    theme: "eclipse"
 }
 
 export const EDITOR_WRITE_OPTIONS = {
     noHScroll: false,
     autoCursor:false,
-    theme: "mdn-like",
-    lineNumbers: true
+    theme: "eclipse",
+    lineNumbers: true,
+    minWidth: "900px"
 }
 
 export const QUERY_PANEL_TITLE = "Query"

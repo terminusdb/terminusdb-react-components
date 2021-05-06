@@ -1,6 +1,6 @@
 import React from "react";
 require('codemirror/lib/codemirror.css');
-require('codemirror/theme/mdn-like.css');
+require('codemirror/theme/eclipse.css');
 require('codemirror/mode/javascript/javascript.js');
 require('codemirror/mode/python/python.js');
 import {UnControlled as CodeMirror} from 'react-codemirror2';
@@ -13,14 +13,14 @@ export const CodeViewer = ({text, language}) => {
     if(language == "json"){
         cmoptions['json'] = true
         cmoptions['jsonld'] = true
-    } 
+    }
 
     return (<CodeMirror value={ text } options={ cmoptions } className="readOnly"/>)
 }
 
 export const CodeEditor = ({text, language, onChange, onBlur}) => {
     function getThemeForEditor(lang){
-        return "mdn-like"
+        return "eclipse"
     }
 
     let cmoptions = EDITOR_WRITE_OPTIONS
@@ -28,7 +28,7 @@ export const CodeEditor = ({text, language, onChange, onBlur}) => {
     if(language == "json"){
         cmoptions['json'] = true
         cmoptions['jsonld'] = true
-    } 
+    }
 
     return (
         <CodeMirror value={ text } options={ cmoptions }

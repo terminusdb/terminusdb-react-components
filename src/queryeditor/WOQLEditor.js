@@ -1,4 +1,4 @@
-import React from "react"
+import React, {useEffect, useState} from "react"
 import PropTypes from "prop-types";
 import { CodeEditor, CodeViewer } from './Editor'
 import {LanguageSwitcher} from "./LanguageSwitcher"
@@ -8,7 +8,8 @@ import {makeWOQLFromString , makeWOQLIntoString} from "./queryPaneUtils"
  * Controls the display of query viewer and editor
  */
 export const WOQLEditor = ({language, content, editable, setEditorContent, setMainError, setWOQLQuery}) => {
-    
+
+
     WOQLEditor.propTypes = {
         language:PropTypes.string,
         content:PropTypes.string,
@@ -30,18 +31,18 @@ export const WOQLEditor = ({language, content, editable, setEditorContent, setMa
         *save the editor string
         */
         setEditorContent(value);
-        const woql=checkContent();
+        const woql=checkContent(value);
         if(woql){
             if(setWOQLQuery) setWOQLQuery(woql)
+            //let wqc = makeWOQLIntoString(woql, "js")
         }
     }
-
     /*
     * onBlur
     */
-    function checkContent(){
+    function checkContent(content){
         //sets errors internally if doesn't work
-        setMainError(false)
+        if(setMainError) setMainError(false)
         if(content){
             try{
                 const woql = makeWOQLFromString(content, language)
@@ -49,21 +50,29 @@ export const WOQLEditor = ({language, content, editable, setEditorContent, setMa
                 * check if the query is an update query and need a commitSMS
                 */
                 // setContainsUpdate(woql.containsUpdate())
+
+                //console.log("initcontent into js", makeWOQLIntoString(woql, "js"))
+
                 return woql
             }catch(err){
                 console.log(err)
-                setMainError(err)
+                if(setMainError) setMainError(err)
                 return false;
             }
-            
+
         }
         return false
     }
 
 
+
+
     return(
         <>
-        { editable &&
+        { editable && !content &&
+            <CodeEditor  onBlur={onBlur}  language={language}/>
+        }
+        { editable && content &&
             <CodeEditor  onBlur={onBlur} text={content} language={language}/>
         }
         {!editable &&
@@ -73,3 +82,18 @@ export const WOQLEditor = ({language, content, editable, setEditorContent, setMa
     )
 }
 
+/*
+return(
+    <>
+    { editable && !content &&
+        <CodeEditor  onBlur={onBlur}  language={language}/>
+    }
+    { editable && content &&
+        <CodeEditor  onBlur={onBlur} text={content} language={language}/>
+    }
+    {!editable &&
+        <CodeViewer text={content} language={language}/>
+    }
+    </>
+)
+*/

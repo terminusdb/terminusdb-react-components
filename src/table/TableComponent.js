@@ -88,7 +88,7 @@ export const TableComponent = ({columns, data, view, pages, freewidth, orderBy, 
 
      return (
         <span>
-            <Table {...getTableProps()} hover>
+            <Table {...getTableProps()} hover >
                      <thead>
                         {headerGroups.map(headerGroup => (
                         <tr {...headerGroup.getHeaderGroupProps()}>

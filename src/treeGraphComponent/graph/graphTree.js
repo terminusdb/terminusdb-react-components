@@ -12,7 +12,7 @@ export const Tree = (props) =>{
     const links=props.links || [];
     const nodes=props.nodes || [];
     const objectPropertyToRange=props.objectPropertyToRange || {}
-    
+
     const nodeIndex={};
 
     let nodesChildren=nodes.map((node,i)=>{
@@ -20,7 +20,7 @@ export const Tree = (props) =>{
         let isSelected=false
 
         if(props.selectedNode===node.data.name)isSelected=true;
-          
+
           if(node.data.type===CLASS_TYPE_NAME.SCHEMA_GROUP && node.data.children.length===0){
             return '';
           }
@@ -30,7 +30,7 @@ export const Tree = (props) =>{
              return <NodeTree setNodeAction={props.setNodeAction} nodeClick={props.nodeClick} isSelected={isSelected} id={node.data.name} node={node} nodex={node.x}  nodey={node.y} key={'node_'+i} isEditMode={props.isEditMode}/>
           }
           return '';
-        
+
       })
 
       /*
@@ -41,7 +41,7 @@ export const Tree = (props) =>{
       for (let souceName in nodeIndex){
          const source=nodeIndex[souceName];
          const children=source.data.allChildren || source.data.children || []
-         
+
          children.map((targetClass,i)=>{
              let isSelected=false;
              if(nodeIndex[targetClass.name]){
@@ -53,7 +53,7 @@ export const Tree = (props) =>{
                 linkData['source']=source;
                 const linkId=`${souceName}_${targetClass.name}`
 
-                linksChildren.push( 
+                linksChildren.push(
                       <g className="vx-group" transform="translate(0, 0)" key={linkId}>
                           <LinkTree link={linkData} isSelected={isSelected}/>
                       </g>)
@@ -71,7 +71,7 @@ export const Tree = (props) =>{
 
             linkPropArr.forEach((property)=>{
                 const source=nodeIndex[property.domain];
-                linksProperty.push( 
+                linksProperty.push(
                       <g className="vx-group" transform="translate(0, 0)" >
                           <LinkProperty label={property.label}  id={property.id} lineColor="#ff0000" source={source} target={target}/>
                       </g>)
@@ -83,10 +83,8 @@ export const Tree = (props) =>{
         <g className="vx-group vx-tree" transform="translate(0, 60)" id="treeGraph">
           {linksChildren}
           {nodesChildren}
-          {/*linksProperty*/}         
+          {/*linksProperty*/}
         </g>
         </>
       )
 }
-
-

@@ -2,12 +2,15 @@ import React, { useRef, useEffect } from 'react';
 import GraphResultsViewer from './GraphResultsViewer'
 
 export const WOQLGraph = (props) => {
+
   const d3Container = useRef(null);
   let pconfig = props.config
   pconfig.onClick = props.onClick
   const graphResult=new GraphResultsViewer(pconfig, props.dataProvider);
   const height = props.config && props.config.gheight ||  300;
   const width = props.config && props.config.gwidth ||  400;
+
+
 	useEffect(() => {
             if (props.dataProvider && d3Container.current) {
                 graphResult.load(d3Container.current,true);
@@ -25,4 +28,3 @@ export const WOQLGraph = (props) => {
 
   return (<div className="d3-component" width={width} height={height} ref={d3Container}/>);
 }
-

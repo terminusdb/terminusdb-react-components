@@ -54,6 +54,7 @@
     "install": "^0.13.0",
     "moment": "^2.27.0",
     "prop-types": "^15.6.0",
+    "re-resizable": "^6.9.0",
     "react": "^16.10.2",
     "react-bootstrap": "^1.4.3",
     "react-codemirror2": "^7.2.1",

@@ -6,7 +6,7 @@
   flex-grow: 1;
   padding: 10px 0;
   font-size:15px;
-  color: @topbar-text-color;
+  color: @topbar-text-color !important;
 
   &__title{
     color: #ff9796;
@@ -21,7 +21,7 @@
 
   &__wrap{
     box-shadow: inset 0 -1px 0 #e1e4e8;
-    background-color: #f4f4f4!important;
+    /*background-color: #f4f4f4!important;*/
   }
 
   &--sub{
@@ -274,7 +274,7 @@
     &--sub{
       border-bottom:2px solid transparent;
     }
-    
+
     &--subselected{
       border-bottom:2px solid @brand-color-green;
     }
