@@ -86,6 +86,7 @@ export const TableComponent = ({columns, data, view, pages, freewidth, orderBy, 
         }
     }
 
+    console.log("headerGroup", headerGroups)
      return (
         <span>
             <Table {...getTableProps()} hover >

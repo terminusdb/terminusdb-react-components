@@ -89,7 +89,7 @@ export const SchemaBuilder = (props)=>{
 			<SplitPane className="tdb_panel_split" split="vertical" minSize={400} size={mainPanelSize}>
 				<div>
 					<SizeMe monitorHeight={true}>{({ size }) =>
-			            <div style={{ minHeight:"400px", height: "calc(100vh - 10px)", width: "600px"}}>
+			            <div style={{ minHeight:"400px", height: "calc(100vh - 10px)"}}>
 			                {graphDataProvider && <>
 								<ModelTreeComponent
 				              		objectPropertyToRange={objectPropertyToRange}
