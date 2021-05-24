@@ -7,7 +7,7 @@ import {makeWOQLFromString , makeWOQLIntoString} from "./queryPaneUtils"
 /**
  * Controls the display of query viewer and editor
  */
-export const WOQLEditor = ({language, content, editable, setEditorContent, setMainError, setWOQLQuery}) => {
+export const WOQLEditor = ({language, content, editable, setEditorContent, setMainError, setWOQLQuery, theme}) => {
 
 
     WOQLEditor.propTypes = {
@@ -70,13 +70,13 @@ export const WOQLEditor = ({language, content, editable, setEditorContent, setMa
     return(
         <>
         { editable && !content &&
-            <CodeEditor  onBlur={onBlur}  language={language}/>
+            <CodeEditor  onBlur={onBlur}  language={language} theme={theme}/>
         }
         { editable && content &&
-            <CodeEditor  onBlur={onBlur} text={content} language={language}/>
+            <CodeEditor  onBlur={onBlur} text={content} language={language} theme={theme}/>
         }
         {!editable &&
-            <CodeViewer text={content} language={language}/>
+            <CodeViewer text={content} language={language} theme={theme}/>
         }
         </>
     )

@@ -6,7 +6,10 @@ export const TOOLBAR_LABELS={"ResetButtonTooltip":"Reset the schema to the last 
 	                            "ViewModeTooltip" : "Change to View Mode",
 	                            "ZoomInTooltip": "Zoom In",
 	                            "ZoomOutTooltip": "Zoom Out",
-	                            "ResetViewPoint": "Reset View"
+	                            "ResetViewPoint": "Reset View",
+								"CommitLabel": "Enter a description to tag update",
+								"ClosePanel": "Close Panel",
+								"OpenPanel": "Open Panel"
                       		}
 
 

@@ -5,6 +5,8 @@ import {ADD_NEW_ENTITY,ADD_NEW_CLASS,ADD_NEW_CHOICE_CLASS} from '../utils/action
 import {CLASS_TYPE_NAME_LABEL,CLASS_TYPE_NAME} from '../utils/elementsName'
 import {GraphContextObj} from '../hook/graphObjectContext'
 import {DEFAULT_SCHEMA_VIEW} from '../../constants/details-labels'
+import {AiOutlineZoomIn, AiOutlineZoomOut, AiOutlineEdit, AiOutlineSave} from "react-icons/ai"
+import {BiReset, BiUndo} from "react-icons/bi"
 
 export const ModelMainHeaderComponent =(props)=>{
 
@@ -57,6 +59,69 @@ export const ModelMainHeaderComponent =(props)=>{
 
 	const addChoiceType=()=>{
 		setNodeAction(ADD_NEW_CHOICE_CLASS,CLASS_TYPE_NAME.SCHEMA_ROOT,true)
+	}
+
+	if(props.custom) {
+		const [showCommitBox, setCommitBox] = useState(false)
+
+		function handleEdit () {
+			if(props.changeMode) props.changeMode(true)
+			setCommitBox(true)
+		}
+
+		function handleCancelEdit (e) {
+			if(props.changeMode) props.changeMode(false)
+			setCommitBox(false)
+			window.confirm("If you continue, you'll lose the schema's changes") &&
+			resetTreeModel()
+		}
+
+		function handleSave () {
+			if(props.saveData) props.saveData(showCommitBox)
+			setCommitBox(false)
+		}
+
+		function handleCommitMessage (e) {
+			setCommitBox(e.target.value)
+		}
+
+
+		return <div className="d-block ml-3 mr-3 pr-3">
+			<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
+				<div role="group" class="btn-group">
+					<button title={TOOLBAR_LABELS.ZoomInTooltip} type="button" class="btn btn-outline-info btn-lg" onClick={setZoomIn}>
+						<AiOutlineZoomIn/>
+					</button>
+					<button title={TOOLBAR_LABELS.ZoomOutTooltip} type="button" class="btn btn-outline-info btn-lg" onClick={setZoomOut}>
+						<AiOutlineZoomOut/>
+					</button>
+					<button title={TOOLBAR_LABELS.ResetViewPoint} type="button" class="btn btn-outline-info btn-lg" onClick={setResetView}>
+						<BiReset/>
+					</button>
+					{!showCommitBox && <button title={TOOLBAR_LABELS.EditModeTooltip} type="button" class="btn btn-outline-info btn-lg" onClick={handleEdit}>
+						<AiOutlineEdit/>
+					</button>}
+				</div>
+
+			</div>
+			{showCommitBox && <div >
+				<form class="" className="">
+					<div class="mb-3">
+						<label class="form-label">{TOOLBAR_LABELS.CommitLabel}</label>
+						<input placeholder={"Description"} type="text" class="form-control" onBlur={handleCommitMessage}/>
+					</div>
+					<div role="group" class="btn-group">
+						<button title={TOOLBAR_LABELS.SaveButtonTooltip} type="button" class="btn btn-outline-info btn-lg"
+							onClick={handleSave}>
+							<AiOutlineSave/>
+						</button>
+						<button title={TOOLBAR_LABELS.ViewModeTooltip} type="button" class="btn btn-outline-info btn-lg" onClick={handleCancelEdit}>
+							<BiUndo/>
+						</button>
+					</div>
+				</form>
+			</div>}
+		</div>
 	}
 
 	return(
